@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguridad y Riesgos Industriales — INACAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0e13;
+  --surface:   #111820;
+  --surface2:  #161e28;
+  --border:    #1e3a4a;
+  --accent:    #00c8ff;
+  --accent2:   #f0a500;
+  --accent3:   #00e676;
+  --danger:    #ff4444;
+  --warning:   #ff9800;
+  --text:      #d0dde8;
+  --text-dim:  #607080;
+  --text-head: #ffffff;
+  --mono:      'Share Tech Mono', monospace;
+  --sans:      'Rajdhani', sans-serif;
+  --body:      'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── Grid background ─────────────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,200,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .school {
+  font-family: var(--mono);
+  font-size: 10px; color: var(--accent); letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.sidebar-logo .subject {
+  font-family: var(--sans);
+  font-size: 17px; font-weight: 700; color: var(--text-head);
+  line-height: 1.2;
+}
+.sidebar-logo .career {
+  font-size: 11px; color: var(--text-dim); margin-top: 4px;
+}
+
+.sidebar-nav { padding: 16px 0; flex: 1; }
+
+.nav-group-label {
+  font-family: var(--mono);
+  font-size: 9px; color: var(--text-dim); letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 20px 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  color: var(--text-dim); font-size: 13px;
+  transition: all .2s; border-left: 2px solid transparent;
+  user-select: none;
+}
+.nav-item:hover { color: var(--text); background: rgba(0,200,255,.05); border-left-color: var(--accent); }
+.nav-item.active { color: var(--accent); background: rgba(0,200,255,.08); border-left-color: var(--accent); }
+.nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
+.nav-item .badge {
+  margin-left: auto; font-family: var(--mono); font-size: 9px;
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(0,200,255,.15); color: var(--accent);
+}
+.nav-item .badge.locked {
+  background: rgba(96,112,128,.15); color: var(--text-dim);
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+}
+
+/* ── Main ────────────────────────────────────────────────────────────────── */
+.main { flex: 1; overflow-x: hidden; }
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0a0e13 0%, #0d1e2e 50%, #0a1520 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 48px 40px;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: '⚡';
+  position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
+  font-size: 120px; opacity: .04; pointer-events: none;
+}
+.hero-tag {
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: var(--sans); font-size: 38px; font-weight: 700;
+  color: var(--text-head); line-height: 1.1; margin-bottom: 12px;
+}
+.hero h1 span { color: var(--accent); }
+.hero-sub { font-size: 14px; color: var(--text-dim); max-width: 500px; }
+
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 32px;
+}
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-val { font-family: var(--mono); font-size: 22px; color: var(--accent2); font-weight: 600; }
+.stat-lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── Content area ────────────────────────────────────────────────────────── */
+.content { padding: 40px 48px; }
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.section { margin-bottom: 56px; }
+
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 28px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  background: rgba(0,200,255,.1); border: 1px solid rgba(0,200,255,.2);
+  padding: 3px 8px; border-radius: 3px; letter-spacing: 1px;
+}
+.section-title {
+  font-family: var(--sans); font-size: 22px; font-weight: 700;
+  color: var(--text-head);
+}
+.section-status {
+  margin-left: auto; font-family: var(--mono); font-size: 10px;
+  padding: 3px 10px; border-radius: 3px;
+}
+.status-done  { background: rgba(0,230,118,.1);  color: var(--accent3); border: 1px solid rgba(0,230,118,.2); }
+.status-lock  { background: rgba(96,112,128,.1); color: var(--text-dim); border: 1px solid rgba(96,112,128,.2); }
+
+/* ── Subsection ──────────────────────────────────────────────────────────── */
+.sub { margin-bottom: 28px; }
+.sub-title {
+  font-family: var(--sans); font-size: 16px; font-weight: 600;
+  color: var(--accent2); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sub-title::before { content: '▶'; font-size: 10px; opacity: .7; }
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; margin-bottom: 16px; }
+
+.card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 16px 18px;
+  transition: border-color .2s, transform .2s;
+}
+.card:hover { border-color: rgba(0,200,255,.3); transform: translateY(-2px); }
+.card-label {
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+}
+.card-value { font-family: var(--sans); font-size: 18px; font-weight: 700; color: var(--text-head); }
+.card-desc  { font-size: 12px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+/* ── Definition pairs ────────────────────────────────────────────────────── */
+.def-list { display: flex; flex-direction: column; gap: 2px; }
+.def-row {
+  display: grid; grid-template-columns: 180px 1fr;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+.def-term {
+  padding: 10px 14px; background: rgba(0,200,255,.06);
+  font-family: var(--sans); font-weight: 600; font-size: 13px;
+  color: var(--accent); border-right: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.def-body { padding: 10px 14px; font-size: 13px; color: var(--text); }
+
+/* ── Formula box ─────────────────────────────────────────────────────────── */
+.formula-box {
+  background: var(--surface2);
+  border: 1px solid rgba(0,200,255,.3);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px; padding: 20px 24px;
+  margin: 16px 0; text-align: center;
+}
+.formula {
+  font-family: var(--mono); font-size: 28px;
+  color: var(--accent); letter-spacing: 4px;
+}
+.formula-vars { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+
+/* ── Info box ────────────────────────────────────────────────────────────── */
+.info-box {
+  background: rgba(0,200,255,.05);
+  border: 1px solid rgba(0,200,255,.15);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px; padding: 14px 18px;
+  font-size: 13px; margin: 12px 0;
+}
+.warn-box {
+  background: rgba(240,165,0,.05);
+  border: 1px solid rgba(240,165,0,.2);
+  border-left: 4px solid var(--accent2);
+  border-radius: 6px; padding: 14px 18px;
+  font-size: 13px; margin: 12px 0;
+}
+.danger-box {
+  background: rgba(255,68,68,.05);
+  border: 1px solid rgba(255,68,68,.2);
+  border-left: 4px solid var(--danger);
+  border-radius: 6px; padding: 14px 18px;
+  font-size: 13px; margin: 12px 0;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; margin: 12px 0; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+}
+thead tr { background: rgba(0,200,255,.1); }
+th {
+  padding: 10px 14px; text-align: left;
+  font-family: var(--sans); font-weight: 600; font-size: 12px;
+  color: var(--accent); letter-spacing: 1px; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 9px 14px; border-bottom: 1px solid rgba(30,58,74,.5);
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: rgba(0,0,0,.15); }
+td strong { color: var(--text-head); }
+
+/* ── Two-col compare ─────────────────────────────────────────────────────── */
+.compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;
+}
+.compare-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+}
+.compare-head {
+  padding: 12px 16px;
+  font-family: var(--sans); font-weight: 700; font-size: 14px;
+}
+.compare-head.red  { background: rgba(255,68,68,.12);  color: #ff6b6b; }
+.compare-head.orange { background: rgba(255,152,0,.12); color: #ffb74d; }
+.compare-body { padding: 14px 16px; font-size: 13px; }
+.compare-body ul { padding-left: 16px; margin-top: 8px; }
+.compare-body li { margin-bottom: 6px; color: var(--text); }
+
+/* ── Cost cards ──────────────────────────────────────────────────────────── */
+.cost-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 12px 0; }
+.cost-card {
+  border-radius: 6px; padding: 16px;
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.cost-card .cost-icon { font-size: 24px; margin-bottom: 8px; }
+.cost-card .cost-name { font-family: var(--sans); font-weight: 700; font-size: 14px; color: var(--text-head); margin-bottom: 4px; }
+.cost-card .cost-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+.cost-card.direct  { border-top: 3px solid var(--danger); }
+.cost-card.indirect{ border-top: 3px solid var(--warning); }
+.cost-card.invisible{ border-top: 3px solid var(--text-dim); }
+
+/* ── Ejercicios ──────────────────────────────────────────────────────────── */
+.exercise {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: 20px; overflow: hidden;
+}
+.exercise-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; background: rgba(0,0,0,.2);
+  border-bottom: 1px solid var(--border); cursor: pointer;
+  user-select: none;
+}
+.ex-num {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--accent2); background: rgba(240,165,0,.1);
+  border: 1px solid rgba(240,165,0,.2);
+  padding: 2px 8px; border-radius: 3px;
+}
+.ex-title { font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--text-head); flex: 1; }
+.ex-toggle { font-size: 10px; color: var(--text-dim); transition: transform .3s; }
+.exercise-body { padding: 18px; display: none; }
+.exercise.open .exercise-body { display: block; }
+.exercise.open .ex-toggle { transform: rotate(90deg); }
+
+.ex-question {
+  font-size: 14px; color: var(--text); margin-bottom: 16px;
+  padding: 12px 14px;
+  background: rgba(0,200,255,.04); border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+
+.answer-reveal {
+  margin-top: 12px;
+}
+.reveal-btn {
+  background: none; border: 1px solid var(--accent);
+  color: var(--accent); padding: 8px 20px; border-radius: 4px;
+  cursor: pointer; font-family: var(--mono); font-size: 12px;
+  letter-spacing: 1px; transition: all .2s;
+}
+.reveal-btn:hover { background: rgba(0,200,255,.1); }
+.answer-box {
+  display: none; margin-top: 12px;
+  background: rgba(0,230,118,.05);
+  border: 1px solid rgba(0,230,118,.2);
+  border-radius: 6px; padding: 14px 16px;
+  font-size: 13px;
+}
+.answer-box.visible { display: block; }
+.answer-box .answer-label {
+  font-family: var(--mono); font-size: 10px; color: var(--accent3);
+  letter-spacing: 2px; margin-bottom: 8px;
+}
+
+/* ── Coming soon ─────────────────────────────────────────────────────────── */
+.coming-soon {
+  background: var(--surface2); border: 1px dashed var(--border);
+  border-radius: 8px; padding: 40px; text-align: center;
+}
+.coming-soon .cs-icon { font-size: 32px; margin-bottom: 12px; opacity: .4; }
+.coming-soon p { color: var(--text-dim); font-size: 13px; }
+
+/* ── Tags ────────────────────────────────────────────────────────────────── */
+.tag {
+  display: inline-block; font-family: var(--mono); font-size: 10px;
+  padding: 2px 8px; border-radius: 3px; margin-right: 4px;
+  background: rgba(0,200,255,.1); color: var(--accent); border: 1px solid rgba(0,200,255,.2);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .hero { padding: 28px 20px; }
+  .content { padding: 24px 20px; }
+  .compare, .cost-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-wrap: wrap; gap: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="school">INACAP · Chillán</div>
+    <div class="subject">Seguridad y Riesgos Industriales</div>
+    <div class="career">Tec. Superior en Automatización y Robótica</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Unidades</div>
+    <div class="nav-item active" onclick="goTo('u1')">
+      <span class="icon">⚡</span> Unidad 1 — Fund. Eléctricos
+      <span class="badge">Visto</span>
+    </div>
+    <div class="nav-item" onclick="goTo('u2')">
+      <span class="icon">⚠️</span> Unidad 2 — Accidentabilidad
+      <span class="badge">Visto</span>
+    </div>
+    <div class="nav-item" onclick="goTo('u3')">
+      <span class="icon">🔒</span> Unidad 3
+      <span class="badge locked">Próx.</span>
+    </div>
+    <div class="nav-item" onclick="goTo('u4')">
+      <span class="icon">🔒</span> Unidad 4
+      <span class="badge locked">Próx.</span>
+    </div>
+
+    <div class="nav-group-label" style="margin-top:8px">Práctica</div>
+    <div class="nav-item" onclick="goTo('ejercicios')">
+      <span class="icon">✏️</span> Ejercicios
+      <span class="badge">7</span>
+    </div>
+    <div class="nav-item" onclick="goTo('resumen')">
+      <span class="icon">📋</span> Tabla Resumen
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    Semestre 2025 · Actualizado con apuntes clase 1
+  </div>
+</aside>
+
+<!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">// Cuaderno Digital de Estudio</div>
+    <h1>Seguridad y <span>Riesgos Industriales</span></h1>
+    <p class="hero-sub">Materia, apuntes y ejercicios del semestre. Todo en un solo lugar.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-val">2</span><span class="stat-lbl">Unidades vistas</span></div>
+      <div class="stat"><span class="stat-val">7</span><span class="stat-lbl">Ejercicios</span></div>
+      <div class="stat"><span class="stat-val">19</span><span class="stat-lbl">Conceptos clave</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ════════════════════════════════════════════════════════
+       UNIDAD 1 — CONCEPTOS ELÉCTRICOS BÁSICOS
+  ═════════════════════════════════════════════════════════ -->
+  <div class="section" id="u1">
+    <div class="section-header">
+      <span class="section-num">U-01</span>
+      <span class="section-title">Conceptos Eléctricos Básicos y Fundamentos de Prevención</span>
+      <span class="section-status status-done">✓ COMPLETADO</span>
+    </div>
+
+    <!-- 1.1 Electricidad -->
+    <div class="sub">
+      <div class="sub-title">1.1 ¿Qué es la Electricidad?</div>
+      <p style="font-size:14px; color:var(--text); margin-bottom:12px;">
+        La energía eléctrica es la forma de energía <strong>más provechosa</strong> que existe.
+        Se define como el <strong>flujo de electrones</strong> que pasan de átomo en átomo
+        a lo largo de un circuito eléctrico.
+      </p>
+      <div class="info-box">
+        💡 <strong>Dato importante:</strong> La electricidad no se "crea" en un circuito —
+        los electrones que ya están presentes en el conductor son los que se ponen en movimiento
+        cuando se aplica una diferencia de potencial (voltaje).
+      </div>
+    </div>
+
+    <!-- 1.2 Magnitudes -->
+    <div class="sub">
+      <div class="sub-title">1.2 Magnitudes Eléctricas Fundamentales</div>
+      <div class="cards">
+        <div class="card">
+          <div class="card-label">Voltaje</div>
+          <div class="card-value">V — Volt</div>
+          <div class="card-desc">Diferencia de potencial entre dos puntos del circuito. "La presión" que empuja los electrones.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Corriente</div>
+          <div class="card-value">I — Ampere</div>
+          <div class="card-desc">Cantidad de carga eléctrica que fluye por segundo. "El caudal" de electrones.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Resistencia</div>
+          <div class="card-value">R — Ohm (Ω)</div>
+          <div class="card-desc">Oposición que opone un material al paso de la corriente. Depende del material y la temperatura.</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Potencia</div>
+          <div class="card-value">P — Watt</div>
+          <div class="card-desc">Energía eléctrica entregada o consumida por unidad de tiempo. P = V × I</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1.3 Ley de Ohm -->
+    <div class="sub">
+      <div class="sub-title">1.3 Ley de Ohm</div>
+      <p style="font-size:13px; color:var(--text-dim); margin-bottom:8px;">
+        La intensidad de corriente que circula es directamente proporcional al voltaje
+        e inversamente proporcional a la resistencia:
+      </p>
+      <div class="formula-box">
+        <div class="formula">I = V / R</div>
+        <div class="formula-vars">
+          I = Intensidad (A) &nbsp;·&nbsp; V = Voltaje (V) &nbsp;·&nbsp; R = Resistencia (Ω)
+        </div>
+      </div>
+      <div class="warn-box">
+        ⚠️ <strong>Relevancia en seguridad:</strong> El cuerpo humano tiene una resistencia
+        variable (aprox. 1000 Ω piel seca / 100 Ω piel húmeda). Con 220V, la corriente
+        que atraviesa el cuerpo puede ser letal. <strong>Es la corriente (I) la que mata, no el voltaje.</strong>
+      </div>
+    </div>
+
+    <!-- 1.4 Dispositivos de protección -->
+    <div class="sub">
+      <div class="sub-title">1.4 Dispositivos de Protección Eléctrica</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dispositivo</th>
+              <th>También llamado</th>
+              <th>Protege contra</th>
+              <th>¿Cómo funciona?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Diferencial</strong></td>
+              <td>Interruptor diferencial</td>
+              <td>Contacto eléctrico en <strong>personas</strong></td>
+              <td>Compara la corriente de fase (entrada) con la de neutro (salida). Si hay diferencia, corta el circuito instantáneamente.</td>
+            </tr>
+            <tr>
+              <td><strong>Disyuntor (Magnetotérmico)</strong></td>
+              <td>Automático / breaker</td>
+              <td>Cortocircuitos y sobrecargas en la <strong>instalación</strong></td>
+              <td>Combina protección magnética (cortocircuito instantáneo) y térmica (sobrecarga por calor acumulado).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box">
+        💡 <strong>Regla de oro:</strong> El <strong>diferencial</strong> protege personas.
+        El <strong>disyuntor</strong> protege la instalación. Son complementarios: ambos deben
+        estar presentes en una instalación segura.
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       UNIDAD 2 — RIESGO, PELIGRO Y ACCIDENTABILIDAD
+  ═════════════════════════════════════════════════════════ -->
+  <div class="section" id="u2">
+    <div class="section-header">
+      <span class="section-num">U-02</span>
+      <span class="section-title">Riesgo, Peligro y Accidentabilidad</span>
+      <span class="section-status status-done">✓ COMPLETADO</span>
+    </div>
+
+    <!-- 2.1 Riesgo vs Peligro -->
+    <div class="sub">
+      <div class="sub-title">2.1 Riesgo vs. Peligro</div>
+      <div class="def-list">
+        <div class="def-row">
+          <div class="def-term">⚠️ RIESGO</div>
+          <div class="def-body">Probabilidad de que <strong>ocurra un evento indeseado</strong>. No necesariamente implica daño.</div>
+        </div>
+        <div class="def-row">
+          <div class="def-term">🚨 PELIGRO</div>
+          <div class="def-body">Probabilidad de que ocurra un evento no deseado <strong>esperando daños concretos</strong>. El peligro implica consecuencias reales.</div>
+        </div>
+      </div>
+      <div class="warn-box" style="margin-top:12px">
+        📌 <strong>Diferencia clave:</strong> Todo peligro es un riesgo, pero no todo riesgo es un peligro.
+        El peligro tiene daño esperado; el riesgo solo tiene probabilidad de evento indeseado.
+      </div>
+    </div>
+
+    <!-- 2.2 Accidente vs Incidente -->
+    <div class="sub">
+      <div class="sub-title">2.2 Accidente vs. Incidente</div>
+      <div class="compare">
+        <div class="compare-card">
+          <div class="compare-head red">💥 ACCIDENTE</div>
+          <div class="compare-body">
+            <p>Evento que produce <strong>daño real</strong>: físico a personas y/o daño material a la propiedad.</p>
+            <ul>
+              <li>Produce lesión o daño</li>
+              <li>Requiere reporte obligatorio</li>
+              <li>Genera costos directos, indirectos e invisibles</li>
+            </ul>
+            <div style="margin-top:10px; font-size:12px; color:var(--text-dim)">
+              <em>Ejemplo: Trabajador toca cable sin aislamiento → quemaduras.</em>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-head orange">⚡ INCIDENTE</div>
+          <div class="compare-body">
+            <p>Genera un <strong>"casi-accidente"</strong>. No produce daño, pero podría haberlo producido.</p>
+            <ul>
+              <li>No produce daño inmediato</li>
+              <li>Debe registrarse y corregirse</li>
+              <li>Señal de alerta para prevenir accidentes</li>
+            </ul>
+            <div style="margin-top:10px; font-size:12px; color:var(--text-dim)">
+              <em>Ejemplo: Cable pelado queda expuesto, nadie lo toca ese día.</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.3 Consecuencias -->
+    <div class="sub">
+      <div class="sub-title">2.3 Consecuencias del Accidente</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Consecuencia</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td>🤕 Lesiones personales</td><td>Daño físico al trabajador: quemaduras, fracturas, muerte, etc.</td></tr>
+            <tr><td>🏭 Daño material</td><td>Daño a equipos, infraestructura o propiedad de la empresa.</td></tr>
+            <tr><td>⏱ Pérdida de tiempo</td><td>Interrupción de la producción, tiempo en trámites, investigación del accidente.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2.4 Costos -->
+    <div class="sub">
+      <div class="sub-title">2.4 Tipos de Costos del Accidente</div>
+      <div class="cost-grid">
+        <div class="cost-card direct">
+          <div class="cost-icon">💰</div>
+          <div class="cost-name">Costo Directo</div>
+          <div class="cost-desc">Todo lo relacionado directamente con el trabajador: atención médica, indemnizaciones, licencias médicas.</div>
+        </div>
+        <div class="cost-card indirect">
+          <div class="cost-icon">🏢</div>
+          <div class="cost-name">Costo Indirecto</div>
+          <div class="cost-desc">Daños a la empresa: equipos dañados, paralización de producción, multas, contratación de reemplazos.</div>
+        </div>
+        <div class="cost-card invisible">
+          <div class="cost-icon">🧠</div>
+          <div class="cost-name">Costo Invisible</div>
+          <div class="cost-desc">Costo psicosocial interno: deterioro del clima laboral, estrés, desmotivación, daño a la reputación.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.5 Factores -->
+    <div class="sub">
+      <div class="sub-title">2.5 Factores de los Accidentes</div>
+      <div class="def-list">
+        <div class="def-row">
+          <div class="def-term">Fuente</div>
+          <div class="def-body">Actividad que se desempeña en el momento del accidente.</div>
+        </div>
+        <div class="def-row">
+          <div class="def-term">Agente</div>
+          <div class="def-body">Elemento físico que causa el daño (cable, máquina, herramienta, etc.).</div>
+        </div>
+        <div class="def-row">
+          <div class="def-term">Tipo / Forma</div>
+          <div class="def-body">
+            Cómo se produce el contacto:
+            <span class="tag">Material → Hombre</span>
+            <span class="tag">Hombre → Material</span>
+            <span class="tag">Mov. relativo indeterminado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.6 Causas -->
+    <div class="sub">
+      <div class="sub-title">2.6 Causas de los Accidentes</div>
+      <div class="compare">
+        <div class="compare-card">
+          <div class="compare-head red">🧍 ACCIÓN INSEGURA (trabajador)</div>
+          <div class="compare-body">
+            <p>Recae sobre la persona. Cualquier comportamiento del trabajador que puede provocar un accidente.</p>
+            <ul>
+              <li>Falta de conocimiento o habilidad</li>
+              <li>Actitudes indebidas</li>
+              <li>Incapacidad física o mental</li>
+            </ul>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-head orange">🏗️ CONDICIÓN INSEGURA (entorno)</div>
+          <div class="compare-body">
+            <p>Corresponde al entorno físico. Condiciones del ambiente que representan un riesgo latente.</p>
+            <ul>
+              <li>Cables sin aislamiento</li>
+              <li>Paneles eléctricos sin protección</li>
+              <li>Iluminación deficiente en el área</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       UNIDADES FUTURAS
+  ═════════════════════════════════════════════════════════ -->
+  <div class="section" id="u3">
+    <div class="section-header">
+      <span class="section-num">U-03</span>
+      <span class="section-title">Unidad 3 — (Por agregar)</span>
+      <span class="section-status status-lock">🔒 PENDIENTE</span>
+    </div>
+    <div class="coming-soon">
+      <div class="cs-icon">📂</div>
+      <p>Esta unidad se completará cuando traigas los apuntes de clase.</p>
+    </div>
+  </div>
+
+  <div class="section" id="u4">
+    <div class="section-header">
+      <span class="section-num">U-04</span>
+      <span class="section-title">Unidad 4 — (Por agregar)</span>
+      <span class="section-status status-lock">🔒 PENDIENTE</span>
+    </div>
+    <div class="coming-soon">
+      <div class="cs-icon">📂</div>
+      <p>Esta unidad se completará cuando traigas los apuntes de clase.</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       EJERCICIOS PRÁCTICOS
+  ═════════════════════════════════════════════════════════ -->
+  <div class="section" id="ejercicios">
+    <div class="section-header">
+      <span class="section-num">EJ</span>
+      <span class="section-title">Ejercicios Prácticos</span>
+    </div>
+
+    <!-- EJ 01 -->
+    <div class="exercise open" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-01</span>
+        <span class="ex-title">Cálculo de corriente con Ley de Ohm</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Un circuito tiene un voltaje de <strong>220 V</strong> y una resistencia de <strong>440 Ω</strong>.
+          ¿Cuánta corriente circula por el circuito?
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// SOLUCIÓN</div>
+            <p>Aplicando la Ley de Ohm: <strong>I = V / R</strong></p>
+            <p style="margin-top:8px; font-family:var(--mono); font-size:15px; color:var(--accent)">
+              I = 220 V / 440 Ω = <strong>0.5 A</strong>
+            </p>
+            <p style="margin-top:8px; font-size:12px; color:var(--text-dim)">
+              Circulan 0.5 Amperes por el circuito.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 02 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-02</span>
+        <span class="ex-title">Corriente en cuerpo humano</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Una persona toca un conductor a <strong>220 V</strong>. Su resistencia corporal en ese momento
+          es de <strong>1000 Ω</strong> (piel seca). ¿Qué corriente atraviesa su cuerpo?
+          ¿Es peligrosa esa corriente?
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// SOLUCIÓN</div>
+            <p><strong>I = V / R = 220 / 1000 = 0.22 A = 220 mA</strong></p>
+            <p style="margin-top:8px; color:var(--danger)">
+              ⚠️ <strong>Sí, es extremadamente peligrosa.</strong> Una corriente de apenas 10 mA
+              puede causar contracciones musculares severas. A 100 mA puede ser fatal (fibrilación ventricular).
+              Los 220 mA calculados son muy superiores al umbral letal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 03 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-03</span>
+        <span class="ex-title">Identificar: ¿Accidente o Incidente?</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Clasifica cada situación como <strong>Accidente</strong> o <strong>Incidente</strong>:<br><br>
+          a) Un electricista recibe una descarga y queda con quemaduras en la mano.<br>
+          b) Un operador nota que hay un cable pelado en el piso y lo reporta sin haberlo tocado.<br>
+          c) Cae un tablero eléctrico pero nadie estaba en el área en ese momento.<br>
+          d) Un trabajador resbala cerca de un panel eléctrico pero no cae ni se lesiona.
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// RESPUESTAS</div>
+            <p><strong>a)</strong> <span style="color:var(--danger)">ACCIDENTE</span> — Hay daño físico real (quemaduras).</p>
+            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">INCIDENTE</span> — "Casi-accidente", se evitó el contacto.</p>
+            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--warning)">INCIDENTE</span> — Hay daño material pero no personal; depende del contexto podría ser accidente con daño a la propiedad.</p>
+            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">INCIDENTE</span> — No hubo lesión, pero existió el riesgo real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 04 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-04</span>
+        <span class="ex-title">¿Qué dispositivo protege en cada caso?</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Indica qué dispositivo (Diferencial o Disyuntor) actúa en cada situación:<br><br>
+          a) Un operador toca accidentalmente un conductor activo y la corriente busca tierra a través de su cuerpo.<br>
+          b) Se conectan demasiados equipos al mismo circuito y aumenta la corriente por encima de lo permitido.<br>
+          c) Dos conductores se tocan directamente por un fallo de aislamiento.
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// RESPUESTAS</div>
+            <p><strong>a)</strong> <span style="color:var(--accent)">DIFERENCIAL</span> — Detecta que la corriente de retorno (neutro) es menor que la de entrada (fase), lo que indica fuga a tierra a través del cuerpo.</p>
+            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--accent2)">DISYUNTOR</span> — Protección térmica; detecta sobrecarga y corta el circuito antes de que el cableado se dañe.</p>
+            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--accent2)">DISYUNTOR</span> — Protección magnética; reacciona instantáneamente ante el cortocircuito.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 05 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-05</span>
+        <span class="ex-title">Tipos de costos del accidente</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Un técnico sufre una descarga eléctrica en su trabajo. Clasifica los siguientes efectos
+          como Costo Directo, Indirecto o Invisible:<br><br>
+          a) El técnico necesita 3 días de licencia médica pagada por la empresa.<br>
+          b) La línea de producción se detiene 2 horas mientras se investiga el accidente.<br>
+          c) Los compañeros quedan nerviosos y baja el rendimiento del equipo por una semana.<br>
+          d) Se debe contratar un técnico de reemplazo temporalmente.<br>
+          e) El técnico recibe atención de urgencias en la mutual.
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// RESPUESTAS</div>
+            <p><strong>a)</strong> <span style="color:var(--danger)">DIRECTO</span> — Licencia pagada, relacionada directamente con el trabajador accidentado.</p>
+            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">INDIRECTO</span> — Pérdida de producción, daño económico a la empresa.</p>
+            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--text-dim)">INVISIBLE</span> — Costo psicosocial: bajo rendimiento, estrés, miedo.</p>
+            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">INDIRECTO</span> — Costo de reemplazo, daño operacional a la empresa.</p>
+            <p style="margin-top:6px"><strong>e)</strong> <span style="color:var(--danger)">DIRECTO</span> — Atención médica directamente relacionada con el accidentado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 06 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-06</span>
+        <span class="ex-title">Calcular voltaje desconocido</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Por un conductor circula una corriente de <strong>3 A</strong>
+          y su resistencia es de <strong>150 Ω</strong>. ¿Cuál es el voltaje aplicado?
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// SOLUCIÓN</div>
+            <p>Despejando V de la Ley de Ohm: <strong>V = I × R</strong></p>
+            <p style="margin-top:8px; font-family:var(--mono); font-size:15px; color:var(--accent)">
+              V = 3 A × 150 Ω = <strong>450 V</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EJ 07 -->
+    <div class="exercise" onclick="toggleEx(this)">
+      <div class="exercise-head">
+        <span class="ex-num">EJ-07</span>
+        <span class="ex-title">Acción insegura vs. Condición insegura</span>
+        <span class="ex-toggle">▶</span>
+      </div>
+      <div class="exercise-body" onclick="event.stopPropagation()">
+        <div class="ex-question">
+          Clasifica cada situación como <strong>Acción Insegura</strong> o <strong>Condición Insegura</strong>:<br><br>
+          a) Un técnico trabaja en un panel eléctrico sin desenergilizarlo primero.<br>
+          b) El piso del taller está mojado y hay cables expuestos.<br>
+          c) Un operario trabaja sin sus EPP (guantes dieléctricos) porque "le molestan".<br>
+          d) Un tablero eléctrico tiene la tapa rota hace dos semanas.
+        </div>
+        <div class="answer-reveal">
+          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
+          <div class="answer-box">
+            <div class="answer-label">// RESPUESTAS</div>
+            <p><strong>a)</strong> <span style="color:var(--danger)">ACCIÓN INSEGURA</span> — Decisión del trabajador de no seguir el procedimiento.</p>
+            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">CONDICIÓN INSEGURA</span> — Estado peligroso del entorno físico.</p>
+            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--danger)">ACCIÓN INSEGURA</span> — Actitud indebida del trabajador.</p>
+            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">CONDICIÓN INSEGURA</span> — Falla física del entorno no corregida.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       TABLA RESUMEN
+  ═════════════════════════════════════════════════════════ -->
+  <div class="section" id="resumen">
+    <div class="section-header">
+      <span class="section-num">RS</span>
+      <span class="section-title">Tabla Resumen — Todos los Conceptos</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Concepto</th><th>Definición rápida</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Electricidad</strong></td><td>Flujo de electrones átomo a átomo a lo largo de un circuito.</td></tr>
+          <tr><td><strong>Voltaje (V)</strong></td><td>Diferencia de potencial. Unidad: Volt.</td></tr>
+          <tr><td><strong>Corriente (I)</strong></td><td>Flujo de carga eléctrica por segundo. Unidad: Ampere.</td></tr>
+          <tr><td><strong>Resistencia (R)</strong></td><td>Oposición al paso de corriente. Unidad: Ohm (Ω).</td></tr>
+          <tr><td><strong>Potencia (P)</strong></td><td>Energía consumida por unidad de tiempo. Unidad: Watt.</td></tr>
+          <tr><td><strong>Ley de Ohm</strong></td><td>I = V / R (la corriente depende del voltaje y la resistencia).</td></tr>
+          <tr><td><strong>Diferencial</strong></td><td>Protege a las PERSONAS contra contacto eléctrico indirecto.</td></tr>
+          <tr><td><strong>Disyuntor</strong></td><td>Protege la INSTALACIÓN contra sobrecargas y cortocircuitos.</td></tr>
+          <tr><td><strong>Riesgo</strong></td><td>Probabilidad de que ocurra un evento indeseado.</td></tr>
+          <tr><td><strong>Peligro</strong></td><td>Probabilidad de evento indeseado con daños esperados.</td></tr>
+          <tr><td><strong>Accidente</strong></td><td>Evento con daño real: físico y/o material.</td></tr>
+          <tr><td><strong>Incidente</strong></td><td>"Casi-accidente". No produce daño pero podría producirlo.</td></tr>
+          <tr><td><strong>Costo directo</strong></td><td>Costos relacionados directamente con el trabajador accidentado.</td></tr>
+          <tr><td><strong>Costo indirecto</strong></td><td>Daños económicos a la empresa por el accidente.</td></tr>
+          <tr><td><strong>Costo invisible</strong></td><td>Costo psicosocial interno (clima, estrés, reputación).</td></tr>
+          <tr><td><strong>Fuente</strong></td><td>Actividad que se realiza en el momento del accidente.</td></tr>
+          <tr><td><strong>Agente</strong></td><td>Elemento físico que causa el daño.</td></tr>
+          <tr><td><strong>Acción insegura</strong></td><td>Comportamiento del trabajador que puede causar un accidente.</td></tr>
+          <tr><td><strong>Condición insegura</strong></td><td>Estado del entorno que representa un riesgo latente.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /layout -->
+
+<script>
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleEx(el) {
+  el.classList.toggle('open');
+}
+function revealAnswer(btn) {
+  const box = btn.nextElementSibling;
+  box.classList.toggle('visible');
+  btn.textContent = box.classList.contains('visible')
+    ? '[ OCULTAR RESPUESTA ]'
+    : '[ MOSTRAR RESPUESTA ]';
+}
+
+// Highlight active nav on scroll
+const sections = document.querySelectorAll('.section');
+const navItems = document.querySelectorAll('.nav-item');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navItems.forEach(n => {
+    n.classList.remove('active');
+    if (n.getAttribute('onclick') === "goTo('" + current + "')") n.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

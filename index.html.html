@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TERMINAL ACADÉMICO v7.5 — INACAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070a;
+            --panel: #0d1117;
+            --border: #1f2937;
+            --accent: #4f8ef7;
+            --neon: #00ff9d;
+            --text: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+        }
+
+        /* --- SIDEBAR IZQUIERDA --- */
+        .sidebar {
+            width: 350px;
+            background: var(--panel);
+            border-right: 2px solid var(--border);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+
+        #clock {
+            font-family: 'Share Tech Mono', sans-serif;
+            color: var(--neon);
+            font-size: 32px;
+            text-align: center;
+            padding: 15px;
+            border: 1px double var(--neon);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--neon);
+        }
+
+        .tool-label { font-size: 10px; color: var(--accent); margin-bottom: 10px; display: block; letter-spacing: 1px; }
+
+        /* BOTÓN CALCULADORA */
+        .btn-tool {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            padding: 15px;
+            font-family: 'JetBrains Mono';
+            font-size: 13px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-tool:hover {
+            background: var(--neon);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+        }
+
+        /* NOTAS */
+        .notes-container { flex: 1; display: flex; flex-direction: column; }
+        #quickNotes {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 15px;
+            font-family: 'JetBrains Mono';
+            font-size: 13px;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+        }
+        #quickNotes:focus { border-color: var(--accent); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .terminal-header {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            padding: 15px;
+            color: var(--accent);
+            font-size: 18px;
+            font-family: 'Share Tech Mono';
+            margin-bottom: 30px;
+            outline: none;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--neon);
+            background: #161b22;
+            transform: translateY(-3px);
+        }
+
+        .card h3 { color: var(--accent); font-size: 14px; margin-bottom: 10px; }
+        .card p { color: #8b949e; font-size: 12px; line-height: 1.5; }
+        .card::before { content: ">"; position: absolute; left: 10px; color: var(--neon); opacity: 0; }
+        .card:hover::before { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div id="clock">00:00:00</div>
+        
+        <span class="tool-label">[ HERRAMIENTAS_SISTEMA ]</span>
+        <a href="cuaderno_mantenimiento.html" class="btn-tool" target="_blank">
+            ⚡ ABRIR_CALCULADORA.EXE
+        </a>
+
+        <span class="tool-label">[ NOTAS_DE_SESIÓN ]</span>
+        <div class="notes-container">
+            <textarea id="quickNotes" placeholder="Escriba aquí sus apuntes rápidos..." oninput="saveNotes()"></textarea>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="terminal-header">
+            <h2 style="color: var(--neon); font-size: 18px;">> ROOT_SYSTEM_INACAP_2026</h2>
+            <p style="font-size: 10px; color: var(--accent);">LOCATION: CHILLÁN_NODE | STATUS: SECURE</p>
+        </div>
+
+        <input type="text" id="finder" class="search-bar" placeholder="ESCRIBA PARA FILTRAR ASIGNATURAS..." onkeyup="filter()">
+
+        <div class="grid">
+            <div class="card" onclick="window.open('cuaderno_electricidad_u1.html', '_blank')">
+                <h3>⚡ ELECTRICIDAD_APLICADA.SYS</h3>
+                <p>Circuitos CC, Ley de Ohm y análisis de mallas industriales.</p>
+            </div>
+            <div class="card" onclick="window.open('automatizacion_inacap.html', '_blank')">
+                <h3>🦾 AUTOMATIZACION_SISTEMAS.SYS</h3>
+                <p>Control de procesos, sensores y lógica de actuadores.</p>
+            </div>
+            <div class="card" onclick="window.open('ejercicios_porcentajes.html', '_blank')">
+                <h3>📐 ALGEBRA_CIUDADANA.LOG</h3>
+                <p>Cálculo de variaciones, porcentajes y lógica matemática.</p>
+            </div>
+            <div class="card" onclick="window.open('Riesgos_Electricos_INACAP.html', '_blank')">
+                <h3>🛡️ SEGURIDAD_INDUSTRIAL.SEC</h3>
+                <p>Protocolos NFPA 70E y prevención de riesgos eléctricos.</p>
+            </div>
+            <div class="card" onclick="window.open('cuaderno_mantenimiento.html', '_blank')">
+                <h3>⚙️ MANTENIMIENTO_ACTIVOS.DRV</h3>
+                <p>Planificación preventiva y gestión de fallos en equipos.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Reloj tiempo real
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Buscador
+        function filter() {
+            let val = document.getElementById('finder').value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+            for(let c of cards) {
+                c.style.display = c.innerText.toLowerCase().includes(val) ? "block" : "none";
+            }
+        }
+
+        // Notas Persistentes
+        function saveNotes() { 
+            localStorage.setItem('hacker_notes', document.getElementById('quickNotes').value); 
+        }
+        window.onload = () => { 
+            document.getElementById('quickNotes').value = localStorage.getItem('hacker_notes') || ''; 
+        };
+    </script>
+</body>
+</html>
