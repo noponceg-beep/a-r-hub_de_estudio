@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELECTRICIDAD_APLICADA.SYS // INACAP 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c10;
+  --panel: #0d1117;
+  --panel2: #111820;
+  --border: #1a2a3a;
+  --blue: #00c8ff;
+  --teal: #00ff9d;
+  --green: #00ff9d;
+  --red: #ff4060;
+  --yellow: #ffb700;
+  --purple: #a855f7;
+  --text: #c8dde8;
+  --muted: #3a5468;
+  --sidebar-w: 260px;
+  --topbar-h: 52px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { background:var(--bg); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; }
+code,.mono { font-family:'JetBrains Mono',monospace; }
+
+/* scanlines */
+body::after {
+  content:''; position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,157,0.025) 2px,rgba(0,255,157,0.025) 4px);
+  pointer-events:none; z-index:9999;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes glowPulse {
+  0%,100% { text-shadow:0 0 8px var(--teal), 0 0 16px rgba(0,255,157,0.3); }
+  50%      { text-shadow:0 0 14px var(--teal), 0 0 28px rgba(0,255,157,0.5); }
+}
+@keyframes borderBlink {
+  0%,100% { border-color:rgba(0,255,157,0.3); }
+  50%      { border-color:rgba(0,255,157,0.7); }
+}
+@keyframes typing {
+  from { width:0; }
+  to   { width:100%; }
+}
+@keyframes cursorBlink {
+  0%,100% { opacity:1; }
+  50%      { opacity:0; }
+}
+
+.page.active { animation: fadeUp 0.3s ease forwards; }
+
+/* ── TOPBAR ── */
+#topbar {
+  position:fixed; top:0; left:0; right:0;
+  height:var(--topbar-h);
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 0 rgba(0,255,157,0.08), 0 4px 20px rgba(0,0,0,0.4);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px; z-index:300; gap:10px;
+}
+.topbar-left { display:flex; align-items:center; gap:8px; min-width:0; }
+#hamburger {
+  display:none; flex-direction:column; justify-content:center; gap:5px;
+  width:36px; height:36px; border:none; background:none; cursor:pointer; padding:6px; flex-shrink:0;
+}
+#hamburger span { display:block; height:1px; width:100%; background:var(--teal); transition:all 0.25s; }
+#hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+#hamburger.open span:nth-child(2) { opacity:0; }
+#hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+.btn-back {
+  display:none; align-items:center; gap:5px;
+  padding:5px 10px; border:1px solid var(--border);
+  background:transparent; color:var(--muted); font-family:'Share Tech Mono',monospace;
+  font-size:11px; cursor:pointer; transition:all 0.2s; white-space:nowrap; flex-shrink:0; letter-spacing:1px;
+}
+.btn-back:hover { border-color:var(--teal); color:var(--teal); box-shadow:0 0 6px rgba(0,255,157,0.2); }
+.btn-back.show { display:flex; }
+
+.topbar-breadcrumb {
+  font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted);
+  display:flex; align-items:center; gap:5px; min-width:0; overflow:hidden; letter-spacing:1px;
+}
+.crumb-root { cursor:pointer; white-space:nowrap; color:var(--teal); }
+.crumb-root:hover { color:#fff; }
+.crumb-active { color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.topbar-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.topbar-score {
+  display:flex; align-items:center; gap:6px;
+  background:var(--panel2); border:1px solid var(--border); padding:4px 10px;
+}
+.topbar-score-val { font-family:'Orbitron',monospace; font-size:13px; font-weight:700; color:var(--teal); animation:glowPulse 3s ease-in-out infinite; }
+.topbar-score-label { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; }
+.topbar-sig { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); border-left:1px solid var(--border); padding-left:10px; white-space:nowrap; letter-spacing:1px; }
+.topbar-sig span { color:var(--teal); }
+
+/* ── OVERLAY ── */
+#overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:190; }
+#overlay.open { display:block; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position:fixed; top:var(--topbar-h); left:0;
+  width:var(--sidebar-w); height:calc(100vh - var(--topbar-h));
+  background:var(--panel); border-right:1px solid var(--border);
+  box-shadow:2px 0 20px rgba(0,0,0,0.3);
+  display:flex; flex-direction:column; z-index:200; overflow-y:auto;
+  transition:transform 0.3s ease;
+  scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+}
+#sidebar::-webkit-scrollbar { width:4px; }
+#sidebar::-webkit-scrollbar-track { background:transparent; }
+#sidebar::-webkit-scrollbar-thumb { background:var(--border); }
+.sidebar-header { padding:20px 20px 14px; border-bottom:1px solid var(--border); }
+.sidebar-title { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-bottom:4px; text-shadow:0 0 8px var(--teal); }
+.sidebar-title::before { content:'[ '; color:var(--muted); }
+.sidebar-title::after { content:' ]'; color:var(--muted); }
+.sidebar-subject { font-size:11px; color:var(--text); line-height:1.5; letter-spacing:0.5px; margin-top:4px; }
+.score-box { margin:14px 16px; background:var(--panel2); border:1px solid var(--border); border-left:2px solid var(--teal); padding:10px 14px; box-shadow:inset 0 0 12px rgba(0,255,157,0.04); }
+.score-label { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:2px; }
+.score-value { font-family:'Orbitron',monospace; font-size:20px; font-weight:700; color:var(--teal); animation:glowPulse 3s ease-in-out infinite; }
+.score-value span { font-size:10px; color:var(--muted); }
+.sidebar-nav { padding:8px 0; flex:1; }
+.nav-divider { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; padding:14px 16px 6px; }
+
+/* ── Subject group (collapsible) ── */
+.nav-subject {
+  user-select:none;
+}
+.nav-subject-header {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 14px 8px 12px;
+  cursor:pointer; font-size:11px; color:var(--muted);
+  transition:color 0.2s; letter-spacing:1px;
+  position:relative;
+}
+.nav-subject-header:hover { color:var(--text); }
+.nav-subject-header .subj-icon {
+  font-size:12px; width:16px; flex-shrink:0;
+  color:var(--muted); transition:color 0.2s;
+}
+.nav-subject-header .subj-name { flex:1; }
+.nav-subject-header .subj-lock {
+  font-size:11px; color:var(--muted); opacity:0.5;
+}
+.nav-subject-header .subj-arrow {
+  font-size:9px; color:var(--muted); transition:transform 0.22s;
+  flex-shrink:0;
+}
+/* open state */
+.nav-subject.open > .nav-subject-header { color:var(--text); }
+.nav-subject.open > .nav-subject-header .subj-icon { color:var(--teal); }
+.nav-subject.open > .nav-subject-header .subj-arrow { transform:rotate(90deg); color:var(--teal); }
+
+/* active subject (has active sub-item) */
+.nav-subject.has-active > .nav-subject-header .subj-icon { color:var(--teal); }
+.nav-subject.has-active > .nav-subject-header { color:var(--text); }
+
+/* locked subject */
+.nav-subject.locked > .nav-subject-header { opacity:0.35; cursor:not-allowed; pointer-events:none; }
+
+/* ── Sub-items ── */
+.nav-sub-list {
+  overflow:hidden; max-height:0;
+  transition:max-height 0.28s ease;
+}
+.nav-subject.open > .nav-sub-list { max-height:200px; }
+
+.nav-sub-item {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 14px 6px 32px;
+  cursor:pointer; font-size:11px; color:var(--muted);
+  transition:all 0.15s; letter-spacing:1px;
+  border-left:1px solid var(--border); margin-left:20px;
+  position:relative;
+}
+.nav-sub-item::before {
+  content:'›'; position:absolute; left:12px;
+  font-size:10px; color:var(--border); transition:color 0.15s;
+}
+.nav-sub-item:hover { color:var(--text); background:rgba(255,255,255,0.02); }
+.nav-sub-item:hover::before { color:var(--muted); }
+.nav-sub-item.active {
+  color:var(--teal);
+  background:rgba(0,255,157,0.05);
+  border-left-color:var(--teal);
+}
+.nav-sub-item.active::before { color:var(--teal); }
+
+/* nav-item kept for HOME only */
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:8px 14px;
+  cursor:pointer; font-size:11px; color:var(--muted);
+  transition:all 0.2s; letter-spacing:1px; position:relative;
+}
+.nav-item::before {
+  content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:2px; height:0; background:var(--teal);
+  transition:height 0.2s;
+}
+.nav-item:hover { color:var(--text); }
+.nav-item:hover::before { height:60%; }
+.nav-item.active { color:var(--teal); background:rgba(0,255,157,0.05); }
+.nav-item.active::before { height:70%; box-shadow:0 0 6px var(--teal); }
+.nav-item .nav-icon { font-size:12px; width:16px; text-align:center; }
+.sidebar-footer { padding:14px 20px; border-top:1px solid var(--border); font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); text-align:center; letter-spacing:1px; }
+
+/* ── MAIN ── */
+#main {
+  margin-left:var(--sidebar-w);
+  min-height:100vh;
+  padding:calc(var(--topbar-h) + 36px) 36px 60px;
+  background:var(--bg);
+}
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── HOME ── */
+.home-header { margin-bottom:28px; }
+.home-title {
+  font-family:'Orbitron',monospace; font-size:20px; font-weight:900;
+  color:var(--teal); line-height:1.25; margin-bottom:8px;
+  animation:glowPulse 4s ease-in-out infinite; letter-spacing:3px;
+}
+.home-title::before { content:'> '; color:var(--muted); font-size:16px; }
+.home-title::after { content:'_'; animation:cursorBlink 1s step-end infinite; font-size:18px; }
+.home-subtitle { font-size:10px; color:var(--blue); letter-spacing:3px; text-transform:uppercase; }
+.home-subtitle::before { content:'// '; color:var(--muted); }
+.units-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-top:20px; }
+.unit-card {
+  background:var(--panel); border:1px solid var(--border); padding:22px;
+  cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden;
+  animation:fadeUp 0.4s ease both;
+}
+.unit-card:nth-child(1) { animation-delay:0.05s; }
+.unit-card:nth-child(2) { animation-delay:0.10s; }
+.unit-card:nth-child(3) { animation-delay:0.15s; }
+.unit-card:nth-child(4) { animation-delay:0.20s; }
+/* corner decoration */
+.unit-card::after {
+  content:''; position:absolute; bottom:0; right:0;
+  width:30px; height:30px;
+  border-bottom:1px solid var(--border); border-right:1px solid var(--border);
+  transition:border-color 0.25s, width 0.25s, height 0.25s;
+}
+.unit-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--teal); opacity:0; transition:opacity 0.25s; box-shadow:0 0 10px var(--teal); }
+.unit-card:hover { border-color:var(--teal); transform:translateY(-2px); box-shadow:0 0 20px rgba(0,255,157,0.07); }
+.unit-card:hover::before { opacity:1; }
+.unit-card:hover::after { width:50px; height:50px; border-color:rgba(0,255,157,0.4); }
+.unit-card.locked { cursor:not-allowed; opacity:0.3; }
+.unit-card.locked:hover { transform:none; border-color:var(--border); box-shadow:none; }
+.unit-card.locked:hover::before { opacity:0; }
+.unit-card.locked:hover::after { width:30px; height:30px; border-color:var(--border); }
+.unit-card-num { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:3px; }
+.unit-card-title { font-size:13px; color:var(--text); margin-bottom:12px; line-height:1.5; font-family:'Share Tech Mono',monospace; }
+.unit-card-topics { font-size:11px; color:var(--muted); line-height:2; margin-bottom:16px; letter-spacing:0.5px; }
+.progress-bar { height:1px; background:var(--border); overflow:visible; position:relative; margin-bottom:2px; }
+.progress-fill { height:1px; background:var(--teal); transition:width 0.6s ease; box-shadow:0 0 6px var(--teal); position:relative; }
+.progress-fill::after { content:''; position:absolute; right:0; top:-3px; width:6px; height:6px; background:var(--teal); box-shadow:0 0 6px var(--teal); }
+.progress-label { display:flex; justify-content:space-between; font-size:9px; color:var(--muted); margin-top:6px; letter-spacing:1px; }
+
+/* strong tags inside theory */
+.theory-section strong { color:var(--text); font-weight:600; background:rgba(0,255,157,0.07); padding:0 3px; }
+
+/* score flash animation */
+@keyframes scoreFlash {
+  0%   { transform:scale(1); }
+  40%  { transform:scale(1.3); color:#fff; text-shadow:0 0 20px var(--teal); }
+  100% { transform:scale(1); }
+}
+.score-flash { animation:scoreFlash 0.4s ease; }
+
+/* main scrollbar */
+#main { scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+#main::-webkit-scrollbar { width:5px; }
+#main::-webkit-scrollbar-track { background:transparent; }
+#main::-webkit-scrollbar-thumb { background:var(--border); }
+
+/* config example improvements */
+.config-example { background:var(--panel2); border:1px solid var(--border); border-left:2px solid var(--yellow); padding:14px 16px; margin:8px 0; font-family:'JetBrains Mono',monospace; font-size:12px; }
+.element-name { color:var(--yellow); margin-bottom:6px; letter-spacing:1px; font-size:11px; }
+.element-name::before { content:'$ '; color:var(--muted); }
+.config-str { color:var(--teal); font-size:13px; }
+.config-note { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); margin-top:5px; letter-spacing:1px; border-top:1px solid var(--border); padding-top:5px; }
+.unit-header { margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+.unit-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,255,157,0.08); border:1px solid rgba(0,255,157,0.2);
+  color:var(--teal); font-size:9px; padding:4px 10px; margin-bottom:12px;
+  text-transform:uppercase; letter-spacing:3px; font-family:'Share Tech Mono',monospace;
+  animation:borderBlink 3s ease-in-out infinite;
+}
+.unit-title { font-family:'Orbitron',monospace; font-size:17px; font-weight:700; margin-bottom:6px; color:var(--text); letter-spacing:1px; line-height:1.4; }
+.unit-desc { font-size:11px; color:var(--muted); letter-spacing:1px; }
+
+.theory-section {
+  background:var(--panel); border:1px solid var(--border);
+  border-left:2px solid rgba(0,200,255,0.25); padding:22px; margin-bottom:14px;
+  transition:border-left-color 0.3s, box-shadow 0.3s;
+  position:relative;
+}
+.theory-section:hover { border-left-color:rgba(0,200,255,0.6); box-shadow:inset 3px 0 12px rgba(0,200,255,0.04); }
+.theory-section h2 {
+  font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--blue);
+  margin-bottom:16px; display:flex; align-items:center; gap:10px;
+  letter-spacing:2px; text-transform:uppercase; padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+.theory-section h3 { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--teal); margin:16px 0 8px; letter-spacing:2px; text-transform:uppercase; }
+.theory-section h3::before { content:'▸ '; opacity:0.6; }
+.theory-section p { font-size:12px; color:var(--text); line-height:1.9; margin-bottom:10px; }
+.theory-section ul { font-size:12px; color:var(--text); line-height:2.1; margin-left:0; margin-bottom:10px; list-style:none; }
+.theory-section ul li { padding-left:16px; position:relative; }
+.theory-section ul li::before { content:'·'; position:absolute; left:4px; color:var(--teal); }
+
+.formula-box {
+  background:var(--panel2); border:1px solid rgba(0,255,157,0.2);
+  border-left:3px solid var(--teal); padding:14px 16px; margin:12px 0;
+  font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--teal);
+  text-shadow:0 0 10px rgba(0,255,157,0.5);
+  box-shadow:inset 0 0 20px rgba(0,255,157,0.03), 0 0 10px rgba(0,255,157,0.04);
+  position:relative;
+}
+.formula-box::before { content:'FÓRMULA'; position:absolute; top:-1px; right:10px; font-size:8px; color:var(--muted); letter-spacing:2px; background:var(--panel2); padding:0 6px; }
+.formula-box .formula-desc { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); margin-top:7px; text-shadow:none; letter-spacing:1px; border-top:1px solid var(--border); padding-top:6px; }
+.tip-box  { background:rgba(0,255,157,0.05); border:1px solid rgba(0,255,157,0.2); border-left:3px solid var(--teal);  padding:10px 14px; margin:10px 0; font-size:11px; color:var(--teal);  letter-spacing:0.5px; }
+.warn-box { background:rgba(255,64,96,0.05);  border:1px solid rgba(255,64,96,0.2);  border-left:3px solid var(--red);   padding:10px 14px; margin:10px 0; font-size:11px; color:var(--red);   letter-spacing:0.5px; }
+.info-box { background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.2);  border-left:3px solid var(--blue);  padding:10px 14px; margin:10px 0; font-size:11px; color:var(--blue);  letter-spacing:0.5px; }
+
+.table-wrapper { overflow-x:auto; margin:12px 0; -webkit-overflow-scrolling:touch; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:11px; }
+thead tr { background:rgba(0,200,255,0.05); }
+th { padding:10px 12px; text-align:left; color:var(--blue); font-size:9px; text-transform:uppercase; letter-spacing:2px; border-bottom:1px solid var(--border); font-family:'Share Tech Mono',monospace; font-weight:400; }
+td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:11px; }
+tr:last-child td { border-bottom:none; }
+tbody tr { transition:background 0.15s; }
+tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
+
+.tag { display:inline-block; padding:2px 7px; font-size:10px; font-family:'Share Tech Mono',monospace; letter-spacing:1px; }
+.tag-blue { background:rgba(0,200,255,0.12); color:var(--blue); border:1px solid rgba(0,200,255,0.25); }
+.tag-green { background:rgba(0,255,157,0.1); color:var(--green); border:1px solid rgba(0,255,157,0.25); }
+.tag-red { background:rgba(255,64,96,0.1); color:var(--red); border:1px solid rgba(255,64,96,0.25); }
+.tag-yellow { background:rgba(255,183,0,0.1); color:var(--yellow); border:1px solid rgba(255,183,0,0.25); }
+
+.config-example { background:var(--panel2); border:1px solid var(--border); border-left:2px solid var(--yellow); padding:12px 16px; margin:8px 0; font-family:'JetBrains Mono',monospace; font-size:12px; }
+.element-name { color:var(--yellow); margin-bottom:4px; letter-spacing:1px; }
+.config-str { color:var(--teal); }
+.config-note { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); margin-top:3px; letter-spacing:1px; }
+
+.practice-zone { margin-top:36px; padding-top:28px; border-top:1px solid var(--border); }
+.practice-title {
+  font-family:'Orbitron',monospace; font-size:14px; font-weight:700;
+  margin-bottom:4px; color:var(--teal); letter-spacing:3px;
+  text-transform:uppercase;
+}
+.practice-title::before { content:'// '; color:var(--muted); font-size:12px; }
+.practice-subtitle { font-size:10px; color:var(--muted); margin-bottom:22px; letter-spacing:2px; text-transform:uppercase; }
+
+.exercise-card {
+  background:var(--panel); border:1px solid var(--border); padding:18px; margin-bottom:12px;
+  transition:border-color 0.2s, box-shadow 0.2s; position:relative;
+}
+.exercise-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:2px; background:var(--muted); transition:background 0.2s; }
+.exercise-card.correct { border-color:rgba(0,255,157,0.3); box-shadow:0 0 12px rgba(0,255,157,0.06); }
+.exercise-card.correct::before { background:var(--teal); box-shadow:0 0 6px var(--teal); }
+.exercise-card.wrong { border-color:rgba(255,64,96,0.3); box-shadow:0 0 12px rgba(255,64,96,0.06); }
+.exercise-card.wrong::before { background:var(--red); }
+.ex-header { display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; }
+.ex-num { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted); background:var(--panel2); border:1px solid var(--border); padding:3px 7px; white-space:nowrap; flex-shrink:0; margin-top:2px; letter-spacing:2px; }
+.ex-question { font-size:12px; color:var(--text); line-height:1.8; font-family:'Share Tech Mono',monospace; }
+.ex-options { display:flex; flex-direction:column; gap:6px; }
+.ex-option {
+  padding:10px 14px; border:1px solid var(--border); background:var(--panel2);
+  cursor:pointer; font-size:11px; color:var(--muted); transition:all 0.15s;
+  display:flex; align-items:center; gap:10px; font-family:'Share Tech Mono',monospace;
+  letter-spacing:0.5px; position:relative; overflow:hidden;
+}
+.ex-option::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:0;
+  background:rgba(0,200,255,0.06); transition:width 0.2s;
+}
+.ex-option:hover:not(.disabled) { border-color:var(--blue); color:var(--text); }
+.ex-option:hover:not(.disabled)::before { width:100%; }
+.ex-option.selected-correct { border-color:var(--green); background:rgba(0,255,157,0.07); color:var(--teal); box-shadow:0 0 8px rgba(0,255,157,0.12); }
+.ex-option.selected-wrong { border-color:var(--red); background:rgba(255,64,96,0.07); color:var(--red); }
+.ex-option.show-correct { border-color:rgba(0,255,157,0.4); background:rgba(0,255,157,0.04); color:var(--teal); }
+.ex-option.disabled { cursor:not-allowed; }
+.ex-option-letter { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; width:20px; min-width:20px; text-align:center; color:var(--muted); flex-shrink:0; border-right:1px solid var(--border); padding-right:8px; margin-right:2px; }
+.ex-feedback { margin-top:12px; padding:10px 14px; font-size:11px; line-height:1.8; display:none; font-family:'Share Tech Mono',monospace; letter-spacing:0.5px; }
+.ex-feedback.correct { background:rgba(0,255,157,0.06); border:1px solid rgba(0,255,157,0.2); border-left:3px solid var(--green); color:var(--teal); display:block; }
+.ex-feedback.wrong { background:rgba(255,64,96,0.06); border:1px solid rgba(255,64,96,0.2); border-left:3px solid var(--red); color:var(--red); display:block; }
+
+.btn { padding:9px 18px; border:none; cursor:pointer; font-family:'Share Tech Mono',monospace; font-size:11px; transition:all 0.15s; letter-spacing:1px; text-transform:uppercase; }
+.btn-secondary { background:var(--panel2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { border-color:var(--blue); color:var(--blue); box-shadow:0 0 8px rgba(0,200,255,0.15); }
+.btn-teal { background:transparent; color:var(--teal); border:1px solid var(--teal); }
+.btn-teal:hover { background:rgba(0,255,157,0.1); box-shadow:0 0 10px rgba(0,255,157,0.2); }
+
+.mixed-header {
+  background:rgba(168,85,247,0.04); border:1px solid rgba(168,85,247,0.2);
+  border-top:2px solid var(--purple); padding:28px; margin-bottom:24px; text-align:center;
+  box-shadow:0 0 30px rgba(168,85,247,0.04);
+}
+.mixed-title { font-family:'Orbitron',monospace; font-size:16px; font-weight:700; margin-bottom:6px; color:var(--purple); letter-spacing:3px; text-shadow:0 0 14px rgba(168,85,247,0.5); }
+.mixed-desc { font-size:11px; color:var(--muted); margin-bottom:22px; letter-spacing:1px; }
+.mixed-stats { display:flex; justify-content:center; gap:36px; flex-wrap:wrap; }
+.mixed-stat { text-align:center; padding:12px 20px; border:1px solid var(--border); background:var(--panel2); min-width:80px; }
+.mixed-stat-val { font-family:'Orbitron',monospace; font-size:22px; font-weight:700; color:var(--teal); animation:glowPulse 3s ease-in-out infinite; }
+.mixed-stat-label { font-size:8px; color:var(--muted); text-transform:uppercase; letter-spacing:3px; margin-top:4px; }
+
+/* ── FABS ── */
+.fab-group { position:fixed; bottom:24px; right:20px; display:flex; flex-direction:column; gap:10px; z-index:250; }
+.fab { width:40px; height:40px; border:1px solid var(--border); background:var(--panel); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s,transform 0.3s; transform:translateY(8px); pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,0.5); }
+.fab.show { opacity:1; transform:translateY(0); pointer-events:all; }
+.fab-up { color:var(--blue); border-color:var(--blue); }
+.fab-up:hover { background:rgba(0,200,255,0.1); box-shadow:0 0 10px rgba(0,200,255,0.2); }
+.fab-down { color:var(--teal); border-color:var(--teal); font-size:13px; }
+.fab-down:hover { background:rgba(0,255,157,0.1); box-shadow:0 0 10px rgba(0,255,157,0.2); }
+
+/* ══════════════════
+   RESPONSIVE
+══════════════════ */
+/* Desktop: sidebar fixed, topbar starts after sidebar */
+@media (min-width:769px) {
+  #topbar { left:var(--sidebar-w); }
+  #hamburger { display:none; }
+  .topbar-sig { display:block; }
+}
+
+/* Mobile: sidebar hidden, topbar full width */
+@media (max-width:768px) {
+  #sidebar { transform:translateX(-100%); }
+  #sidebar.open { transform:translateX(0); }
+  #hamburger { display:flex; }
+  .topbar-sig { display:none; }
+  #main { margin-left:0; padding:calc(var(--topbar-h) + 16px) 16px 60px; }
+  .home-title { font-size:14px; }
+  .units-grid { grid-template-columns:1fr; gap:10px; }
+  .theory-section { padding:16px 14px; }
+  .unit-title { font-size:14px; }
+  .exercise-card { padding:14px; }
+  .fab-group { bottom:16px; right:14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="topbar-left">
+    <button id="hamburger" onclick="toggleSidebar()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="btn-back" id="topbar-back" onclick="goBack()">← INICIO</button>
+    <div class="topbar-breadcrumb">
+      <span class="crumb-root" onclick="showPage('home')">ELECTRICIDAD_APLICADA.SYS</span>
+      <span id="crumb-sep" style="display:none"> › </span>
+      <span class="crumb-active" id="crumb-current"></span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-score">
+      <div>
+        <div class="topbar-score-val" id="topbarScore">0 pts</div>
+        <div class="topbar-score-label">puntaje</div>
+      </div>
+    </div>
+    <div class="topbar-sig">STATUS: <span>ACTIVO</span></div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">INACAP · A&amp;R</div>
+    <div class="sidebar-subject">Electricidad Aplicada a la Automatización</div>
+  </div>
+  <div class="score-box">
+    <div class="score-label">Puntaje acumulado</div>
+    <div class="score-value" id="totalScore">0 <span>pts</span></div>
+  </div>
+  <div class="sidebar-nav">
+
+    <div class="nav-item active" onclick="navTo('home')" id="nav-home">
+      <span class="nav-icon">⌂</span> HOME.SYS
+    </div>
+
+    <div class="nav-divider">// UNIDADES</div>
+
+    <!-- U1 — ABIERTA por defecto -->
+    <div class="nav-subject open has-active" id="subj-electricidad">
+      <div class="nav-subject-header" onclick="toggleSubject('subj-electricidad')">
+        <span class="subj-icon">⚡</span>
+        <span class="subj-name">U1 · Circuitos CC</span>
+        <span class="subj-arrow">›</span>
+      </div>
+      <div class="nav-sub-list">
+        <div class="nav-sub-item active" id="nav-u1"         onclick="navTo('u1')">Resúmenes</div>
+        <div class="nav-sub-item"        id="nav-ejercicios" onclick="navTo('ejercicios')">Ejercicios</div>
+        <div class="nav-sub-item"        id="nav-glosario"   onclick="navTo('glosario')">Glosario</div>
+        <div class="nav-sub-item"        id="nav-notas"      onclick="navTo('notas')">Notas</div>
+      </div>
+    </div>
+
+    <!-- U2 — bloqueada -->
+    <div class="nav-subject locked" id="subj-ca">
+      <div class="nav-subject-header">
+        <span class="subj-icon">◈</span>
+        <span class="subj-name">U2 · Circuitos CA</span>
+        <span class="subj-lock">🔒</span>
+      </div>
+    </div>
+
+    <!-- U3 — bloqueada -->
+    <div class="nav-subject locked" id="subj-sistemas">
+      <div class="nav-subject-header">
+        <span class="subj-icon">◈</span>
+        <span class="subj-name">U3 · Equipos y Sistemas</span>
+        <span class="subj-lock">🔒</span>
+      </div>
+    </div>
+
+    <div class="nav-divider">// PRÁCTICA</div>
+    <div class="nav-item" onclick="navTo('mixed')" id="nav-mixed">
+      <span class="nav-icon">◎</span> MODO_MIXTO.EXE
+    </div>
+
+  </div>
+  <div class="sidebar-footer">— x btopg :} — NODE: CHILLÁN</div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="home-header">
+      <h1 class="home-title">CUADERNO DIGITAL</h1>
+      <p class="home-subtitle">Automatización y Robótica · INACAP · Semestre Activo</p>
+    </div>
+    <div class="units-grid">
+      <div class="unit-card" onclick="navTo('u1')">
+        <div class="unit-card-num">// U01 · DESBLOQUEADO</div>
+        <div class="unit-card-title">ELECTRICIDAD Y CIRCUITOS EN CC</div>
+        <div class="unit-card-topics">· Corriente eléctrica · I=Q/t<br>· CC vs CA · Frecuencia · Período<br>· Configuración electrónica<br>· Semiconductores · Ionización<br>· Fase · Neutro · Tierra</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+        <div class="progress-label"><span>EN PROGRESO</span><span>20%</span></div>
+      </div>
+      <div class="unit-card locked">
+        <div class="unit-card-num">// U02 · BLOQUEADO</div>
+        <div class="unit-card-title">ANÁLISIS DE CIRCUITOS EN CA</div>
+        <div class="unit-card-topics">· Corriente alterna · Fasores<br>· Impedancia · Resonancia<br>· Acceso restringido</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-label"><span>BLOQUEADO</span><span>0%</span></div>
+      </div>
+      <div class="unit-card locked">
+        <div class="unit-card-num">// U03 · BLOQUEADO</div>
+        <div class="unit-card-title">EQUIPOS Y SISTEMAS ELÉCTRICOS</div>
+        <div class="unit-card-topics">· Automatización industrial<br>· Protecciones · Tableros<br>· Acceso restringido</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-label"><span>BLOQUEADO</span><span>0%</span></div>
+      </div>
+      <div class="unit-card" onclick="navTo('mixed')" style="border-color:rgba(168,85,247,0.2)">
+        <div class="unit-card-num" style="color:var(--purple)">// PRÁCTICA · ACTIVO</div>
+        <div class="unit-card-title">MODO_MIXTO.EXE</div>
+        <div class="unit-card-topics">· Ejercicios aleatorios<br>· Todas las unidades activas<br>· Puntaje acumulado</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--purple);box-shadow:0 0 6px var(--purple)"></div></div>
+        <div class="progress-label"><span>COMPLETADOS</span><span id="mixedPct">0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIDAD 1 -->
+  <div class="page" id="page-u1">
+    <div class="unit-header">
+      <div class="unit-badge">⚡ U1 · CIRCUITOS_CC.SYS</div>
+      <h1 class="unit-title">ELECTRICIDAD Y ANÁLISIS DE CIRCUITOS EN CC</h1>
+      <p class="unit-desc">// Fundamentos de electricidad · corriente · configuración electrónica · semiconductores</p>
+    </div>
+
+    <div class="theory-section">
+      <h2>01.  Definición de Electricidad</h2>
+      <p>La electricidad es el <strong>conjunto de fenómenos físicos asociados al movimiento y la acumulación de carga eléctrica</strong>. Se origina en la naturaleza misma de la materia: los átomos poseen cargas positivas (protones) y negativas (electrones).</p>
+      <p>Cuando existe una diferencia de potencial entre dos puntos y hay un camino conductor entre ellos, los electrones se desplazan — ese flujo <em>es</em> la electricidad.</p>
+      <div class="tip-box">[OK] Sin diferencia de potencial no hay corriente. La tensión es la <strong>causa</strong>; la corriente es el <strong>efecto</strong>.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>02.  Bandas de Energía</h2>
+      <p>Los electrones en un sólido no pueden tener cualquier energía: solo ocupan <strong>bandas permitidas</strong> separadas por zonas prohibidas.</p>
+      <h3>Banda de Valencia</h3>
+      <p>Banda ocupada por los electrones más externos del átomo en reposo. Estos electrones <strong>no están libres</strong> para conducir; están ligados al núcleo.</p>
+      <h3>Banda Prohibida (Gap)</h3>
+      <p>Zona de energía donde <strong>no puede existir ningún electrón</strong>. Su ancho determina el comportamiento eléctrico del material.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Material</th><th>Ancho del Gap</th><th>Comportamiento</th></tr></thead>
+          <tbody>
+            <tr><td>Conductor (Cu, Al)</td><td>≈ 0 eV</td><td><span class="tag tag-green">Bandas solapadas</span></td></tr>
+            <tr><td>Semiconductor (Si, Ge)</td><td>0.7 – 1.1 eV</td><td><span class="tag tag-yellow">Gap pequeño</span></td></tr>
+            <tr><td>Aislante (vidrio, plástico)</td><td>&gt; 5 eV</td><td><span class="tag tag-red">Gap muy amplio</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Banda de Conducción</h3>
+      <p>Banda superior, normalmente vacía. Cuando un electrón recibe suficiente energía para <strong>saltar el gap</strong>, llega a esta banda y queda libre para conducir corriente.</p>
+      <div class="info-box">[INFO] En conductores la banda de valencia y la de conducción se solapan — los electrones pasan libremente sin necesitar energía extra.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>03.  Resistividad Específica</h2>
+      <p>La <strong>resistividad (ρ)</strong> es una propiedad intrínseca del material que indica cuánto se opone al flujo de corriente, independiente de la geometría del conductor.</p>
+      <div class="formula-box">R = ρ · L / A<div class="formula-desc">R = Resistencia (Ω) · ρ = Resistividad (Ω·m) · L = Longitud (m) · A = Sección transversal (m²)</div></div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Material</th><th>ρ (Ω·m) a 20°C</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td>Plata (Ag)</td><td>1.59 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
+            <tr><td>Cobre (Cu)</td><td>1.72 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
+            <tr><td>Aluminio (Al)</td><td>2.82 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
+            <tr><td>Silicio (Si)</td><td>6.40 × 10²</td><td><span class="tag tag-yellow">Semiconductor</span></td></tr>
+            <tr><td>Vidrio</td><td>10¹⁰ – 10¹⁴</td><td><span class="tag tag-red">Aislante</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip-box">[OK] A mayor temperatura, la resistividad de los <strong>conductores aumenta</strong>; en semiconductores, <strong>disminuye</strong>.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>04.  Tipos de Corriente</h2>
+      <h3>Electricidad Estática</h3>
+      <p>Acumulación de carga en un cuerpo <strong>sin movimiento continuo</strong>. Se produce por fricción (triboelectricidad). No hay flujo sostenido — la descarga ocurre de forma instantánea.</p>
+      <div class="warn-box">[WARN] La estática puede dañar componentes electrónicos sensibles (MOSFET, CMOS). Siempre usar pulsera antiestática al manipularlos.</div>
+      <h3>Corriente Continua (CC / DC)</h3>
+      <p>Fluye siempre en el <strong>mismo sentido</strong>, con magnitud constante o variable pero sin cambio de signo. Representación gráfica: línea recta.</p>
+      <h3>Corriente Alterna (CA / AC)</h3>
+      <p>Cambia de dirección periódicamente en <strong>ciclos</strong>. Cada ciclo tiene un semiciclo positivo y uno negativo. Forma de onda sinusoidal.</p>
+      <div class="formula-box">f = 1 / T<div class="formula-desc">f = Frecuencia (Hz) · T = Período (s)</div></div>
+      <div class="tip-box">[OK] En Chile la red opera a <strong>50 Hz</strong> → T = 0.02 s por ciclo.</div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th></th><th>Estática</th><th>CC</th><th>CA</th></tr></thead>
+          <tbody>
+            <tr><td>Movimiento</td><td>Sin flujo continuo</td><td>Un solo sentido</td><td>Cambia de sentido</td></tr>
+            <tr><td>Onda</td><td>Descarga puntual</td><td>Línea recta</td><td>Sinusoidal</td></tr>
+            <tr><td>Frecuencia</td><td>—</td><td>0 Hz</td><td>50 Hz (Chile)</td></tr>
+            <tr><td>Ejemplo</td><td>Ropa sintética, rayos</td><td>Batería, panel solar</td><td>Enchufe del hogar</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h2>05.  Fuentes Comunes de CA</h2>
+      <p>Las fuentes de corriente alterna convierten otro tipo de energía en energía eléctrica oscilatoria:</p>
+      <h3>Alternadores</h3>
+      <p>Generan CA mediante <strong>inducción electromagnética</strong>: un rotor gira dentro de un campo magnético. Son la fuente de CA en centrales eléctricas y en el alternador del automóvil.</p>
+      <div class="info-box">[INFO] La red eléctrica domiciliaria en Chile proviene de grandes alternadores en centrales hidroeléctricas, termoeléctricas y eólicas.</div>
+      <h3>Generadores Portátiles</h3>
+      <p>Alternadores accionados por un motor de combustión interna (gasolina o diésel). Útiles en obras, faenas o cortes de luz. Generan CA estándar (220V / 50Hz en Chile).</p>
+      <h3>Inversores</h3>
+      <p>Convierten <strong>CC → CA</strong> electrónicamente (sin partes móviles). Se usan junto a baterías o paneles solares para alimentar cargas de CA desde fuentes continuas.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Fuente</th><th>Principio</th><th>Aplicación típica</th></tr></thead>
+          <tbody>
+            <tr><td>Alternador</td><td>Inducción electromagnética</td><td>Centrales eléctricas, autos</td></tr>
+            <tr><td>Generador portátil</td><td>Motor combustión + alternador</td><td>Obras, emergencias</td></tr>
+            <tr><td>Inversor</td><td>Electrónica de potencia CC→CA</td><td>Solar, UPS, vehículos eléctricos</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip-box">[OK] Un inversor <strong>no genera energía</strong>: solo la convierte. Siempre depende de una fuente CC (batería, panel).</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>06.  Corriente Eléctrica · Fórmula Base</h2>
+      <p>La corriente eléctrica es la <strong>circulación de electrones a través de un material conductor por un tiempo determinado</strong>.</p>
+      <ul>
+        <li><strong>Circulación de electrones:</strong> partículas de carga negativa en movimiento.</li>
+        <li><strong>Material conductor:</strong> permite el movimiento libre de electrones.</li>
+        <li><strong>Tiempo determinado:</strong> flujo continuo, no instantáneo.</li>
+      </ul>
+      <div class="formula-box">I = Q / t<div class="formula-desc">I = Corriente (A) · Q = Carga eléctrica (C) · t = Tiempo (s)</div></div>
+      <div class="tip-box">[OK] Se mide con un <strong>Amperímetro</strong>. Unidad: <strong>Ampere (A)</strong>.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>07.  Átomo y Configuración Electrónica</h2>
+      <h3>Composición del Átomo</h3>
+      <p>Núcleo: <strong>protones (+)</strong> y neutrones. Corteza: <strong>electrones (−)</strong> en niveles de energía. Los electrones de la <strong>capa de valencia</strong> determinan el comportamiento eléctrico.</p>
+      <h3>Subniveles de Schrödinger</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Subnivel</th><th>Máx. electrones</th></tr></thead>
+          <tbody>
+            <tr><td><code>s</code></td><td>2</td></tr>
+            <tr><td><code>p</code></td><td>6</td></tr>
+            <tr><td><code>d</code></td><td>10</td></tr>
+            <tr><td><code>f</code></td><td>14</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Orden de llenado</h3>
+      <div class="formula-box" style="font-size:12px;">1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s...</div>
+      <div class="config-example">
+        <div class="element-name">Aluminio (Al) — 13 e⁻</div>
+        <div class="config-str">1s² 2s² 2p⁶ 3s² 3p¹</div>
+        <div class="config-note">1 e⁻ en capa de valencia → conductor</div>
+      </div>
+      <div class="config-example">
+        <div class="element-name">Hierro (Fe) — 26 e⁻</div>
+        <div class="config-str">1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶</div>
+        <div class="config-note">Notar: 4s va antes que 3d</div>
+      </div>
+    </div>
+
+    <div class="theory-section">
+      <h2>08.  Conductores, Semiconductores y Aislantes</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>e⁻ en capa de valencia</th><th>Tipo</th><th>Ejemplos</th></tr></thead>
+          <tbody>
+            <tr><td>1, 2 o 3</td><td><span class="tag tag-green">Conductor</span></td><td>Cobre, Aluminio</td></tr>
+            <tr><td>4</td><td><span class="tag tag-yellow">Semiconductor</span></td><td>Silicio, Germanio</td></tr>
+            <tr><td>5, 6, 7 u 8</td><td><span class="tag tag-red">Aislante</span></td><td>Plástico, Vidrio</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Intrínsecos vs Extrínsecos</h3>
+      <p><strong>Intrínseco:</strong> puro, sin modificación. &nbsp;<strong>Extrínseco:</strong> con <strong>dopaje</strong> (elemento externo añadido).</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Tipo</th><th>Dopante</th><th>Resultado</th><th>Portador</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-blue">Tipo N</span></td><td>Fósforo (5e⁻)</td><td>Sobra 1 e⁻ libre</td><td>Negativo</td></tr>
+            <tr><td><span class="tag tag-red">Tipo P</span></td><td>Boro (3e⁻)</td><td>Falta 1 → hueco</td><td>Positivo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip-box">[OK] N → 5e⁻ dopante → <strong>Sobra</strong> → portador <strong>Negativo</strong>. P → 3e⁻ → <strong>Falta</strong> → portador <strong>Positivo</strong>.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>09.  Ionización</h2>
+      <p>Un <strong>ion</strong> es un átomo que ganó o perdió electrones, perdiendo neutralidad eléctrica.</p>
+      <p>• <strong>Catión (+):</strong> perdió e⁻ → más protones que electrones.<br>• <strong>Anión (−):</strong> ganó e⁻ → más electrones que protones.</p>
+      <div class="info-box">[INFO] La corriente eléctrica es justamente el movimiento de estos electrones entre átomos.</div>
+    </div>
+
+    <div class="theory-section">
+      <h2>10.  Fase, Neutro y Tierra</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Cable</th><th>Función</th><th>Voltaje</th><th>Color (Chile)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Fase</strong></td><td>Lleva la energía</td><td>220V</td><td>Rojo / Negro</td></tr>
+            <tr><td><strong>Neutro</strong></td><td>Retorna la energía</td><td>0V</td><td>Azul / Blanco</td></tr>
+            <tr><td><strong>Tierra</strong></td><td>Protege ante fallas</td><td>0V</td><td>Verde / Amarillo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="warn-box">[WARN] Neutro y tierra ambos están a 0V, pero el neutro es parte del circuito normal; la tierra solo actúa en emergencias.</div>
+      <div class="tip-box">[OK] La Tierra no se electrifica: es un reservorio de carga de escala planetaria.</div>
+    </div>
+
+  </div>
+
+  <!-- EJERCICIOS -->
+  <div class="page" id="page-ejercicios">
+    <div class="unit-header">
+      <div class="unit-badge">⚡ EJERCICIOS · U1</div>
+      <h1 class="unit-title">ZONA DE PRÁCTICA</h1>
+      <p class="unit-desc">// Cada respuesta correcta suma 10 puntos · U1 · Circuitos CC</p>
+    </div>
+    <div id="exercises-u1"></div>
+    <button class="btn btn-secondary" onclick="regenExercises()" style="margin-top:12px;">↺ REGENERAR EJERCICIOS</button>
+  </div>
+
+  <!-- MODO MIXTO -->
+  <div class="page" id="page-mixed">
+    <div class="mixed-header">
+      <div class="mixed-title">🎲 Modo Mixto</div>
+      <div class="mixed-desc">Ejercicios aleatorios de todas las unidades desbloqueadas</div>
+      <div class="mixed-stats">
+        <div class="mixed-stat"><div class="mixed-stat-val" id="mixedCorrect">0</div><div class="mixed-stat-label">Correctas</div></div>
+        <div class="mixed-stat"><div class="mixed-stat-val" id="mixedTotal">0</div><div class="mixed-stat-label">Respondidas</div></div>
+        <div class="mixed-stat"><div class="mixed-stat-val" id="mixedScore">0</div><div class="mixed-stat-label">Puntos</div></div>
+      </div>
+    </div>
+    <div id="exercises-mixed"></div>
+    <button class="btn btn-teal" onclick="regenMixed()" style="margin-top:14px;">↺ NUEVAS PREGUNTAS</button>
+  </div>
+
+  <!-- GLOSARIO -->
+  <div class="page" id="page-glosario">
+    <div class="unit-header">
+      <div class="unit-badge">⚡ GLOSARIO · U1</div>
+      <h1 class="unit-title">GLOSARIO DE TÉRMINOS</h1>
+      <p class="unit-desc">// Definiciones clave · Electricidad Aplicada · Unidad 1</p>
+    </div>
+    <div class="theory-section">
+      <h2>01. Términos Esenciales</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-green">Corriente (I)</span></td><td>Flujo de electrones a través de un conductor. Se mide en Amperes (A).</td></tr>
+            <tr><td><span class="tag tag-blue">Frecuencia (f)</span></td><td>Número de ciclos completos por segundo. Unidad: Hertz (Hz).</td></tr>
+            <tr><td><span class="tag tag-yellow">Semiconductor</span></td><td>Material con 4 e⁻ en capa de valencia. Ej: Silicio, Germanio.</td></tr>
+            <tr><td><span class="tag tag-green">Conductor</span></td><td>Material con 1, 2 o 3 e⁻ en capa de valencia. Ej: Cobre, Aluminio.</td></tr>
+            <tr><td><span class="tag tag-red">Aislante</span></td><td>Material con 5 a 8 e⁻ en capa de valencia. Ej: Plástico, Vidrio.</td></tr>
+            <tr><td><span class="tag tag-blue">Catión</span></td><td>Átomo que perdió electrones → carga positiva (+).</td></tr>
+            <tr><td><span class="tag tag-red">Anión</span></td><td>Átomo que ganó electrones → carga negativa (−).</td></tr>
+            <tr><td><span class="tag tag-yellow">Dopaje</span></td><td>Adición de impurezas a un semiconductor para modificar su conductividad.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="info-box">[INFO] Agrega más términos según avances en la unidad.</div>
+    </div>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="page" id="page-notas">
+    <div class="unit-header">
+      <div class="unit-badge">⚡ NOTAS · U1</div>
+      <h1 class="unit-title">NOTAS DE SESIÓN</h1>
+      <p class="unit-desc">// Apuntes rápidos · se guardan automáticamente en el navegador</p>
+    </div>
+    <div class="theory-section">
+      <h2>01. Editor de Notas</h2>
+      <p style="margin-bottom:12px;">Tus notas se guardan automáticamente en este navegador.</p>
+      <textarea id="notas-editor" style="
+        width:100%; min-height:340px; background:var(--panel2); border:1px solid var(--border);
+        border-left:2px solid var(--teal); color:var(--text); font-family:'Share Tech Mono',monospace;
+        font-size:12px; line-height:1.8; padding:14px; outline:none; resize:vertical;
+        letter-spacing:0.5px; transition:border-color 0.2s;
+      " placeholder="// Escribe tus apuntes aquí...&#10;// Se guardan automáticamente."></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px;align-items:center;">
+        <button class="btn btn-teal" onclick="saveNotas()">GUARDAR NOTAS</button>
+        <button class="btn btn-secondary" onclick="clearNotas()">LIMPIAR</button>
+        <span id="notas-status" style="font-size:10px;color:var(--muted);letter-spacing:1px;"></span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FABS -->
+<div class="fab-group">
+  <button class="fab fab-up" id="fabUp" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Ir arriba">↑</button>
+  <button class="fab fab-down" id="fabDown" onclick="scrollToExercises()" title="Ir a ejercicios">⌖</button>
+</div>
+
+<script>
+let totalScore = 0;
+let mixedCorrect = 0, mixedTotal = 0, mixedScore = 0;
+const pageNames = {
+  u1:'RESÚMENES · U1', ejercicios:'EJERCICIOS · U1',
+  glosario:'GLOSARIO · U1', notas:'NOTAS · U1', mixed:'MODO_MIXTO.EXE'
+};
+
+/* ── Sidebar collapsible subjects ── */
+function toggleSubject(id) {
+  const subj = document.getElementById(id);
+  if (!subj || subj.classList.contains('locked')) return;
+  subj.classList.toggle('open');
+}
+
+function toggleSidebar() {
+  ['sidebar','overlay','hamburger'].forEach(id => document.getElementById(id).classList.toggle('open'));
+}
+function closeSidebar() {
+  ['sidebar','overlay','hamburger'].forEach(id => document.getElementById(id).classList.remove('open'));
+}
+function navTo(id) { closeSidebar(); showPage(id); }
+function goBack() { showPage('home'); }
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .nav-sub-item').forEach(n => n.classList.remove('active'));
+
+  const pageEl = document.getElementById('page-' + id);
+  if (pageEl) pageEl.classList.add('active');
+
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+
+  window.scrollTo({ top:0, behavior:'smooth' });
+
+  const back  = document.getElementById('topbar-back');
+  const sep   = document.getElementById('crumb-sep');
+  const crumb = document.getElementById('crumb-current');
+  if (id === 'home') {
+    back.classList.remove('show'); sep.style.display='none'; crumb.textContent='';
+  } else {
+    back.classList.add('show'); sep.style.display='inline'; crumb.textContent = pageNames[id] || id;
+  }
+
+  // mark parent subject as has-active
+  document.querySelectorAll('.nav-subject').forEach(s => s.classList.remove('has-active'));
+  if (nav) {
+    const subj = nav.closest('.nav-subject');
+    if (subj) subj.classList.add('has-active');
+  }
+
+  // FAB down only on ejercicios
+  const fd = document.getElementById('fabDown');
+  id === 'ejercicios' ? fd.classList.add('show') : fd.classList.remove('show');
+  document.getElementById('fabUp').classList.remove('show');
+}
+
+function addScore(pts) {
+  totalScore += pts;
+  const scoreEl  = document.getElementById('totalScore');
+  const topbarEl = document.getElementById('topbarScore');
+  scoreEl.innerHTML = totalScore + ' <span>pts</span>';
+  topbarEl.textContent = totalScore + ' pts';
+  scoreEl.classList.remove('score-flash'); void scoreEl.offsetWidth; scoreEl.classList.add('score-flash');
+  topbarEl.classList.remove('score-flash'); void topbarEl.offsetWidth; topbarEl.classList.add('score-flash');
+}
+
+function scrollToExercises() {
+  document.getElementById('u1-practice')?.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function getRandInt(a,b) { return Math.floor(Math.random()*(b-a+1))+a; }
+function getRandItem(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function getQuestionBank() {
+  const Q = getRandInt(4,15), T = getRandInt(10,200);
+  const L = getRandInt(10,500), A_mm = getRandInt(1,10);
+  const A = (A_mm * 1e-6).toExponential(0);
+  const rCu = 1.72e-8;
+  const R_calc = (rCu * L / (A_mm * 1e-6)).toFixed(2);
+
+  const els = [
+    { name:'Carbono (C)',    num:6,  config:'1s² 2s² 2p²',        valencia:4, tipo:'Semiconductor' },
+    { name:'Sodio (Na)',     num:11, config:'1s² 2s² 2p⁶ 3s¹',    valencia:1, tipo:'Conductor' },
+    { name:'Aluminio (Al)', num:13, config:'1s² 2s² 2p⁶ 3s² 3p¹', valencia:1, tipo:'Conductor' },
+    { name:'Silicio (Si)',  num:14, config:'1s² 2s² 2p⁶ 3s² 3p²', valencia:4, tipo:'Semiconductor' },
+    { name:'Fósforo (P)',   num:15, config:'1s² 2s² 2p⁶ 3s² 3p³', valencia:5, tipo:'Aislante' },
+  ];
+  const el = getRandItem(els);
+
+  return [
+    // ── ELECTRICIDAD (definición) ──
+    {
+      tema:'Electricidad',
+      q:'¿Cuál es la causa del flujo de corriente en un circuito?',
+      opts:['La diferencia de potencial entre dos puntos','La resistencia del conductor','La frecuencia de la red','La temperatura del cable'],
+      c:0, fb:'Sin diferencia de potencial (tensión) no hay corriente. La tensión es la causa; la corriente es el efecto.'
+    },
+    {
+      tema:'Electricidad',
+      q:'¿Qué partícula es la responsable directa del flujo de corriente eléctrica en un conductor metálico?',
+      opts:['El electrón','El protón','El neutrón','El fotón'],
+      c:0, fb:'Los electrones libres en la capa de valencia son los portadores de carga en conductores metálicos.'
+    },
+
+    // ── BANDAS DE ENERGÍA ──
+    {
+      tema:'Bandas de energía',
+      q:'¿Cómo se llama la zona de energía donde no puede existir ningún electrón?',
+      opts:['Banda prohibida (Gap)','Banda de conducción','Banda de valencia','Zona de depleción'],
+      c:0, fb:'La banda prohibida o "gap" es la región de energía vedada. Su amplitud determina si el material es conductor, semiconductor o aislante.'
+    },
+    {
+      tema:'Bandas de energía',
+      q:'En un conductor como el cobre, ¿qué ocurre con la banda de valencia y la banda de conducción?',
+      opts:['Se solapan, los e⁻ pasan sin necesitar energía extra','Están separadas por un gap pequeño','Están separadas por un gap muy grande','La banda de conducción está vacía y lejos'],
+      c:0, fb:'En conductores ambas bandas se solapan → los electrones pasan libremente → baja resistencia.'
+    },
+    {
+      tema:'Bandas de energía',
+      q:'Un material tiene un gap de 6 eV. ¿Cómo se clasifica eléctricamente?',
+      opts:['Aislante','Semiconductor','Conductor','Superconductor'],
+      c:0, fb:'Gap > 5 eV → aislante. Los electrones no pueden saltar la banda prohibida en condiciones normales.'
+    },
+    {
+      tema:'Bandas de energía',
+      q:'¿Qué debe recibir un electrón para pasar de la banda de valencia a la banda de conducción?',
+      opts:['Suficiente energía para saltar el gap','Un campo magnético externo','Una carga positiva','Más protones en el núcleo'],
+      c:0, fb:'El electrón necesita energía (térmica, lumínica, etc.) mayor o igual al ancho del gap para llegar a la banda de conducción y quedar libre.'
+    },
+
+    // ── RESISTIVIDAD ──
+    {
+      tema:'Resistividad',
+      q:`Un cable de cobre (ρ = 1.72×10⁻⁸ Ω·m) de ${L} m de largo y sección ${A_mm}×10⁻⁶ m². ¿Cuál es su resistencia?`,
+      opts:[`${R_calc} Ω`, `${(R_calc*2).toFixed(2)} Ω`, `${(R_calc/2).toFixed(2)} Ω`, `${(rCu * L).toExponential(2)} Ω`],
+      c:0, fb:`R = ρ·L/A = 1.72×10⁻⁸ × ${L} / ${A_mm}×10⁻⁶ = ${R_calc} Ω`
+    },
+    {
+      tema:'Resistividad',
+      q:'¿Qué le ocurre a la resistividad de un conductor metálico cuando aumenta su temperatura?',
+      opts:['Aumenta','Disminuye','Permanece igual','Depende del voltaje aplicado'],
+      c:0, fb:'En conductores metálicos más temperatura → más vibraciones de la red cristalina → más colisiones con electrones → mayor resistividad.'
+    },
+    {
+      tema:'Resistividad',
+      q:'¿Cuál de estos materiales tiene la menor resistividad y por qué se usa menos que el cobre?',
+      opts:['La plata, porque es mucho más cara','El aluminio, porque es más pesado','El silicio, porque es semiconductor','El hierro, porque se oxida'],
+      c:0, fb:'La plata tiene ρ = 1.59×10⁻⁸ Ω·m (menor que el cobre), pero su alto costo la hace impráctica para cableado industrial.'
+    },
+    {
+      tema:'Resistividad',
+      q:'Si se duplica la longitud de un conductor manteniendo todo lo demás igual, ¿qué ocurre con su resistencia?',
+      opts:['Se duplica','Se reduce a la mitad','Se cuadruplica','No cambia'],
+      c:0, fb:'R = ρ·L/A → R es directamente proporcional a L. Doble longitud = doble resistencia.'
+    },
+
+    // ── TIPOS DE CORRIENTE ──
+    {
+      tema:'Tipos de corriente',
+      q:'¿Qué tipo de corriente se produce al frotar un globo contra el cabello?',
+      opts:['Electricidad estática','Corriente continua','Corriente alterna','Corriente pulsante'],
+      c:0, fb:'La fricción transfiere electrones entre materiales → acumulación de carga sin flujo continuo → electricidad estática.'
+    },
+    {
+      tema:'Tipos de corriente',
+      q:'¿Cuál es la principal diferencia entre CC y CA?',
+      opts:['CC fluye en un solo sentido; CA invierte su dirección periódicamente','CC solo existe en redes industriales; CA en baterías','CC tiene frecuencia de 50 Hz; CA no tiene frecuencia','No hay diferencia práctica'],
+      c:0, fb:'CC (corriente continua): flujo unidireccional constante. CA (corriente alterna): invierte polaridad en ciclos, 50 Hz en Chile.'
+    },
+    {
+      tema:'Tipos de corriente',
+      q:'Una batería de 12V entrega corriente a un motor. ¿Qué tipo de corriente circula por el circuito?',
+      opts:['Corriente continua (CC)','Corriente alterna (CA)','Electricidad estática','Corriente pulsante de 50 Hz'],
+      c:0, fb:'Las baterías son fuentes de CC: mantienen una diferencia de potencial constante en un solo sentido.'
+    },
+    {
+      tema:'Tipos de corriente',
+      q:`Una instalación en Chile opera a 50 Hz. ¿Cuál es el período de cada ciclo?`,
+      opts:['0.02 s','0.05 s','50 s','0.2 s'],
+      c:0, fb:'T = 1/f = 1/50 = 0.02 s. En ese tiempo ocurre un ciclo completo (semiciclo positivo + negativo).'
+    },
+    {
+      tema:'Tipos de corriente',
+      q:'¿Por qué la electricidad estática puede dañar componentes como MOSFETs o chips CMOS?',
+      opts:['La descarga instantánea genera un pico de tensión que destruye la juntura del componente','Porque la estática solo circula en CA','Porque enfría el componente abruptamente','Porque aumenta la resistividad del silicio'],
+      c:0, fb:'La descarga electrostática (ESD) libera energía muy rápido → pico de tensión → destrucción de la capa de óxido en MOSFETs y lógica CMOS.'
+    },
+
+    // ── FUENTES DE CA ──
+    {
+      tema:'Fuentes de CA',
+      q:'¿Qué principio físico utilizan los alternadores para generar corriente alterna?',
+      opts:['Inducción electromagnética','Efecto fotovoltaico','Reacción química','Efecto Peltier'],
+      c:0, fb:'Los alternadores giran un rotor dentro de un campo magnético → variación del flujo → fuerza electromotriz alterna (ley de Faraday).'
+    },
+    {
+      tema:'Fuentes de CA',
+      q:'Un sistema solar tiene paneles y baterías, pero necesita alimentar tomacorrientes de 220V CA. ¿Qué dispositivo es indispensable?',
+      opts:['Un inversor','Un alternador','Un transformador CC','Un rectificador'],
+      c:0, fb:'El inversor convierte CC (paneles/baterías) → CA (220V / 50Hz). Sin él no se puede alimentar cargas de CA desde fuentes continuas.'
+    },
+    {
+      tema:'Fuentes de CA',
+      q:'¿Cuál es la diferencia principal entre un alternador y un generador portátil?',
+      opts:['El generador portátil incluye un motor de combustión interna que mueve el alternador','El alternador usa gasolina; el generador usa inducción','El generador portátil produce CC; el alternador produce CA','No hay diferencia técnica'],
+      c:0, fb:'Un generador portátil es un alternador accionado por un motor de combustión (gasolina/diésel). El alternador es solo la parte eléctrica.'
+    },
+    {
+      tema:'Fuentes de CA',
+      q:'¿Un inversor genera energía eléctrica por sí mismo?',
+      opts:['No, solo convierte CC en CA; necesita una fuente CC','Sí, genera CA desde el campo magnético del ambiente','Sí, cuando está conectado a la red eléctrica','No, pero almacena energía en condensadores'],
+      c:0, fb:'El inversor es un convertidor, no una fuente. Transforma CC (batería, panel) en CA. Sin fuente CC no produce nada.'
+    },
+
+    // ── CORRIENTE / ÁTOMOS / SEMICONDUCTORES (preguntas originales) ──
+    {
+      tema:'Corriente',
+      q:`Un sensor mide ${Q} C en ${T} s por un cable. ¿Cuál es la corriente?`,
+      opts:[`${(Q/T).toFixed(3)} A`,`${(Q*T).toFixed(0)} A`,`${(T/Q).toFixed(3)} A`,`${(Q+T)} A`],
+      c:0, fb:`I = Q/t = ${Q}/${T} = ${(Q/T).toFixed(3)} A`
+    },
+    {
+      tema:'Semiconductores',
+      q:`El ${el.name} tiene ${el.num} e⁻. ¿Cuántos tiene en su capa de valencia?`,
+      opts:[`${el.valencia} e⁻`,`${el.valencia+2} e⁻`,`${Math.max(1,el.valencia-1)} e⁻`,`${el.num} e⁻`],
+      c:0, fb:`Config: ${el.config}. Último subnivel = ${el.valencia} e⁻ → ${el.tipo}.`
+    },
+    {
+      tema:'Semiconductores',
+      q:'Se dopa Silicio con Boro (3 e⁻ en capa de valencia). ¿Qué semiconductor resulta?',
+      opts:['Tipo P','Tipo N','Intrínseco','Conductor'],
+      c:0, fb:'Boro 3e⁻ → falta 1 → hueco → portador positivo → Tipo P.'
+    },
+    {
+      tema:'Semiconductores',
+      q:'¿Diferencia entre semiconductor intrínseco y extrínseco?',
+      opts:['Extrínseco = dopado; intrínseco = puro','Intrínseco conduce más','Extrínseco no conduce','No hay diferencia'],
+      c:0, fb:'Intrínseco = puro (Si o Ge sin impurezas). Extrínseco = dopado con elemento externo para modificar su conductividad.'
+    },
+    {
+      tema:'Ionización',
+      q:'Un átomo de Sodio pierde un electrón. ¿Qué se forma?',
+      opts:['Catión (ion +)','Anión (ion −)','Semiconductor Tipo N','Átomo neutro'],
+      c:0, fb:'Pierde e⁻ → más protones que electrones → carga neta positiva → catión.'
+    },
+    {
+      tema:'Fase/Neutro/Tierra',
+      q:'¿En qué situación circula corriente por el cable de tierra de un tablero industrial?',
+      opts:['Solo cuando hay una falla eléctrica','Siempre, como el neutro','Nunca, es decorativo','Solo con corriente alterna'],
+      c:0, fb:'La tierra solo conduce cuando hay una falla (ej: cortocircuito en carcasa). En condiciones normales no circula corriente por ella.'
+    },
+    {
+      tema:'Fuentes de CA',
+      q:'Una fuente de poder convierte la corriente del enchufe para alimentar un PLC. ¿Qué tipo de conversión realiza?',
+      opts:['CA → CC (rectificación)','CC → CA (inversión)','CC → CC (regulación)','CA → CA (transformación)'],
+      c:0, fb:'El enchufe entrega CA y los PLCs requieren CC. Eso se llama rectificación.'
+    },
+  ];
+}
+
+function getQuestions(n = 6) {
+  const bank = getQuestionBank();
+  return shuffle(bank).slice(0, n);
+}
+
+function renderExercises(cid, qs, prefix) {
+  const container = document.getElementById(cid);
+  container.innerHTML = '';
+  qs.forEach((q,i) => {
+    const letters = ['A','B','C','D'];
+    const opts = q.opts.map((o,j) => `<div class="ex-option" id="${prefix}_opt_${i}_${j}" onclick="pick('${prefix}',${i},${j},${q.c},'${q.fb.replace(/'/g,"\\'")}')"><span class="ex-option-letter">${letters[j]}</span>${o}</div>`).join('');
+    const temaTag = q.tema ? `<span style="font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);padding:2px 7px;margin-left:auto;">${q.tema}</span>` : '';
+    const card = document.createElement('div');
+    card.className = 'exercise-card'; card.id = `${prefix}_card_${i}`;
+    card.innerHTML = `<div class="ex-header"><span class="ex-num">${prefix.toUpperCase()} · P${i+1}</span><div class="ex-question">${q.q}</div>${temaTag}</div><div class="ex-options">${opts}</div><div class="ex-feedback" id="${prefix}_fb_${i}"></div>`;
+    container.appendChild(card);
+  });
+}
+
+function pick(prefix, qi, oi, correct, feedback) {
+  document.querySelectorAll(`[id^="${prefix}_opt_${qi}_"]`).forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  const sel  = document.getElementById(`${prefix}_opt_${qi}_${oi}`);
+  const cor  = document.getElementById(`${prefix}_opt_${qi}_${correct}`);
+  const fb   = document.getElementById(`${prefix}_fb_${qi}`);
+  const card = document.getElementById(`${prefix}_card_${qi}`);
+  if (oi === correct) {
+    sel.classList.add('selected-correct'); card.classList.add('correct');
+    fb.className = 'ex-feedback correct'; fb.innerHTML = '[OK] ' + feedback;
+    addScore(10);
+    if (prefix==='mixed') { mixedCorrect++; mixedTotal++; mixedScore+=10; updateMixedStats(); }
+  } else {
+    sel.classList.add('selected-wrong'); cor.classList.add('show-correct');
+    card.classList.add('wrong'); fb.className = 'ex-feedback wrong'; fb.innerHTML = '[ERR] ' + feedback;
+    if (prefix==='mixed') { mixedTotal++; updateMixedStats(); }
+  }
+}
+
+function updateMixedStats() {
+  document.getElementById('mixedCorrect').textContent = mixedCorrect;
+  document.getElementById('mixedTotal').textContent   = mixedTotal;
+  document.getElementById('mixedScore').textContent   = mixedScore;
+  if (mixedTotal>0) document.getElementById('mixedPct').textContent = Math.round(mixedCorrect/mixedTotal*100)+'%';
+}
+
+function regenExercises() { renderExercises('exercises-u1',    getQuestions(6),  'u1'); }
+function regenMixed()     { renderExercises('exercises-mixed', getQuestions(5), 'mixed'); }
+
+window.addEventListener('scroll', () => {
+  document.getElementById('fabUp').classList.toggle('show', window.scrollY > 300);
+});
+
+/* ── Notas con localStorage ── */
+function saveNotas() {
+  const txt = document.getElementById('notas-editor').value;
+  localStorage.setItem('notas_u1', txt);
+  const st = document.getElementById('notas-status');
+  st.textContent = '[OK] GUARDADO · ' + new Date().toLocaleTimeString();
+  setTimeout(() => st.textContent = '', 3000);
+}
+function clearNotas() {
+  if (!confirm('¿Limpiar todas las notas?')) return;
+  document.getElementById('notas-editor').value = '';
+  localStorage.removeItem('notas_u1');
+  document.getElementById('notas-status').textContent = '[OK] LIMPIADO';
+  setTimeout(() => document.getElementById('notas-status').textContent = '', 2000);
+}
+// Auto-load notas on boot
+const savedNotas = localStorage.getItem('notas_u1');
+if (savedNotas) document.getElementById('notas-editor').value = savedNotas;
+// Auto-save on typing
+document.getElementById('notas-editor').addEventListener('input', () => {
+  localStorage.setItem('notas_u1', document.getElementById('notas-editor').value);
+  document.getElementById('notas-status').textContent = '· guardando...';
+  clearTimeout(window._notasTimer);
+  window._notasTimer = setTimeout(() => document.getElementById('notas-status').textContent = '', 1500);
+});
+
+regenExercises();
+regenMixed();
+</script>
+</body>
+</html>
