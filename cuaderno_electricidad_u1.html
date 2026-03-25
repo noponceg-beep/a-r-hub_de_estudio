@@ -215,6 +215,77 @@ body::after {
 .nav-item .nav-icon { font-size:12px; width:16px; text-align:center; }
 .sidebar-footer { padding:14px 20px; border-top:1px solid var(--border); font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); text-align:center; letter-spacing:1px; }
 
+/* ── SEARCH ── */
+.search-bar-wrap {
+  position:relative; margin-bottom:24px;
+}
+.search-bar-wrap::before {
+  content:'BUSCAR_'; position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted);
+  letter-spacing:1px; pointer-events:none; transition:opacity 0.2s;
+  z-index:1;
+}
+.search-bar-wrap.has-value::before,
+.search-bar-wrap.focused::before { opacity:0; }
+#search-input {
+  width:100%; background:var(--panel); border:1px solid var(--border);
+  border-left:2px solid var(--muted); color:var(--text);
+  font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:1px;
+  padding:12px 40px 12px 90px; outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+#search-input:focus {
+  border-color:var(--teal); border-left-color:var(--teal);
+  box-shadow:0 0 14px rgba(0,255,157,0.08);
+}
+#search-input::placeholder { color:transparent; }
+.search-clear {
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--muted); cursor:pointer;
+  font-family:'Share Tech Mono',monospace; font-size:16px;
+  display:none; padding:4px 6px; transition:color 0.15s;
+}
+.search-clear:hover { color:var(--text); }
+.search-bar-wrap.has-value .search-clear { display:block; }
+.search-count {
+  font-size:10px; color:var(--muted); letter-spacing:1px;
+  margin-top:8px; min-height:16px; transition:color 0.2s;
+}
+.search-count.found { color:var(--teal); }
+.search-count.empty { color:var(--red); }
+
+/* search results page */
+#page-search { display:none; }
+#page-search.active { display:block; }
+.search-result-card {
+  background:var(--panel); border:1px solid var(--border);
+  border-left:2px solid var(--muted); padding:16px 20px; margin-bottom:10px;
+  cursor:pointer; transition:all 0.2s; position:relative;
+}
+.search-result-card:hover {
+  border-color:var(--teal); border-left-color:var(--teal);
+  box-shadow:0 0 12px rgba(0,255,157,0.06); transform:translateX(3px);
+}
+.search-result-unit {
+  font-size:9px; color:var(--muted); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:5px;
+}
+.search-result-section {
+  font-size:12px; color:var(--blue); letter-spacing:1px; margin-bottom:6px;
+}
+.search-result-snippet {
+  font-size:11px; color:var(--muted); line-height:1.7;
+}
+.search-result-snippet mark {
+  background:rgba(0,255,157,0.2); color:var(--teal);
+  padding:0 2px; font-style:normal;
+}
+.search-no-results {
+  text-align:center; padding:48px 0; color:var(--muted);
+  font-size:12px; letter-spacing:1px;
+}
+.search-no-results .no-res-icon { font-size:32px; margin-bottom:12px; opacity:0.3; }
+
 /* ── MAIN ── */
 #main {
   margin-left:var(--sidebar-w);
@@ -427,6 +498,112 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
 .fab-down { color:var(--teal); border-color:var(--teal); font-size:13px; }
 .fab-down:hover { background:rgba(0,255,157,0.1); box-shadow:0 0 10px rgba(0,255,157,0.2); }
 
+/* ── FLASHCARDS ── */
+.fc-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px; margin-bottom:24px;
+}
+.fc-filters {
+  display:flex; gap:6px; flex-wrap:wrap;
+}
+.fc-filter-btn {
+  font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px;
+  padding:4px 10px; border:1px solid var(--border); background:transparent;
+  color:var(--muted); cursor:pointer; transition:all 0.15s; text-transform:uppercase;
+}
+.fc-filter-btn:hover { border-color:var(--text); color:var(--text); }
+.fc-filter-btn.active { border-color:var(--teal); color:var(--teal); background:rgba(0,255,157,0.06); }
+.fc-counter {
+  font-size:10px; color:var(--muted); letter-spacing:1px; white-space:nowrap;
+}
+.fc-counter span { color:var(--teal); font-family:'Orbitron',monospace; }
+
+.fc-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:14px;
+}
+
+/* card flip */
+.fc-card {
+  height:180px; cursor:pointer;
+  perspective:1000px;
+  animation: fadeUp 0.3s ease both;
+}
+.fc-card:nth-child(1)  { animation-delay:.02s }
+.fc-card:nth-child(2)  { animation-delay:.04s }
+.fc-card:nth-child(3)  { animation-delay:.06s }
+.fc-card:nth-child(4)  { animation-delay:.08s }
+.fc-card:nth-child(5)  { animation-delay:.10s }
+.fc-card:nth-child(6)  { animation-delay:.12s }
+.fc-card:nth-child(7)  { animation-delay:.14s }
+.fc-card:nth-child(8)  { animation-delay:.16s }
+.fc-card:nth-child(9)  { animation-delay:.18s }
+.fc-card:nth-child(10) { animation-delay:.20s }
+
+.fc-inner {
+  width:100%; height:100%; position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.45s cubic-bezier(0.4,0.2,0.2,1);
+}
+.fc-card.flipped .fc-inner { transform:rotateY(180deg); }
+
+.fc-front, .fc-back {
+  position:absolute; inset:0;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  padding:18px 20px;
+  border:1px solid var(--border);
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.fc-front {
+  background:var(--panel);
+}
+.fc-front::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--accent, var(--teal)); opacity:0.5;
+  transition:opacity 0.2s;
+}
+.fc-card:hover .fc-front::before { opacity:1; box-shadow:0 0 8px var(--accent, var(--teal)); }
+.fc-back {
+  background:var(--panel2);
+  transform:rotateY(180deg);
+  border-color:rgba(0,255,157,0.2);
+  border-left:2px solid var(--teal);
+}
+
+.fc-tag {
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:8px;
+}
+.fc-question {
+  font-family:'Share Tech Mono',monospace; font-size:13px;
+  color:var(--text); line-height:1.5; flex:1;
+  display:flex; align-items:center;
+}
+.fc-hint {
+  font-size:9px; color:var(--muted); letter-spacing:1px;
+  text-align:right; margin-top:8px;
+}
+.fc-hint::before { content:'[ click para ver ]'; }
+.fc-card.flipped .fc-hint { display:none; }
+
+.fc-back .fc-tag { color:var(--teal); opacity:0.6; }
+.fc-answer {
+  font-family:'Share Tech Mono',monospace; font-size:12px;
+  color:var(--text); line-height:1.7; flex:1;
+  display:flex; align-items:center;
+}
+.fc-answer code {
+  font-family:'JetBrains Mono',monospace; font-size:14px;
+  color:var(--teal); text-shadow:0 0 8px rgba(0,255,157,0.4);
+  display:block; margin:4px 0;
+}
+.fc-back-hint {
+  font-size:9px; color:var(--muted); letter-spacing:1px;
+  text-align:right;
+}
+.fc-back-hint::before { content:'[ click para cerrar ]'; }
+
 /* ══════════════════
    RESPONSIVE
 ══════════════════ */
@@ -497,6 +674,9 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
     <div class="nav-item active" onclick="navTo('home')" id="nav-home">
       <span class="nav-icon">⌂</span> HOME.SYS
     </div>
+    <div class="nav-item" onclick="navTo('flashcards')" id="nav-flashcards">
+      <span class="nav-icon">▣</span> FLASHCARDS.EXE
+    </div>
 
     <div class="nav-divider">// UNIDADES</div>
 
@@ -551,7 +731,18 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
       <h1 class="home-title">CUADERNO DIGITAL</h1>
       <p class="home-subtitle">Automatización y Robótica · INACAP · Semestre Activo</p>
     </div>
-    <div class="units-grid">
+
+    <div class="search-bar-wrap" id="search-wrap">
+      <input type="text" id="search-input" placeholder="Buscar concepto..."
+        oninput="handleSearch(this.value)"
+        onfocus="document.getElementById('search-wrap').classList.add('focused')"
+        onblur="document.getElementById('search-wrap').classList.remove('focused')"
+        autocomplete="off" spellcheck="false">
+      <button class="search-clear" onclick="clearSearch()" title="Limpiar">×</button>
+    </div>
+    <div class="search-count" id="search-count"></div>
+
+    <div class="units-grid" id="units-grid">
       <div class="unit-card" onclick="navTo('u1')">
         <div class="unit-card-num">// U01 · DESBLOQUEADO</div>
         <div class="unit-card-title">ELECTRICIDAD Y CIRCUITOS EN CC</div>
@@ -581,6 +772,30 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
         <div class="progress-label"><span>COMPLETADOS</span><span id="mixedPct">0%</span></div>
       </div>
     </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="page" id="page-flashcards">
+    <div class="unit-header">
+      <div class="unit-badge">▣ FLASHCARDS.EXE</div>
+      <h1 class="unit-title">TARJETAS DE ESTUDIO</h1>
+      <p class="unit-desc">// Click para revelar · todas las unidades activas</p>
+    </div>
+    <div class="fc-toolbar">
+      <div class="fc-filters" id="fc-filters"></div>
+      <div class="fc-counter">Mostrando <span id="fc-shown">0</span> tarjetas</div>
+    </div>
+    <div class="fc-grid" id="fc-grid"></div>
+  </div>
+
+  <!-- SEARCH RESULTS -->
+  <div class="page" id="page-search">
+    <div class="unit-header">
+      <div class="unit-badge">⌕ BÚSQUEDA</div>
+      <h1 class="unit-title" id="search-results-title">RESULTADOS</h1>
+      <p class="unit-desc" id="search-results-desc"></p>
+    </div>
+    <div id="search-results-list"></div>
   </div>
 
   <!-- UNIDAD 1 -->
@@ -631,7 +846,7 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
             <tr><td>Plata (Ag)</td><td>1.59 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
             <tr><td>Cobre (Cu)</td><td>1.72 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
             <tr><td>Aluminio (Al)</td><td>2.82 × 10⁻⁸</td><td><span class="tag tag-green">Conductor</span></td></tr>
-            <tr><td>Silicio (Si)</td><td>6.40 × 10²</td><td><span class="tag tag-yellow">Semiconductor</span></td></tr>
+            <tr><td>Silicio (Si)</td><td>640 Ω·m</td><td><span class="tag tag-yellow">Semiconductor</span></td></tr>
             <tr><td>Vidrio</td><td>10¹⁰ – 10¹⁴</td><td><span class="tag tag-red">Aislante</span></td></tr>
           </tbody>
         </table>
@@ -702,7 +917,7 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
       <h2>07.  Átomo y Configuración Electrónica</h2>
       <h3>Composición del Átomo</h3>
       <p>Núcleo: <strong>protones (+)</strong> y neutrones. Corteza: <strong>electrones (−)</strong> en niveles de energía. Los electrones de la <strong>capa de valencia</strong> determinan el comportamiento eléctrico.</p>
-      <h3>Subniveles de Schrödinger</h3>
+      <h3>Modelo Mecano-Cuántico · Subniveles</h3>
       <div class="table-wrapper">
         <table>
           <thead><tr><th>Subnivel</th><th>Máx. electrones</th></tr></thead>
@@ -724,7 +939,7 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
       <div class="config-example">
         <div class="element-name">Hierro (Fe) — 26 e⁻</div>
         <div class="config-str">1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶</div>
-        <div class="config-note">Notar: 4s va antes que 3d</div>
+        <div class="config-note">4s se llena antes que 3d porque tiene menor energía en ese punto (Principio de Aufbau). Al ionizarse, el Fe pierde primero los e⁻ de 4s.</div>
       </div>
     </div>
 
@@ -758,7 +973,7 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
       <h2>09.  Ionización</h2>
       <p>Un <strong>ion</strong> es un átomo que ganó o perdió electrones, perdiendo neutralidad eléctrica.</p>
       <p>• <strong>Catión (+):</strong> perdió e⁻ → más protones que electrones.<br>• <strong>Anión (−):</strong> ganó e⁻ → más electrones que protones.</p>
-      <div class="info-box">[INFO] La corriente eléctrica es justamente el movimiento de estos electrones entre átomos.</div>
+      <div class="info-box">[INFO] En conductores metálicos la corriente es movimiento de <strong>electrones libres</strong>, no de iones. Los iones son portadores de corriente en soluciones electrolíticas (baterías, electrólisis), no en cables de cobre.</div>
     </div>
 
     <div class="theory-section">
@@ -870,7 +1085,8 @@ let totalScore = 0;
 let mixedCorrect = 0, mixedTotal = 0, mixedScore = 0;
 const pageNames = {
   u1:'RESÚMENES · U1', ejercicios:'EJERCICIOS · U1',
-  glosario:'GLOSARIO · U1', notas:'NOTAS · U1', mixed:'MODO_MIXTO.EXE'
+  glosario:'GLOSARIO · U1', notas:'NOTAS · U1',
+  flashcards:'FLASHCARDS.EXE', mixed:'MODO_MIXTO.EXE'
 };
 
 /* ── Sidebar collapsible subjects ── */
@@ -889,7 +1105,7 @@ function closeSidebar() {
 function navTo(id) { closeSidebar(); showPage(id); }
 function goBack() { showPage('home'); }
 
-function showPage(id) {
+function showPage(id, fromSearch = false) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item, .nav-sub-item').forEach(n => n.classList.remove('active'));
 
@@ -899,13 +1115,17 @@ function showPage(id) {
   const nav = document.getElementById('nav-' + id);
   if (nav) nav.classList.add('active');
 
-  window.scrollTo({ top:0, behavior:'smooth' });
+  if (!fromSearch) window.scrollTo({ top:0, behavior:'smooth' });
+  else window.scrollTo({ top:0, behavior:'instant' });
 
   const back  = document.getElementById('topbar-back');
   const sep   = document.getElementById('crumb-sep');
   const crumb = document.getElementById('crumb-current');
   if (id === 'home') {
     back.classList.remove('show'); sep.style.display='none'; crumb.textContent='';
+  } else if (id === 'search') {
+    back.classList.add('show'); sep.style.display='inline';
+    crumb.textContent = 'BÚSQUEDA';
   } else {
     back.classList.add('show'); sep.style.display='inline'; crumb.textContent = pageNames[id] || id;
   }
@@ -1205,8 +1425,281 @@ document.getElementById('notas-editor').addEventListener('input', () => {
   window._notasTimer = setTimeout(() => document.getElementById('notas-status').textContent = '', 1500);
 });
 
+/* ══════════════════════════════════════
+   BÚSQUEDA GLOBAL
+══════════════════════════════════════ */
+
+// Índice: se construye leyendo todas las .theory-section de todas las páginas
+function buildSearchIndex() {
+  const index = [];
+  // Recorre todas las páginas con secciones de teoría
+  document.querySelectorAll('.page[id^="page-u"], .page[id^="page-"]').forEach(page => {
+    const pageId = page.id.replace('page-', '');
+    // Solo páginas con resúmenes (no ejercicios, notas, glosario, mixed, search, home)
+    const skip = ['ejercicios','notas','glosario','mixed','search','home'];
+    if (skip.includes(pageId)) return;
+
+    // Título de la unidad
+    const unitTitle = page.querySelector('.unit-title')?.textContent?.trim() || pageId.toUpperCase();
+
+    page.querySelectorAll('.theory-section').forEach(section => {
+      const h2 = section.querySelector('h2')?.textContent?.trim() || '';
+      // Extraer texto plano de la sección completa
+      const text = section.innerText || section.textContent || '';
+      index.push({ pageId, unitTitle, h2, text, el: section });
+    });
+  });
+  return index;
+}
+
+let _searchIndex = null;
+function getIndex() {
+  if (!_searchIndex) _searchIndex = buildSearchIndex();
+  return _searchIndex;
+}
+
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function highlight(text, query) {
+  // Tomar un fragmento relevante de ~200 chars alrededor de la primera coincidencia
+  const re = new RegExp(escapeRegex(query), 'gi');
+  const idx = text.search(re);
+  if (idx === -1) return text.slice(0, 160) + '...';
+  const start = Math.max(0, idx - 80);
+  const end   = Math.min(text.length, idx + 120);
+  let snippet = (start > 0 ? '...' : '') + text.slice(start, end) + (end < text.length ? '...' : '');
+  // Limpiar saltos de línea múltiples
+  snippet = snippet.replace(/\s+/g, ' ');
+  return snippet.replace(re, m => `<mark>${m}</mark>`);
+}
+
+let _searchTimer = null;
+function handleSearch(val) {
+  const wrap  = document.getElementById('search-wrap');
+  const count = document.getElementById('search-count');
+  val = val.trim();
+
+  wrap.classList.toggle('has-value', val.length > 0);
+
+  clearTimeout(_searchTimer);
+
+  if (val.length === 0) {
+    count.textContent = '';
+    count.className = 'search-count';
+    // Si estamos en search, volver a home
+    if (document.getElementById('page-search').classList.contains('active')) {
+      showPage('home', true);
+    }
+    return;
+  }
+
+  _searchTimer = setTimeout(() => runSearch(val), 180);
+}
+
+function runSearch(query) {
+  const index   = getIndex();
+  const re      = new RegExp(escapeRegex(query), 'gi');
+  const matches = index.filter(entry => re.test(entry.text) || re.test(entry.h2));
+  const count   = document.getElementById('search-count');
+
+  if (matches.length === 0) {
+    count.textContent = `Sin resultados para "${query}"`;
+    count.className = 'search-count empty';
+  } else {
+    count.textContent = `${matches.length} sección${matches.length > 1 ? 'es' : ''} encontrada${matches.length > 1 ? 's' : ''}`;
+    count.className = 'search-count found';
+  }
+
+  // Construir página de resultados
+  const list  = document.getElementById('search-results-list');
+  const title = document.getElementById('search-results-title');
+  const desc  = document.getElementById('search-results-desc');
+
+  title.textContent = `"${query}"`;
+  desc.textContent  = `// ${matches.length} resultado${matches.length !== 1 ? 's' : ''} en resúmenes`;
+
+  list.innerHTML = '';
+  if (matches.length === 0) {
+    list.innerHTML = `<div class="search-no-results"><div class="no-res-icon">⌀</div>No se encontraron secciones para <strong>"${query}"</strong>.<br>Intenta con otro término.</div>`;
+  } else {
+    matches.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'search-result-card';
+      card.onclick = () => { clearSearch(); navTo(m.pageId); };
+      card.innerHTML = `
+        <div class="search-result-unit">${m.unitTitle}</div>
+        <div class="search-result-section">${m.h2}</div>
+        <div class="search-result-snippet">${highlight(m.text, query)}</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // Navegar a página de resultados sin limpiar el input
+  showPage('search', true);
+}
+
+function clearSearch() {
+  const input = document.getElementById('search-input');
+  input.value = '';
+  handleSearch('');
+  input.focus();
+}
+
+// Invalidar índice al añadir contenido dinámico (por si acaso)
+function invalidateSearchIndex() { _searchIndex = null; }
+
+/* ══════════════════════════════════════
+   FLASHCARDS
+══════════════════════════════════════ */
+const FLASHCARDS = [
+  // ── Electricidad ──
+  { tema:'Electricidad', q:'¿Qué es la electricidad?',
+    a:'Conjunto de fenómenos físicos asociados al movimiento y acumulación de carga eléctrica. Surge de la naturaleza del átomo: protones (+) y electrones (−).' },
+  { tema:'Electricidad', q:'¿Cuál es la causa de la corriente eléctrica?',
+    a:'La diferencia de potencial (tensión). Sin tensión no hay corriente.\n→ Tensión = causa · Corriente = efecto' },
+  { tema:'Electricidad', q:'¿Qué partícula genera el flujo de corriente en un conductor metálico?',
+    a:'El electrón libre. Los electrones de la capa de valencia se desplazan cuando existe diferencia de potencial.' },
+
+  // ── Bandas de energía ──
+  { tema:'Bandas', q:'¿Qué es la Banda de Valencia?',
+    a:'Banda ocupada por los electrones más externos del átomo en reposo. Los electrones aquí están ligados al núcleo y NO son libres para conducir.' },
+  { tema:'Bandas', q:'¿Qué es la Banda Prohibida (Gap)?',
+    a:'Zona de energía donde no puede existir ningún electrón. Su ancho define si el material es conductor, semiconductor o aislante.' },
+  { tema:'Bandas', q:'¿Qué es la Banda de Conducción?',
+    a:'Banda superior, normalmente vacía. Cuando un electrón recibe energía suficiente para saltar el gap, llega aquí y queda libre para conducir.' },
+  { tema:'Bandas', q:'¿Cómo es el gap en un conductor como el cobre?',
+    a:'≈ 0 eV. La banda de valencia y la de conducción se solapan → los electrones pasan sin necesitar energía extra.' },
+  { tema:'Bandas', q:'Gap de un semiconductor vs un aislante',
+    a:'Semiconductor: 0.7–1.1 eV (gap pequeño, se puede cruzar).\nAislante: > 5 eV (gap enorme, casi imposible de cruzar en condiciones normales).' },
+
+  // ── Resistividad ──
+  { tema:'Resistividad', q:'¿Qué es la resistividad específica (ρ)?',
+    a:'Propiedad intrínseca del material que indica su oposición al flujo de corriente, independiente de la geometría.' },
+  { tema:'Resistividad', q:'Fórmula de resistencia en función de resistividad',
+    a:'R = ρ · L / A\n\nR=Resistencia(Ω) · ρ=Resistividad(Ω·m) · L=Longitud(m) · A=Sección(m²)', formula:true },
+  { tema:'Resistividad', q:'¿Qué le pasa a la resistividad de un conductor al aumentar la temperatura?',
+    a:'Aumenta. Más temperatura → más vibración de la red cristalina → más colisiones con electrones → más resistencia.\n(En semiconductores ocurre lo opuesto: disminuye.)' },
+  { tema:'Resistividad', q:'Orden de resistividad: Ag, Cu, Al (de menor a mayor)',
+    a:'Ag (1.59×10⁻⁸) < Cu (1.72×10⁻⁸) < Al (2.82×10⁻⁸) Ω·m\nLa plata es mejor conductora pero el cobre es más económico.\nSi comparación: Si puro ≈ 640 Ω·m → millones de veces mayor.' },
+
+  // ── Tipos de corriente ──
+  { tema:'Corriente', q:'¿Qué es la electricidad estática?',
+    a:'Acumulación de carga sin flujo continuo. Ocurre por fricción (triboelectricidad). La descarga es instantánea, no sostenida.' },
+  { tema:'Corriente', q:'¿Qué es la Corriente Continua (CC / DC)?',
+    a:'Flujo de electrones siempre en el mismo sentido, sin invertir polaridad. Representación gráfica: línea recta.\nEj: baterías, paneles solares.' },
+  { tema:'Corriente', q:'¿Qué es la Corriente Alterna (CA / AC)?',
+    a:'Corriente que invierte su dirección periódicamente en ciclos (semiciclo + y semiciclo −). Forma sinusoidal.\nEn Chile: 50 Hz → T = 0.02 s.' },
+  { tema:'Corriente', q:'Fórmula de frecuencia y período (CA)',
+    a:'f = 1 / T\n\nf = Frecuencia (Hz) · T = Período (s)\n\nChile: f = 50 Hz → T = 0.02 s', formula:true },
+  { tema:'Corriente', q:'Fórmula de la corriente eléctrica',
+    a:'I = Q / t\n\nI = Corriente (A) · Q = Carga eléctrica (C) · t = Tiempo (s)', formula:true },
+  { tema:'Corriente', q:'¿Por qué la estática daña chips CMOS y MOSFETs?',
+    a:'La descarga electrostática (ESD) libera energía instantánea → pico de tensión → destruye la capa de óxido de la juntura del componente.' },
+
+  // ── Fuentes de CA ──
+  { tema:'Fuentes CA', q:'¿Qué principio usan los alternadores?',
+    a:'Inducción electromagnética (ley de Faraday): un rotor gira dentro de un campo magnético → variación de flujo → genera FEM alterna.' },
+  { tema:'Fuentes CA', q:'¿Qué es un generador portátil?',
+    a:'Un alternador accionado por un motor de combustión interna (gasolina/diésel). Genera CA estándar (220V / 50Hz en Chile). Usado en obras o emergencias.' },
+  { tema:'Fuentes CA', q:'¿Qué hace un inversor?',
+    a:'Convierte CC → CA electrónicamente (sin partes móviles). No genera energía: depende de una fuente CC (batería, panel solar).' },
+  { tema:'Fuentes CA', q:'Diferencia inversor vs rectificador',
+    a:'Inversor: CC → CA (panel/batería a tomacorriente)\nRectificador: CA → CC (enchufe a PLC/electrónica)' },
+
+  // ── Átomo / Semiconductores ──
+  { tema:'Átomo', q:'¿Qué determina si un material es conductor, semiconductor o aislante?',
+    a:'El número de electrones en su capa de valencia:\n· 1–3 e⁻ → Conductor\n· 4 e⁻ → Semiconductor\n· 5–8 e⁻ → Aislante' },
+  { tema:'Átomo', q:'Orden de llenado de subniveles electrónicos (Principio de Aufbau)',
+    a:'1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s...\n\nCapacidad: s=2 · p=6 · d=10 · f=14' },
+  { tema:'Átomo', q:'¿Qué es un ion? ¿Catión vs anión?',
+    a:'Ion = átomo que ganó o perdió electrones.\n· Catión (+): perdió e⁻ → más protones que electrones.\n· Anión (−): ganó e⁻ → más electrones que protones.' },
+  { tema:'Semiconductores', q:'Semiconductor intrínseco vs extrínseco',
+    a:'Intrínseco: puro, sin modificación (Si o Ge natural).\nExtrínseco: dopado con elemento externo para modificar su conductividad.' },
+  { tema:'Semiconductores', q:'Semiconductor Tipo N vs Tipo P',
+    a:'Tipo N: dopado con fósforo (5e⁻) → sobra 1 e⁻ → portador negativo.\nTipo P: dopado con boro (3e⁻) → falta 1 e⁻ (hueco) → portador positivo.' },
+
+  // ── Fase / Neutro / Tierra ──
+  { tema:'Instalación', q:'Función de Fase, Neutro y Tierra (Chile)',
+    a:'Fase (rojo/negro): lleva energía · 220V.\nNeutro (azul/blanco): retorna energía · 0V.\nTierra (verde/amarillo): protección ante fallas · 0V.' },
+  { tema:'Instalación', q:'¿Cuándo circula corriente por el cable de tierra?',
+    a:'Solo ante una falla eléctrica (ej: cortocircuito en carcasa metálica). En operación normal no circula corriente por ella.' },
+];
+
+let _fcFilter = 'Todos';
+
+function renderFlashcards(filter) {
+  _fcFilter = filter;
+  const grid    = document.getElementById('fc-grid');
+  const counter = document.getElementById('fc-shown');
+  const cards   = filter === 'Todos' ? FLASHCARDS : FLASHCARDS.filter(c => c.tema === filter);
+
+  // Update filter buttons
+  document.querySelectorAll('.fc-filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+
+  counter.textContent = cards.length;
+  grid.innerHTML = '';
+
+  // Accent color per tema
+  const colors = {
+    'Electricidad':'var(--teal)', 'Bandas':'var(--blue)', 'Resistividad':'var(--yellow)',
+    'Corriente':'var(--teal)', 'Fuentes CA':'var(--purple)', 'Átomo':'var(--blue)',
+    'Semiconductores':'var(--yellow)', 'Instalación':'var(--red)'
+  };
+
+  cards.forEach((card, i) => {
+    const color   = colors[card.tema] || 'var(--teal)';
+    // Format answer: newlines → <br>, code blocks
+    let answerHtml = card.answer || card.a;
+    if (card.formula) {
+      // Split on newlines; first line is formula, rest is description
+      const lines = answerHtml.split('\n');
+      answerHtml = `<code>${lines[0]}</code>` + (lines.slice(1).join('<br>') ? '<br><span style="font-size:11px;color:var(--muted)">' + lines.slice(1).join('<br>') + '</span>' : '');
+    } else {
+      answerHtml = answerHtml.replace(/\n/g, '<br>');
+    }
+
+    const el = document.createElement('div');
+    el.className = 'fc-card';
+    el.style.setProperty('--accent', color);
+    el.innerHTML = `
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-tag">${card.tema}</div>
+          <div class="fc-question">${card.q}</div>
+          <div class="fc-hint"></div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-tag">${card.tema}</div>
+          <div class="fc-answer">${answerHtml}</div>
+          <div class="fc-back-hint"></div>
+        </div>
+      </div>`;
+    el.addEventListener('click', () => el.classList.toggle('flipped'));
+    grid.appendChild(el);
+  });
+}
+
+function initFlashcards() {
+  const temas   = ['Todos', ...new Set(FLASHCARDS.map(c => c.tema))];
+  const filters = document.getElementById('fc-filters');
+  filters.innerHTML = '';
+  temas.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'fc-filter-btn' + (t === 'Todos' ? ' active' : '');
+    btn.dataset.filter = t;
+    btn.textContent = t;
+    btn.onclick = () => renderFlashcards(t);
+    filters.appendChild(btn);
+  });
+  renderFlashcards('Todos');
+}
+
 regenExercises();
 regenMixed();
+initFlashcards();
 </script>
 </body>
 </html>
