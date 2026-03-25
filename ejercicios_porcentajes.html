@@ -4,828 +4,1472 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Álgebra Ciudadana — INACAP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-:root {
-  --bg:      #07111c;
-  --bg2:     #0c1b2a;
-  --panel:   #111f2e;
-  --panel2:  #162840;
-  --border:  #1e3549;
-  --border2: #2a4a65;
-  --blue:    #2563eb;
-  --blue2:   #3b82f6;
-  --blue3:   #93c5fd;
-  --teal:    #0d9488;
-  --teal2:   #14b8a6;
-  --teal3:   #5eead4;
-  --green:   #059669;
-  --green2:  #10b981;
-  --green3:  #6ee7b7;
-  --amber:   #d97706;
-  --amber2:  #f59e0b;
-  --amber3:  #fde68a;
-  --red:     #dc2626;
-  --red2:    #ef4444;
-  --text:    #e8f0f8;
-  --text2:   #94b4cc;
-  --text3:   #4d7a99;
-  --radius:  12px;
+:root{
+  --bg:#080c10;
+  --bg2:#0d1117;
+  --panel:#0d1117;
+  --panel2:#111820;
+  --border:#1a2535;
+  --border2:#243548;
+  --green:#00ff9d;
+  --green-dim:#00cc7a;
+  --cyan:#00c8ff;
+  --amber:#ffb700;
+  --red:#ff4060;
+  --purple:#a855f7;
+  --text:#c9d8e8;
+  --text2:#5a7a99;
+  --text3:#2a4060;
+  --sidebar:260px;
+  --topbar:52px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;min-height:100vh;}
 
-/* ─── LAYOUT ─── */
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  min-height:100vh;
+  position:relative;
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,157,.015) 2px,rgba(0,255,157,.015) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 8px var(--green),0 0 20px var(--green)}50%{text-shadow:0 0 4px var(--green)}}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes borderBlink{0%,100%{opacity:1}40%,60%{opacity:.3}}
+@keyframes cornerSpin{to{transform:rotate(360deg)}}
+
+/* ══ LAYOUT ══ */
 .layout{display:flex;min-height:100vh;}
 
-/* ─── SIDEBAR ─── */
+/* ══ SIDEBAR ══ */
 .sidebar{
-  width:250px;background:var(--bg2);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;
-  z-index:200;overflow-y:auto;
+  width:var(--sidebar);
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;
+  z-index:200;
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  transition:transform .25s ease;
 }
-.sb-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
+.sb-logo{
+  padding:18px 16px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
 .sb-logo-mark{
-  width:38px;height:38px;background:var(--blue);border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:17px;font-weight:800;color:#fff;margin-bottom:10px;
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;font-weight:900;
+  color:var(--green);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-bottom:6px;
 }
-.sb-logo h1{font-size:14px;font-weight:700;}
-.sb-logo p{font-size:11px;color:var(--text3);margin-top:2px;}
+.sb-logo h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;font-weight:700;
+  color:var(--text);
+  letter-spacing:1px;
+  line-height:1.4;
+}
+.sb-logo h1 span{color:var(--green);}
+.sb-logo p{font-size:10px;color:var(--text2);margin-top:3px;letter-spacing:1px;}
 
-.sb-section{padding:14px 10px 6px;}
+.sb-section{padding:12px 10px 4px;}
 .sb-section-label{
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-  color:var(--text3);padding:0 8px;margin-bottom:6px;
+  font-size:9px;font-weight:400;
+  text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);
+  padding:0 8px;margin-bottom:6px;
 }
-.nav-btn{
-  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;
-  cursor:pointer;transition:all .15s;color:var(--text2);font-size:13px;font-weight:500;
+
+/* unit group */
+.nav-unit{}
+.nav-unit-header{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  cursor:pointer;
+  color:var(--text2);font-size:12px;
+  letter-spacing:.5px;
   border:none;background:none;width:100%;text-align:left;
+  transition:color .15s;
+  position:relative;
 }
-.nav-btn:hover{background:var(--panel);color:var(--text);}
-.nav-btn.active{background:var(--blue);color:#fff;}
-.nav-btn .ni{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
-.nav-btn .nb{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;}
-.nb-done{background:var(--green);color:#fff;}
-.nb-lock{color:var(--text3);}
+.nav-unit-header:hover{color:var(--green);}
+.nav-unit-header .arrow{margin-left:auto;font-size:10px;transition:transform .2s;color:var(--text3);}
+.nav-unit-header.open .arrow{transform:rotate(90deg);}
+.nav-unit-header .ni{width:16px;text-align:center;flex-shrink:0;}
 
+.nav-sub{
+  display:none;padding-left:24px;padding-bottom:4px;
+}
+.nav-sub.open{display:block;}
+.nav-sub-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:5px 10px;
+  font-size:11px;color:var(--text2);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  letter-spacing:.5px;
+  transition:color .15s;
+  position:relative;
+}
+.nav-sub-btn::before{
+  content:'·';color:var(--text3);
+}
+.nav-sub-btn:hover{color:var(--cyan);}
+.nav-sub-btn.active{color:var(--green);}
+.nav-sub-btn.active::before{color:var(--green);}
+
+.nav-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  cursor:pointer;color:var(--text2);font-size:12px;
+  letter-spacing:.5px;
+  border:none;background:none;width:100%;text-align:left;
+  transition:color .15s;
+}
+.nav-btn:hover{color:var(--green);}
+.nav-btn.active{color:var(--green);}
+.nav-btn .ni{width:16px;text-align:center;flex-shrink:0;}
+
+/* score box */
 .sb-score{
-  margin-top:auto;padding:14px;border-top:1px solid var(--border);
+  margin-top:auto;padding:14px 12px;
+  border-top:1px solid var(--border);
 }
+.score-label{font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px;}
 .score-grid{
-  background:var(--panel);border-radius:10px;padding:12px;
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;
 }
-.sg-val{font-size:20px;font-weight:800;line-height:1;}
-.sg-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:1px;}
-.sg-ok .sg-val{color:var(--green2);}
-.sg-err .sg-val{color:var(--red2);}
-.sg-tot .sg-val{color:var(--blue3);}
-
-/* ─── CONTENT ─── */
-.content{margin-left:250px;flex:1;display:flex;flex-direction:column;}
-
-/* PAGE TOPBAR */
-.page-topbar{
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:16px 32px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
+.sg-cell{
+  background:var(--bg);border:1px solid var(--border);
+  padding:8px 4px;text-align:center;
 }
-.pt-left{display:flex;align-items:center;gap:14px;}
-.pt-breadcrumb{
-  display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);
+.sg-val{
+  font-family:'Orbitron',sans-serif;
+  font-size:18px;font-weight:700;
+  animation:glowPulse 3s ease infinite;
 }
-.pt-breadcrumb .sep{color:var(--border2);}
-.pt-breadcrumb .current{color:var(--text);font-weight:600;}
-.pt-right{display:flex;gap:8px;}
-.btn-nav{
-  background:var(--panel);color:var(--text2);border:1px solid var(--border);
-  border-radius:8px;padding:8px 16px;font-family:'Sora',sans-serif;
-  font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;
-  display:flex;align-items:center;gap:6px;
+.sg-lbl{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.sg-ok .sg-val{color:var(--green);}
+.sg-err .sg-val{color:var(--red);animation:none;}
+.sg-tot .sg-val{color:var(--cyan);animation:none;}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  height:var(--topbar);
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:fixed;top:0;left:var(--sidebar);right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
 }
-.btn-nav:hover{border-color:var(--blue2);color:var(--blue3);}
-.btn-nav.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-.btn-nav.primary:hover{background:#1d4ed8;}
-
-/* ─── BOTÓN FLOTANTE SUBIR ─── */
-.fab-top{
-  position:fixed;bottom:28px;right:28px;z-index:300;
-  width:46px;height:46px;border-radius:50%;
-  background:var(--blue);border:none;color:#fff;
-  font-size:18px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 20px rgba(37,99,235,.5);
-  opacity:0;pointer-events:none;
-  transition:opacity .3s,transform .3s;
-  transform:translateY(10px);
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.hamburger{
+  display:none;flex-direction:column;gap:4px;cursor:pointer;
+  background:none;border:none;padding:4px;
 }
-.fab-top.visible{opacity:1;pointer-events:all;transform:translateY(0);}
-.fab-top:hover{background:#1d4ed8;transform:translateY(-3px);box-shadow:0 6px 24px rgba(37,99,235,.7);}
+.hamburger span{display:block;width:18px;height:1px;background:var(--text2);}
+.breadcrumb{font-size:11px;color:var(--text2);letter-spacing:1px;}
+.breadcrumb .sep{color:var(--text3);margin:0 6px;}
+.breadcrumb .current{color:var(--green);}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.topbar-tag{
+  font-size:9px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;
+}
+.btn-term{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  padding:5px 14px;
+  cursor:pointer;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  transition:all .15s;
+}
+.btn-term:hover{border-color:var(--green);color:var(--green);}
+.btn-term.cyan:hover{border-color:var(--cyan);color:var(--cyan);}
 
+/* ══ CONTENT ══ */
+.content{
+  margin-left:var(--sidebar);
+  padding-top:var(--topbar);
+  min-height:100vh;
+}
+.page-body{padding:28px 28px 80px;}
 
-
-/* PAGES */
+/* ══ PAGES ══ */
 .page{display:none;}
-.page.active{display:block;animation:fadeUp .25s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.page-body{padding:28px 32px 70px;}
+.page.active{display:block;animation:fadeUp .3s ease;}
 
-/* ─── INICIO ─── */
+/* ══ HERO ══ */
 .hero{
-  background:linear-gradient(135deg,#0f2744 0%,#163860 50%,#0d2235 100%);
-  border:1px solid var(--border2);border-radius:16px;
-  padding:32px 36px;margin-bottom:26px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0a1520 0%,#0d1a2a 60%,#080c15 100%);
+  border:1px solid var(--border2);
+  border-top:2px solid var(--green);
+  padding:28px 30px;margin-bottom:24px;
+  position:relative;overflow:hidden;
 }
 .hero::after{
-  content:'∑';position:absolute;right:32px;top:50%;transform:translateY(-50%);
-  font-size:110px;font-weight:800;color:rgba(37,99,235,.12);line-height:1;pointer-events:none;
+  content:'∑';
+  position:absolute;right:24px;top:50%;transform:translateY(-50%);
+  font-family:'Orbitron',sans-serif;
+  font-size:100px;font-weight:900;
+  color:rgba(0,255,157,.04);pointer-events:none;line-height:1;
 }
-.hero h2{font-size:24px;font-weight:800;margin-bottom:6px;}
-.hero p{font-size:13.5px;color:var(--blue3);line-height:1.7;max-width:480px;}
+.hero-tag{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--green);margin-bottom:10px;
+}
+.hero h2{
+  font-family:'Orbitron',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--text);
+  margin-bottom:8px;
+  letter-spacing:1px;
+}
+.hero h2 .cursor{animation:cursorBlink 1s step-end infinite;color:var(--green);}
+.hero p{font-size:12px;color:var(--text2);line-height:1.8;max-width:500px;}
 
+/* search bar */
+.search-wrap{
+  position:relative;margin-bottom:24px;
+}
+.search-wrap input{
+  width:100%;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-left:3px solid var(--cyan);
+  color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  font-size:13px;
+  padding:10px 40px 10px 16px;
+  outline:none;
+  transition:border-color .2s;
+  letter-spacing:.5px;
+}
+.search-wrap input:focus{border-color:var(--cyan);}
+.search-wrap input::placeholder{color:var(--text3);}
+.search-icon{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--text3);font-size:14px;pointer-events:none;
+}
+.search-results{
+  margin-top:8px;
+}
+.sr-item{
+  background:var(--panel2);border:1px solid var(--border);
+  border-left:3px solid var(--cyan);
+  padding:10px 14px;margin-bottom:4px;
+  cursor:pointer;
+  transition:border-color .15s;
+}
+.sr-item:hover{border-left-color:var(--green);}
+.sr-item .sri-title{font-size:12px;color:var(--cyan);margin-bottom:3px;}
+.sr-item .sri-text{font-size:11px;color:var(--text2);line-height:1.5;}
+
+/* ══ SECTION LABEL ══ */
 .section-label{
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-  color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  font-size:9px;text-transform:uppercase;letter-spacing:2.5px;
+  color:var(--text3);
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
 }
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-.unidades-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:26px;}
-.u-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
-  padding:20px;cursor:pointer;transition:all .2s;
+/* ══ UNIT CARDS ══ */
+.unidades-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;
+  margin-bottom:24px;
 }
-.u-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.4);}
-.u-card.locked{opacity:.45;cursor:not-allowed;pointer-events:none;}
-.u-card .uc-ico{font-size:26px;margin-bottom:10px;}
-.u-card .uc-n{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:3px;}
-.u-card .uc-t{font-size:14px;font-weight:700;margin-bottom:5px;}
-.u-card .uc-d{font-size:12px;color:var(--text2);line-height:1.5;}
-.u-card .uc-s{margin-top:10px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;}
-.s-done{color:var(--green2);}
-.s-active{color:var(--blue3);}
+.u-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-top:2px solid transparent;
+  padding:18px 16px;
+  cursor:pointer;
+  transition:border-color .2s,transform .2s;
+  position:relative;overflow:hidden;
+}
+.u-card::after{
+  content:'◤';
+  position:absolute;top:-1px;right:-1px;
+  font-size:22px;line-height:1;
+  color:var(--border);
+  transition:color .2s;
+  pointer-events:none;
+}
+.u-card:hover{border-top-color:var(--green);transform:translateY(-2px);}
+.u-card:hover::after{color:var(--green);}
+.u-card.locked{opacity:.35;cursor:not-allowed;pointer-events:none;}
+.u-card.cyan-card:hover{border-top-color:var(--cyan);}
+.u-card.cyan-card:hover::after{color:var(--cyan);}
+.uc-ico{font-size:22px;margin-bottom:10px;}
+.uc-n{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.uc-t{font-size:13px;font-family:'Orbitron',sans-serif;font-weight:700;margin-bottom:5px;color:var(--text);}
+.uc-d{font-size:11px;color:var(--text2);line-height:1.6;}
+.uc-s{margin-top:10px;font-size:10px;letter-spacing:1px;display:flex;align-items:center;gap:4px;}
+.s-done{color:var(--green);}
+.s-active{color:var(--cyan);}
 .s-lock{color:var(--text3);}
 
-.prog-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;}
-.prog-card h3{font-size:13px;font-weight:700;margin-bottom:14px;}
-.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.pr-lbl{font-size:12px;color:var(--text2);width:110px;flex-shrink:0;}
-.pr-bg{flex:1;background:var(--bg);border-radius:4px;height:5px;overflow:hidden;}
-.pr-fill{height:100%;border-radius:4px;transition:width .5s ease;}
-.pr-pct{font-size:11px;font-weight:700;color:var(--text2);width:30px;text-align:right;}
-
-/* ─── UNIDAD PAGE ─── */
-.unidad-hero{
-  display:flex;align-items:flex-start;gap:18px;
+/* ══ PROG CARD ══ */
+.prog-card{
   background:var(--panel);border:1px solid var(--border);
-  border-radius:16px;padding:22px 26px;margin-bottom:24px;
+  border-left:3px solid var(--cyan);
+  padding:18px 20px;
+}
+.prog-card h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.pr-lbl{font-size:11px;color:var(--text2);width:110px;flex-shrink:0;letter-spacing:.5px;}
+.pr-bg{flex:1;background:var(--bg);height:4px;overflow:hidden;}
+.pr-fill{height:100%;transition:width .6s ease;}
+.pr-pct{font-size:11px;color:var(--green);width:32px;text-align:right;}
+
+/* ══ UNIT HERO ══ */
+.unidad-hero{
+  background:var(--panel);border:1px solid var(--border);
+  border-left:3px solid var(--green);
+  padding:20px 22px;margin-bottom:22px;
+  display:flex;align-items:flex-start;gap:16px;
 }
 .uh-ico{
-  font-size:36px;width:60px;height:60px;background:var(--panel2);
-  border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;
+  color:var(--green);flex-shrink:0;padding-top:2px;
+  min-width:40px;
 }
-.uh-info h2{font-size:19px;font-weight:800;margin-bottom:4px;}
-.uh-info p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.uh-info h2{
+  font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;
+  color:var(--text);letter-spacing:1px;margin-bottom:5px;
+}
+.uh-info p{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
 .uh-tags{display:flex;gap:6px;flex-wrap:wrap;}
-.uh-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--panel2);color:var(--text2);}
+.uh-tag{
+  font-size:10px;letter-spacing:.5px;
+  padding:3px 9px;
+  border:1px solid var(--border2);
+  color:var(--text2);
+}
 
-/* TEORÍA */
-.teoria-bloque{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:var(--radius);padding:22px 24px;margin-bottom:14px;
-  border-left:3px solid var(--blue2);
+/* ══ THEORY SECTION ══ */
+.theory-section{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-left:3px solid var(--cyan);
+  padding:20px 22px;
+  margin-bottom:12px;
+  transition:box-shadow .2s;
 }
+.theory-section:hover{
+  box-shadow:0 0 20px rgba(0,200,255,.07);
+}
+.theory-section h2{
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--cyan);
+  margin-bottom:12px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.theory-section h3{
+  font-size:13px;color:var(--text);
+  margin-bottom:8px;
+}
+.theory-section h3::before{content:'▸ ';color:var(--green);}
+
+/* tipo label */
 .tb-tipo{
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  color:var(--blue2);margin-bottom:6px;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:4px;
+  animation:borderBlink 4s ease infinite;
 }
-.tb-titulo{font-size:15px;font-weight:700;margin-bottom:10px;}
-.tb-desc{font-size:13.5px;color:var(--text2);line-height:1.75;margin-bottom:14px;}
+.tb-titulo{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);}
+.tb-desc{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:14px;}
 .tb-desc strong{color:var(--text);}
 
+/* formula */
 .formula-chip{
   display:inline-flex;align-items:center;gap:10px;
-  background:var(--bg);border:1px solid var(--border2);border-radius:9px;
-  padding:10px 16px;margin-bottom:14px;
+  background:var(--bg);
+  border:1px solid var(--border2);
+  border-left:3px solid var(--green);
+  padding:9px 14px;
+  margin-bottom:12px;
+  position:relative;
 }
-.fc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);}
-.fc-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue3);font-weight:500;}
+.fc-label{
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--green);
+}
+.fc-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--green);font-weight:500;
+  text-shadow:0 0 10px rgba(0,255,157,.4);
+}
 
-.pasos-lista{margin-bottom:14px;}
+/* box highlights */
+.box-ok{
+  background:#010f07;border-left:3px solid var(--green);
+  padding:10px 14px;margin-bottom:12px;font-size:12px;color:#5ae89a;
+  line-height:1.7;
+}
+.box-ok::before{content:'[OK] ';color:var(--green);font-weight:600;}
+.box-ok strong{color:#a0ffcc;}
+.box-warn{
+  background:#130407;border-left:3px solid var(--red);
+  padding:10px 14px;margin-bottom:12px;font-size:12px;color:#f08090;
+  line-height:1.7;
+}
+.box-warn::before{content:'[WARN] ';color:var(--red);font-weight:600;}
+.box-warn strong{color:#ffb0be;}
+.box-info{
+  background:#01080f;border-left:3px solid var(--cyan);
+  padding:10px 14px;margin-bottom:12px;font-size:12px;color:#70c8e8;
+  line-height:1.7;
+}
+.box-info::before{content:'[INFO] ';color:var(--cyan);font-weight:600;}
+.box-info strong{color:#a0e4f8;}
+
+/* steps */
+.pasos-lista{margin-bottom:12px;}
 .paso-item{
-  display:flex;gap:12px;align-items:flex-start;
-  font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px;
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;
 }
 .paso-n{
-  width:22px;height:22px;background:var(--blue);border-radius:50%;
+  width:20px;height:20px;
+  background:transparent;border:1px solid var(--green);
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px;
+  font-size:10px;font-weight:600;color:var(--green);flex-shrink:0;margin-top:2px;
+  font-family:'Orbitron',sans-serif;
 }
 .paso-item strong{color:var(--text);}
 
+/* example */
 .ejemplo-bloque{
-  background:var(--bg);border:1px solid var(--border);border-radius:9px;
-  padding:14px 16px;margin-bottom:14px;
+  background:var(--bg);border:1px solid var(--border);
+  border-left:3px solid var(--amber);
+  padding:12px 14px;margin-bottom:12px;
 }
-.ej-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--green2);margin-bottom:6px;}
-.ej-texto{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
-.ej-texto strong{color:var(--blue3);}
+.ej-label{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--amber);margin-bottom:6px;
+}
+.ej-texto{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:6px;}
+.ej-texto strong{color:var(--amber);}
 .ej-operacion{
-  font-family:'JetBrains Mono',monospace;font-size:12px;
-  color:var(--teal3);background:var(--panel);border-radius:6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;color:var(--green);
+  background:var(--panel);border:1px solid var(--border);
   padding:8px 12px;line-height:1.8;
+  white-space:pre;
+  text-shadow:0 0 8px rgba(0,255,157,.3);
 }
-.ej-resultado{margin-top:6px;font-size:13px;font-weight:700;color:var(--green3);}
+.ej-resultado{margin-top:6px;font-size:12px;font-weight:600;color:var(--green);}
 
-.tip-bloque{
-  background:#1a2800;border:1px solid #3a5000;
-  border-radius:9px;padding:14px 16px;margin-bottom:14px;
-  display:flex;gap:10px;
-}
-.tip-bloque .tip-ico{font-size:18px;flex-shrink:0;}
-.tip-bloque .tip-txt{font-size:13px;color:#c8e870;line-height:1.6;}
-.tip-bloque .tip-txt strong{color:#e0f080;}
-
-.error-bloque{
-  background:#200a0a;border:1px solid #5a1a1a;
-  border-radius:9px;padding:14px 16px;margin-bottom:14px;
-  display:flex;gap:10px;
-}
-.error-bloque .err-ico{font-size:18px;flex-shrink:0;}
-.error-bloque .err-txt{font-size:13px;color:#f8a0a0;line-height:1.6;}
-.error-bloque .err-txt strong{color:#ffbbbb;}
-
-/* DIVISOR TEORÍA → PRÁCTICA */
+/* ══ DIVISOR ══ */
 .teoria-practica-div{
-  display:flex;align-items:center;gap:16px;margin:28px 0 22px;
+  display:flex;align-items:center;gap:14px;margin:26px 0 20px;
 }
 .tp-line{flex:1;height:1px;background:var(--border);}
 .tp-label{
-  background:var(--blue);color:#fff;font-size:11px;font-weight:700;
-  padding:6px 16px;border-radius:20px;white-space:nowrap;
-  text-transform:uppercase;letter-spacing:1px;
+  font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--amber);
+  border:1px solid var(--amber);
+  padding:4px 12px;
+  white-space:nowrap;
+  animation:borderBlink 3s ease infinite;
 }
 
-/* EJERCICIOS */
-.subtipo-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+/* ══ EXERCISE CARD ══ */
+.subtipo-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
 .st-btn{
-  background:var(--panel);border:1.5px solid var(--border);border-radius:8px;
-  padding:7px 13px;color:var(--text2);font-family:'Sora',sans-serif;
-  font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;letter-spacing:.5px;
+  padding:6px 12px;
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:all .15s;
 }
-.st-btn:hover{border-color:var(--blue2);color:var(--blue3);}
-.st-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.st-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.st-btn.active{border-color:var(--green);color:var(--green);}
 
 .ej-card{
-  background:var(--panel);border:1.5px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;animation:fadeUp .3s ease;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-top:2px solid var(--border2);
+  overflow:hidden;
+  animation:fadeUp .3s ease;
 }
-.ej-card.correcto{border-color:var(--green2);}
-.ej-card.incorrecto{border-color:var(--red2);}
+.ej-card.correcto{border-color:var(--green);border-top-color:var(--green);}
+.ej-card.incorrecto{border-color:var(--red);border-top-color:var(--red);}
 
 .ec-top{
   display:flex;align-items:center;justify-content:space-between;
-  padding:11px 16px;background:var(--panel2);border-bottom:1px solid var(--border);
+  padding:10px 16px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
 }
-.ec-top-left{display:flex;align-items:center;gap:7px;}
-.ec-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px;}
-.t-az{background:#1a3060;color:#93c5fd} .t-vd{background:#063020;color:#6ee7b7}
-.t-nr{background:#3d1800;color:#fdba74} .t-mo{background:#2d1050;color:#c4b5fd}
-.t-am{background:#2a1800;color:#fde68a} .t-ci{background:#022a2a;color:#5eead4}
-.t-ro{background:#2a0a1e;color:#f9a8d4} .t-li{background:#0d2010;color:#86efac}
-.t-or{background:#2a1e00;color:#fde047}
-.ec-ctx{font-size:11px;color:var(--text3);background:var(--bg);padding:3px 9px;border-radius:5px;}
+.ec-top-left{display:flex;align-items:center;gap:8px;}
+.ec-tag{
+  font-size:9px;letter-spacing:1.5px;
+  padding:3px 8px;text-transform:uppercase;
+  animation:borderBlink 4s ease infinite;
+}
+.t-az{border:1px solid #2050a0;color:#6090ff;}
+.t-vd{border:1px solid var(--green-dim);color:var(--green);}
+.t-nr{border:1px solid #804020;color:#ffa060;}
+.t-mo{border:1px solid #602090;color:var(--purple);}
+.t-am{border:1px solid #806010;color:var(--amber);}
+.t-ci{border:1px solid var(--cyan);color:var(--cyan);}
+.t-ro{border:1px solid #803060;color:#ff80c0;}
+.t-li{border:1px solid #305020;color:#80d060;}
+.t-or{border:1px solid #806030;color:#ffd040;}
+.ec-ctx{font-size:10px;color:var(--text3);background:var(--bg);padding:2px 8px;letter-spacing:.5px;}
 
-.ec-body{padding:20px 22px;}
-.ec-enunciado{font-size:15px;line-height:1.8;color:var(--text);margin-bottom:16px;}
-.ec-enunciado strong{color:var(--blue3);}
+.ec-body{padding:18px 20px;}
+.ec-enunciado{font-size:14px;line-height:1.85;color:var(--text);margin-bottom:14px;}
+.ec-enunciado strong{color:var(--cyan);}
 .ec-formula{
-  display:inline-flex;align-items:center;gap:8px;background:var(--bg);
-  border:1px solid var(--border);border-radius:7px;padding:7px 12px;
-  margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text2);
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--bg);border:1px solid var(--border);
+  border-left:3px solid var(--green);
+  padding:6px 12px;margin-bottom:14px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--green);position:relative;
+  text-shadow:0 0 8px rgba(0,255,157,.3);
 }
-.ec-formula .ef-lbl{font-family:'Sora',sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--blue2);font-weight:700;}
+.ec-formula .ef-lbl{
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);
+}
 
 .btn-toggle-formula{
-  background:none;border:1px solid var(--border2);border-radius:6px;
-  color:var(--text3);font-family:'Sora',sans-serif;font-size:11px;font-weight:600;
-  padding:5px 10px;cursor:pointer;transition:all .15s;margin-bottom:10px;
-  display:flex;align-items:center;gap:5px;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text3);
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;letter-spacing:1px;
+  text-transform:uppercase;
+  padding:4px 10px;cursor:pointer;
+  transition:all .15s;margin-bottom:10px;
 }
-.btn-toggle-formula:hover{border-color:var(--blue2);color:var(--blue3);}
+.btn-toggle-formula:hover{border-color:var(--cyan);color:var(--cyan);}
 
+/* inputs */
 .input-row{display:flex;gap:10px;align-items:center;}
 .inp-wrap{flex:1;position:relative;}
 .inp-wrap input{
-  width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;
-  padding:12px 48px 12px 14px;color:var(--text);
+  width:100%;
+  background:var(--bg);border:1px solid var(--border2);
+  padding:11px 44px 11px 14px;
+  color:var(--text);
   font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;
   outline:none;transition:border-color .2s;
+  letter-spacing:.5px;
 }
-.inp-wrap input:focus{border-color:var(--blue2);}
-.inp-wrap input.ok {border-color:var(--green2);background:#06301a18;}
-.inp-wrap input.err{border-color:var(--red2);  background:#30060618;}
-.inp-wrap .unit{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;}
+.inp-wrap input:focus{border-color:var(--cyan);}
+.inp-wrap input.ok{border-color:var(--green);background:rgba(0,255,157,.03);}
+.inp-wrap input.err{border-color:var(--red);background:rgba(255,64,96,.03);}
+.inp-wrap .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:11px;}
 
 .frac-row{display:flex;gap:14px;align-items:center;}
 .frac-col{display:flex;flex-direction:column;align-items:center;gap:3px;}
-.frac-col label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.frac-col label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
 .frac-col input{
-  width:84px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;
-  padding:10px;color:var(--text);font-family:'JetBrains Mono',monospace;
-  font-size:16px;font-weight:600;outline:none;text-align:center;transition:border-color .2s;
+  width:80px;background:var(--bg);border:1px solid var(--border2);
+  padding:10px;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;
+  outline:none;text-align:center;transition:border-color .2s;
 }
-.frac-col input:focus{border-color:var(--blue2);}
-.frac-col input.ok {border-color:var(--green2);}
-.frac-col input.err{border-color:var(--red2);}
-.frac-bar{width:60px;height:2px;background:var(--blue3);border-radius:1px;}
-.frac-hint{font-size:11.5px;color:var(--text3);}
+.frac-col input:focus{border-color:var(--cyan);}
+.frac-col input.ok{border-color:var(--green);}
+.frac-col input.err{border-color:var(--red);}
+.frac-bar{width:56px;height:2px;background:var(--green);}
+.frac-hint{font-size:10px;color:var(--text3);}
 
 .btn-ver{
-  background:var(--blue);color:#fff;border:none;border-radius:9px;
-  padding:12px 20px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;
+  background:var(--green);color:#000;
+  border:none;
+  padding:11px 20px;
+  font-family:'Share Tech Mono',monospace;font-size:12px;
+  font-weight:600;letter-spacing:1px;text-transform:uppercase;
   cursor:pointer;transition:all .2s;white-space:nowrap;
 }
-.btn-ver:hover{background:#1d4ed8;transform:translateY(-1px);}
-.btn-ver:disabled{background:var(--border);cursor:default;transform:none;}
+.btn-ver:hover{background:#00cc7a;box-shadow:0 0 16px rgba(0,255,157,.4);}
+.btn-ver:disabled{background:var(--border);color:var(--text3);cursor:default;box-shadow:none;}
 
-.feedback{margin-top:12px;padding:13px 15px;border-radius:9px;font-size:13.5px;line-height:1.6;display:none;}
+/* feedback */
+.feedback{margin-top:12px;padding:12px 14px;font-size:12px;line-height:1.7;display:none;border-left:3px solid;}
 .feedback.show{display:block;}
-.feedback.ok {background:#06301a;border:1px solid var(--green); color:var(--green3);}
-.feedback.err{background:#300606;border:1px solid var(--red);   color:#fca5a5;}
-.feedback .fb-t{font-weight:700;font-size:14px;margin-bottom:4px;}
-.feedback .fb-p{font-family:'JetBrains Mono',monospace;font-size:11.5px;margin-top:6px;opacity:.85;line-height:1.8;}
+.feedback.ok{background:rgba(0,255,157,.04);border-color:var(--green);color:#5ae89a;}
+.feedback.ok::before{content:'[OK] ';color:var(--green);font-weight:600;}
+.feedback.err{background:rgba(255,64,96,.04);border-color:var(--red);color:#f08090;}
+.feedback.err::before{content:'[ERR] ';color:var(--red);font-weight:600;}
+.feedback .fb-t{font-weight:600;font-size:13px;margin-bottom:4px;display:inline;}
+.feedback .fb-p{font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:8px;opacity:.8;line-height:1.8;display:block;white-space:pre-wrap;}
 
-.ej-btns{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;}
+/* action buttons */
+.ej-btns{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
 .btn-s{
-  background:var(--panel2);color:var(--text2);border:1.5px solid var(--border);
-  border-radius:9px;padding:9px 16px;font-family:'Sora',sans-serif;
-  font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;letter-spacing:1px;
+  text-transform:uppercase;
+  padding:8px 14px;cursor:pointer;
+  transition:all .15s;
 }
-.btn-s:hover{border-color:var(--blue2);color:var(--blue3);}
-.btn-s.danger:hover{border-color:var(--red2);color:var(--red2);}
+.btn-s:hover{border-color:var(--green);color:var(--green);}
+.btn-s.danger:hover{border-color:var(--red);color:var(--red);}
 
-@media(max-width:768px){
-  .sidebar{width:220px;} .content{margin-left:220px;}
-  .page-body{padding:20px 16px 50px;} .page-topbar{padding:14px 18px;}
+/* ══ FABs ══ */
+.fab-top{
+  position:fixed;bottom:24px;right:24px;z-index:300;
+  width:44px;height:44px;
+  background:var(--bg2);
+  border:1px solid var(--green);
+  color:var(--green);
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;
+  transform:translateY(10px);
+  font-family:'Share Tech Mono',monospace;
+}
+.fab-top.visible{opacity:1;pointer-events:all;transform:translateY(0);}
+.fab-top:hover{box-shadow:0 0 20px rgba(0,255,157,.3);}
+
+/* ══ TABLE ══ */
+table{
+  width:100%;border-collapse:collapse;margin-bottom:14px;
+  font-size:12px;
+}
+thead tr{background:var(--bg2);border-bottom:2px solid var(--cyan);}
+thead th{
+  padding:8px 12px;text-align:left;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cyan);font-weight:400;
+}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:hover{background:rgba(0,255,157,.02);}
+tbody td{padding:8px 12px;color:var(--text2);line-height:1.6;}
+tbody td strong{color:var(--text);}
+.td-term{color:var(--green);font-family:'JetBrains Mono',monospace;}
+.td-formula{color:var(--green);font-family:'JetBrains Mono',monospace;text-shadow:0 0 6px rgba(0,255,157,.3);}
+
+/* ══ FLASHCARDS ══ */
+.fc-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.fc-filter-btn{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  padding:5px 12px;cursor:pointer;
+  transition:all .15s;
+}
+.fc-filter-btn:hover,.fc-filter-btn.active{border-color:var(--purple);color:var(--purple);}
+
+.flashcards-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;
+}
+.flashcard{
+  perspective:1000px;height:160px;cursor:pointer;
+}
+.flashcard-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .5s ease;
+}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg);}
+.flashcard-front,.flashcard-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  background:var(--panel);
+  border:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:16px;
+}
+.flashcard-front{border-top:2px solid var(--purple);}
+.flashcard-back{
+  transform:rotateY(180deg);
+  border-top:2px solid var(--green);
+  background:var(--bg2);
+}
+.fc-cat{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
+.fc-question{font-size:13px;color:var(--text);line-height:1.6;}
+.fc-hint{font-size:9px;color:var(--text3);margin-top:8px;}
+.fc-answer{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);line-height:1.7;text-shadow:0 0 8px rgba(0,255,157,.3);}
+.fc-back-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+
+/* ══ NOTES ══ */
+.notes-wrap{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-left:3px solid var(--amber);
+  padding:20px;
+}
+.notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.notes-title{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);
+}
+.notes-status{font-size:10px;color:var(--text3);letter-spacing:1px;}
+.notes-textarea{
+  width:100%;min-height:400px;
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  padding:16px;resize:vertical;
+  outline:none;line-height:1.8;
+  transition:border-color .2s;
+}
+.notes-textarea:focus{border-color:var(--amber);}
+.notes-footer{margin-top:10px;display:flex;gap:8px;align-items:center;}
+.notes-count{font-size:10px;color:var(--text3);}
+
+/* mobile overlay */
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:199;
+}
+.sidebar-overlay.active{display:block;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .topbar{left:0;}
+  .content{margin-left:0;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .hamburger{display:flex;}
 }
 @media(max-width:580px){
-  .sidebar{display:none;} .content{margin-left:0;}
+  .page-body{padding:18px 14px 70px;}
+  .hero h2{font-size:15px;}
+  .flashcards-grid{grid-template-columns:1fr 1fr;}
+  .flashcard{height:180px;}
 }
 </style>
 </head>
 <body>
+
+<div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 
-<!-- ═══════════ SIDEBAR ═══════════ -->
-<aside class="sidebar">
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
   <div class="sb-logo">
-    <div class="sb-logo-mark">∑</div>
-    <h1>Álgebra Ciudadana</h1>
+    <div class="sb-logo-mark">// ALGEBRA.CIU</div>
+    <h1>Álgebra <span>Ciudadana</span></h1>
     <p>INACAP · Automatización y Robótica</p>
   </div>
 
   <div class="sb-section">
-    <div class="sb-section-label">General</div>
-    <button class="nav-btn active" onclick="ir('inicio')">
-      <span class="ni">🏠</span> Inicio
+    <div class="sb-section-label">// General</div>
+    <button class="nav-btn active" id="nav-inicio" onclick="ir('inicio')">
+      <span class="ni">▶</span> Inicio
     </button>
-    <button class="nav-btn" onclick="ir('mixto')">
-      <span class="ni">🎲</span> Modo mixto
+    <button class="nav-btn" id="nav-mixto" onclick="ir('mixto')">
+      <span class="ni">◈</span> Modo Mixto
     </button>
   </div>
 
   <div class="sb-section">
-    <div class="sb-section-label">Unidades</div>
-    <button class="nav-btn" onclick="ir('porcentajes')">
-      <span class="ni">%</span> Porcentajes
-      <span class="nb nb-done">✓</span>
-    </button>
-    <button class="nav-btn" onclick="ir('fracciones')">
-      <span class="ni">½</span> Fracciones
-      <span class="nb nb-done">✓</span>
-    </button>
-    <button class="nav-btn" style="opacity:.4;pointer-events:none">
+    <div class="sb-section-label">// Unidades</div>
+
+    <!-- Unidad 1: Porcentajes -->
+    <div class="nav-unit">
+      <button class="nav-unit-header open" id="unit-pct-hdr" onclick="toggleUnit('pct')">
+        <span class="ni">%</span>
+        Porcentajes
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub open" id="unit-pct-sub">
+        <button class="nav-sub-btn" id="nav-porcentajes" onclick="ir('porcentajes')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-pct" onclick="ir('ejer-pct')"> Ejercicios</button>
+        <button class="nav-sub-btn" id="nav-flash-pct" onclick="ir('flash-pct')"> Flashcards</button>
+        <button class="nav-sub-btn" id="nav-glosario" onclick="ir('glosario')"> Glosario</button>
+        <button class="nav-sub-btn" id="nav-notas" onclick="ir('notas')"> Notas</button>
+      </div>
+    </div>
+
+    <!-- Unidad 2: Fracciones -->
+    <div class="nav-unit">
+      <button class="nav-unit-header" id="unit-frac-hdr" onclick="toggleUnit('frac')">
+        <span class="ni">½</span>
+        Fracciones
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub" id="unit-frac-sub">
+        <button class="nav-sub-btn" id="nav-fracciones" onclick="ir('fracciones')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-frac" onclick="ir('ejer-frac')"> Ejercicios</button>
+      </div>
+    </div>
+
+    <button class="nav-btn" style="opacity:.3;pointer-events:none">
       <span class="ni">🔒</span> Próxima unidad
-      <span class="nb nb-lock">🔒</span>
     </button>
-    <button class="nav-btn" style="opacity:.4;pointer-events:none">
+    <button class="nav-btn" style="opacity:.3;pointer-events:none">
       <span class="ni">🔒</span> Próxima unidad
-      <span class="nb nb-lock">🔒</span>
     </button>
   </div>
 
   <div class="sb-score">
+    <div class="score-label">// Sesión actual</div>
     <div class="score-grid">
-      <div class="sg-ok"><div class="sg-val" id="s-ok">0</div><div class="sg-lbl">OK</div></div>
-      <div class="sg-err"><div class="sg-val" id="s-err">0</div><div class="sg-lbl">Err</div></div>
-      <div class="sg-tot"><div class="sg-val" id="s-tot">0</div><div class="sg-lbl">Total</div></div>
+      <div class="sg-cell sg-ok"><div class="sg-val" id="s-ok">0</div><div class="sg-lbl">OK</div></div>
+      <div class="sg-cell sg-err"><div class="sg-val" id="s-err">0</div><div class="sg-lbl">ERR</div></div>
+      <div class="sg-cell sg-tot"><div class="sg-val" id="s-tot">0</div><div class="sg-lbl">TOT</div></div>
     </div>
-    <div style="margin-top:12px;text-align:center;font-size:10px;color:var(--text3);letter-spacing:2.5px;font-weight:600;text-transform:uppercase;opacity:0.6;display:none;">— SALOMÓN —</div>
   </div>
 </aside>
 
-<!-- ═══════════ CONTENT ═══════════ -->
-<main class="content">
-
-  <!-- TOP BAR -->
-  <div class="page-topbar">
-    <div class="pt-left">
-      <div class="pt-breadcrumb">
-        <span onclick="ir('inicio')" style="cursor:pointer">Inicio</span>
-        <span class="sep">›</span>
-        <span class="current" id="bc-current">Inicio</span>
-      </div>
+<!-- ══════════ TOPBAR ══════════ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="hamburger" onclick="openSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="breadcrumb">
+      <span onclick="ir('inicio')" style="cursor:pointer;color:var(--text3)">INICIO</span>
+      <span class="sep">›</span>
+      <span class="current" id="bc-current">INICIO</span>
     </div>
-    <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:1px;">x btopg :}</div>
-    <div class="pt-right">
-      <button class="btn-nav" id="btn-back" onclick="irAtras()" style="display:none">← Atrás</button>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-tag">x btopg :}</span>
+    <button class="btn-term" id="btn-back" onclick="irAtras()" style="display:none">← ATRÁS</button>
+  </div>
+</div>
+
+<!-- ══════════ CONTENT ══════════ -->
+<main class="content">
+<div class="page-body">
+
+<!-- ══ PAGE: INICIO ══ -->
+<div class="page active" id="page-inicio">
+  <div class="hero">
+    <div class="hero-tag">// CUADERNO DIGITAL — SEM. 2025</div>
+    <h2>Álgebra Ciudadana<span class="cursor">_</span></h2>
+    <p>Cada unidad tiene teoría completa con ejemplos y ejercicios interactivos con contexto ciudadano. Iremos agregando unidades a medida que avancemos en el semestre.</p>
+  </div>
+
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="// buscar en el contenido..." oninput="doSearch(this.value)">
+    <span class="search-icon">⌕</span>
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <div class="section-label">// UNIDADES DISPONIBLES</div>
+  <div class="unidades-grid">
+    <div class="u-card" onclick="ir('porcentajes')">
+      <div class="uc-ico">%</div>
+      <div class="uc-n">Unidad 01</div>
+      <div class="uc-t">Porcentajes</div>
+      <div class="uc-d">5 tipos de problemas con finanzas personales, IVA y descuentos.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+    <div class="u-card cyan-card" onclick="ir('fracciones')">
+      <div class="uc-ico">½</div>
+      <div class="uc-n">Unidad 02</div>
+      <div class="uc-t">Fracciones</div>
+      <div class="uc-d">Suma, resta, multiplicación, división y conversión decimal.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+    <div class="u-card locked">
+      <div class="uc-ico">🔒</div>
+      <div class="uc-n">Unidad 03</div>
+      <div class="uc-t">Próximamente</div>
+      <div class="uc-d">Se desbloqueará cuando avancemos.</div>
+      <div class="uc-s s-lock">[LOCK] No disponible</div>
+    </div>
+    <div class="u-card locked">
+      <div class="uc-ico">🔒</div>
+      <div class="uc-n">Unidad 04</div>
+      <div class="uc-t">Próximamente</div>
+      <div class="uc-d">Se desbloqueará cuando avancemos.</div>
+      <div class="uc-s s-lock">[LOCK] No disponible</div>
     </div>
   </div>
 
-  <div class="page-body">
-
-    <!-- ═══ INICIO ═══ -->
-    <div class="page active" id="page-inicio">
-      <div class="hero">
-        <h2>Cuaderno Digital del Semestre 👋</h2>
-        <p>Cada unidad tiene teoría completa con ejemplos y ejercicios interactivos con contexto ciudadano. Iremos agregando unidades a medida que avancemos en el semestre.</p>
-      </div>
-
-      <div class="section-label">Unidades disponibles</div>
-      <div class="unidades-grid">
-        <div class="u-card" onclick="ir('porcentajes')">
-          <div class="uc-ico">%</div>
-          <div class="uc-n">Unidad 1</div>
-          <div class="uc-t">Porcentajes</div>
-          <div class="uc-d">5 tipos de problemas con finanzas personales, IVA y descuentos.</div>
-          <div class="uc-s s-done">✓ Disponible</div>
-        </div>
-        <div class="u-card" onclick="ir('fracciones')">
-          <div class="uc-ico">½</div>
-          <div class="uc-n">Unidad 2</div>
-          <div class="uc-t">Fracciones</div>
-          <div class="uc-d">Suma, resta, multiplicación, división y conversión decimal.</div>
-          <div class="uc-s s-done">✓ Disponible</div>
-        </div>
-        <div class="u-card locked">
-          <div class="uc-ico">🔒</div>
-          <div class="uc-n">Unidad 3</div>
-          <div class="uc-t">Próximamente</div>
-          <div class="uc-d">Se desbloqueará cuando avancemos.</div>
-          <div class="uc-s s-lock">🔒 No disponible</div>
-        </div>
-        <div class="u-card locked">
-          <div class="uc-ico">🔒</div>
-          <div class="uc-n">Unidad 4</div>
-          <div class="uc-t">Próximamente</div>
-          <div class="uc-d">Se desbloqueará cuando avancemos.</div>
-          <div class="uc-s s-lock">🔒 No disponible</div>
-        </div>
-      </div>
-
-      <div class="section-label">Progreso del semestre</div>
-      <div class="prog-card">
-        <h3>Rendimiento por unidad</h3>
-        <div class="prog-row">
-          <div class="pr-lbl">Porcentajes</div>
-          <div class="pr-bg"><div class="pr-fill" id="prog-p" style="width:0%;background:var(--blue2)"></div></div>
-          <div class="pr-pct" id="pct-p">—</div>
-        </div>
-        <div class="prog-row">
-          <div class="pr-lbl">Fracciones</div>
-          <div class="pr-bg"><div class="pr-fill" id="prog-f" style="width:0%;background:var(--teal2)"></div></div>
-          <div class="pr-pct" id="pct-f">—</div>
-        </div>
-        <div class="prog-row" style="opacity:.35">
-          <div class="pr-lbl">Unidad 3</div>
-          <div class="pr-bg"><div class="pr-fill" style="width:0%;background:var(--amber2)"></div></div>
-          <div class="pr-pct">—</div>
-        </div>
-      </div>
+  <div class="section-label">// PROGRESO DEL SEMESTRE</div>
+  <div class="prog-card">
+    <h3>Rendimiento por unidad</h3>
+    <div class="prog-row">
+      <div class="pr-lbl">Porcentajes</div>
+      <div class="pr-bg"><div class="pr-fill" id="prog-p" style="width:0%;background:var(--green)"></div></div>
+      <div class="pr-pct" id="pct-p">—</div>
     </div>
-
-    <!-- ═══ PORCENTAJES ═══ -->
-    <div class="page" id="page-porcentajes">
-      <div class="unidad-hero">
-        <div class="uh-ico">%</div>
-        <div class="uh-info">
-          <h2>Porcentajes</h2>
-          <p>Aprende a resolver los 5 tipos de problemas con porcentajes aplicados a situaciones reales: presupuesto personal, IVA, AFP, arriendo y descuentos.</p>
-          <div class="uh-tags">
-            <span class="uh-tag">💰 Finanzas personales</span>
-            <span class="uh-tag">🧾 Impuestos</span>
-            <span class="uh-tag">🏷️ Descuentos</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEORÍA -->
-      <div class="section-label">Concepto base</div>
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Fundamento</div>
-        <div class="tb-titulo">¿Qué es un porcentaje?</div>
-        <div class="tb-desc">Un <strong>porcentaje</strong> significa "por cada cien". El símbolo <strong>%</strong> equivale a dividir entre 100. Es decir, <strong>25% = 25/100 = 0,25</strong>. Toda operación con porcentajes parte de esta conversión.</div>
-        <div class="formula-chip"><span class="fc-label">Clave</span><span class="fc-val">X% = X ÷ 100</span></div>
-        <div class="tip-bloque">
-          <span class="tip-ico">💡</span>
-          <div class="tip-txt">Antes de resolver, siempre pregúntate: <strong>¿qué me dan?</strong> y <strong>¿qué me piden?</strong> Esa pregunta define cuál de los 5 tipos usar.</div>
-        </div>
-      </div>
-
-      <!-- TIPO 1 -->
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Tipo 1</div>
-        <div class="tb-titulo">Calcular la parte de un total</div>
-        <div class="tb-desc">Cuando conoces el <strong>total</strong> y el <strong>porcentaje</strong>, y quieres saber a cuánto equivale ese porcentaje en términos concretos.</div>
-        <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Parte = (% ÷ 100) × Total</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span>Convierte el % a decimal: divide entre 100.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span>Multiplica ese decimal por el total.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>El resultado es la parte que buscas.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">Tu sueldo es <strong>$600.000</strong>. El <strong>10%</strong> va a AFP. ¿Cuánto descuentan?</div>
-          <div class="ej-operacion">Parte = (10 / 100) × 600.000&#10;     = 0,10 × 600.000 = 60.000</div>
-          <div class="ej-resultado">✓ Descuentan $60.000 para AFP</div>
-        </div>
-        <div class="error-bloque">
-          <span class="err-ico">⚠️</span>
-          <div class="err-txt">Error común: multiplicar por 10 en vez de 0,10. Recuerda <strong>siempre dividir el % entre 100</strong> antes de multiplicar.</div>
-        </div>
-      </div>
-
-      <!-- TIPO 2 -->
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Tipo 2</div>
-        <div class="tb-titulo">Encontrar el total</div>
-        <div class="tb-desc">Cuando conoces <strong>la parte</strong> y sabes <strong>qué porcentaje representa</strong>, pero necesitas el total del que proviene.</div>
-        <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span>Multiplica la parte por 100.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span>Divide el resultado entre el porcentaje.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>Verifica: calcula el % del total y debe darte la parte.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">Pagaste <strong>$57.000</strong> de IVA, que equivale al <strong>19%</strong>. ¿Cuál era el precio neto?</div>
-          <div class="ej-operacion">Total = (57.000 × 100) / 19&#10;     = 5.700.000 / 19 = 300.000</div>
-          <div class="ej-resultado">✓ El precio neto era $300.000</div>
-        </div>
-        <div class="tip-bloque">
-          <span class="tip-ico">💡</span>
-          <div class="tip-txt">Verificación: 0,19 × 300.000 = 57.000 ✓ Siempre puedes verificar con el Tipo 1.</div>
-        </div>
-      </div>
-
-      <!-- TIPO 3 -->
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Tipo 3</div>
-        <div class="tb-titulo">Aumento y descuento porcentual</div>
-        <div class="tb-desc">A una cantidad le <strong>sumas o restas</strong> un porcentaje de sí misma. El <strong>1</strong> representa el 100% original que ya tenías.</div>
-        <div class="formula-chip"><span class="fc-label">Aumento</span><span class="fc-val">Total × (1 + % ÷ 100)</span></div>
-        <div class="formula-chip"><span class="fc-label">Descuento</span><span class="fc-val">Total × (1 − % ÷ 100)</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span>Si es aumento: suma el % a 1 → ejemplo: 30% → 1,30.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span>Si es descuento: resta el % a 1 → ejemplo: 20% → 0,80.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>Multiplica el total por ese factor.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Aumento</div>
-          <div class="ej-texto">Tu arriendo era <strong>$350.000</strong> y subió un <strong>8%</strong>. ¿Cuánto pagas ahora?</div>
-          <div class="ej-operacion">350.000 × (1 + 0,08) = 350.000 × 1,08 = 378.000</div>
-          <div class="ej-resultado">✓ Ahora pagas $378.000</div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Descuento</div>
-          <div class="ej-texto">Un celular costaba <strong>$250.000</strong> y tiene un descuento del <strong>15%</strong>. ¿Cuánto pagas?</div>
-          <div class="ej-operacion">250.000 × (1 − 0,15) = 250.000 × 0,85 = 212.500</div>
-          <div class="ej-resultado">✓ Pagas $212.500</div>
-        </div>
-        <div class="error-bloque">
-          <span class="err-ico">⚠️</span>
-          <div class="err-txt">Error común: calcular solo el porcentaje y olvidar sumarlo/restarlo al total. La fórmula con el factor (1 ± %) lo hace en un solo paso.</div>
-        </div>
-      </div>
-
-      <!-- TIPO 4 -->
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Tipo 4</div>
-        <div class="tb-titulo">¿Qué porcentaje es una parte de un total?</div>
-        <div class="tb-desc">Cuando tienes <strong>la parte y el total</strong>, y quieres saber qué porcentaje representa la parte respecto al total.</div>
-        <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">% = (Parte ÷ Total) × 100</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span>Divide la parte entre el total.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span>Multiplica el resultado por 100.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>El resultado es el porcentaje.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">Ganas <strong>$500.000</strong> y pagas <strong>$150.000</strong> de arriendo. ¿Qué % del sueldo es el arriendo?</div>
-          <div class="ej-operacion">% = (150.000 / 500.000) × 100 = 0,30 × 100 = 30%</div>
-          <div class="ej-resultado">✓ El arriendo es el 30% del sueldo</div>
-        </div>
-      </div>
-
-      <!-- TIPO 5 -->
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Tipo 5</div>
-        <div class="tb-titulo">Encontrar el total cuando la parte representa cierto %</div>
-        <div class="tb-desc">Tienes <strong>una parte</strong> y sabes <strong>qué porcentaje debería representar</strong> del total. La fórmula es idéntica al Tipo 2 — solo cambia la redacción.</div>
-        <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">Pagaste <strong>$45.000</strong> de impuesto, que representa el <strong>15%</strong> de tu ingreso. ¿Cuánto fue tu ingreso?</div>
-          <div class="ej-operacion">Total = (45.000 × 100) / 15 = 4.500.000 / 15 = 300.000</div>
-          <div class="ej-resultado">✓ Tu ingreso fue $300.000</div>
-        </div>
-        <div class="tip-bloque">
-          <span class="tip-ico">💡</span>
-          <div class="tip-txt">Tipos 2 y 5 son idénticos en fórmula. La diferencia es solo cómo está redactado el enunciado. Si el <strong>% y la parte están dados, y buscas el total</strong> → siempre es (Parte × 100) ÷ %</div>
-        </div>
-      </div>
-
-      <!-- DIVISOR -->
-      <div class="teoria-practica-div">
-        <div class="tp-line"></div>
-        <div class="tp-label">✏️ Zona de práctica</div>
-        <div class="tp-line"></div>
-      </div>
-
-      <!-- EJERCICIOS PORCENTAJES -->
-      <div class="subtipo-row" id="st-porcentajes">
-        <button class="st-btn active" onclick="setSt('p',0)">🎲 Aleatorio</button>
-        <button class="st-btn" onclick="setSt('p',1)">Tipo 1</button>
-        <button class="st-btn" onclick="setSt('p',2)">Tipo 2</button>
-        <button class="st-btn" onclick="setSt('p',3)">Tipo 3 — Aum/Desc</button>
-        <button class="st-btn" onclick="setSt('p',4)">Tipo 4</button>
-        <button class="st-btn" onclick="setSt('p',5)">Tipo 5</button>
-        <button class="st-btn" onclick="setSt('p',6)">🏛️ Herencias</button>
-        <button class="st-btn" onclick="setSt('p',7)">💰 Presupuesto 50/30/20</button>
-        <button class="st-btn" onclick="setSt('p',8)">🏠 Herencia intestada</button>
-        <button class="st-btn" onclick="setSt('p',9)">📜 Herencia testada</button>
-      </div>
-      <div id="ej-p"></div>
-      <div class="ej-btns">
-        <button class="btn-s" onclick="nuevoEjercicio()">↻ Nuevo ejercicio</button>
-        <button class="btn-s danger" onclick="resetScore()">✕ Reiniciar puntaje</button>
-      </div>
+    <div class="prog-row">
+      <div class="pr-lbl">Fracciones</div>
+      <div class="pr-bg"><div class="pr-fill" id="prog-f" style="width:0%;background:var(--cyan)"></div></div>
+      <div class="pr-pct" id="pct-f">—</div>
     </div>
-
-    <!-- ═══ FRACCIONES ═══ -->
-    <div class="page" id="page-fracciones">
-      <div class="unidad-hero">
-        <div class="uh-ico">½</div>
-        <div class="uh-info">
-          <h2>Fracciones</h2>
-          <p>Domina las operaciones con fracciones en contextos cotidianos: dividir el sueldo, calcular cuotas, interpretar tasas y proporciones.</p>
-          <div class="uh-tags">
-            <span class="uh-tag">💰 Presupuesto</span>
-            <span class="uh-tag">💳 Cuotas</span>
-            <span class="uh-tag">📊 Proporciones</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TEORÍA FRACCIONES -->
-      <div class="section-label">Concepto base</div>
-      <div class="teoria-bloque">
-        <div class="tb-tipo">Fundamento</div>
-        <div class="tb-titulo">¿Qué es una fracción?</div>
-        <div class="tb-desc">Una fracción representa una <strong>parte de un entero</strong>. Se escribe como <strong>numerador/denominador</strong>, donde el denominador indica en cuántas partes se divide el entero, y el numerador cuántas partes tomamos. Por ejemplo, <strong>3/4</strong> significa 3 de 4 partes iguales.</div>
-        <div class="tip-bloque">
-          <span class="tip-ico">💡</span>
-          <div class="tip-txt">Una fracción siempre debe presentarse <strong>simplificada</strong>: divide numerador y denominador por su MCD (Máximo Común Divisor).</div>
-        </div>
-      </div>
-
-      <div class="teoria-bloque" style="border-left-color:var(--teal2)">
-        <div class="tb-tipo" style="color:var(--teal2)">Suma y Resta</div>
-        <div class="tb-titulo">Sumar y restar fracciones</div>
-        <div class="tb-desc">Si los denominadores son <strong>iguales</strong>: opera directamente los numeradores. Si son <strong>distintos</strong>: busca el MCM (Mínimo Común Múltiplo) para igualar denominadores.</div>
-        <div class="formula-chip"><span class="fc-label">Suma</span><span class="fc-val">a/b + c/d = (a×d + c×b) / (b×d)</span></div>
-        <div class="formula-chip"><span class="fc-label">Resta</span><span class="fc-val">a/b − c/d = (a×d − c×b) / (b×d)</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span>Calcula el MCM de los denominadores.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span>Convierte ambas fracciones al denominador común.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>Opera los numeradores y simplifica el resultado.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">De tu sueldo, <strong>1/3</strong> va a arriendo y <strong>1/4</strong> a alimentación. ¿Qué fracción del sueldo usas?</div>
-          <div class="ej-operacion">MCM(3,4) = 12&#10;1/3 + 1/4 = 4/12 + 3/12 = 7/12</div>
-          <div class="ej-resultado">✓ Usas 7/12 del sueldo</div>
-        </div>
-        <div class="error-bloque">
-          <span class="err-ico">⚠️</span>
-          <div class="err-txt">Error común: sumar numeradores Y denominadores directamente → 1/3 + 1/4 ≠ 2/7. <strong>Los denominadores no se suman.</strong></div>
-        </div>
-      </div>
-
-      <div class="teoria-bloque" style="border-left-color:var(--amber2)">
-        <div class="tb-tipo" style="color:var(--amber2)">Multiplicación y División</div>
-        <div class="tb-titulo">Multiplicar y dividir fracciones</div>
-        <div class="tb-desc">La multiplicación es directa: <strong>numerador × numerador</strong> y <strong>denominador × denominador</strong>. La división se convierte en multiplicación invirtiendo la segunda fracción.</div>
-        <div class="formula-chip"><span class="fc-label">Multiplicación</span><span class="fc-val">(a/b) × (c/d) = (a×c) / (b×d)</span></div>
-        <div class="formula-chip"><span class="fc-label">División</span><span class="fc-val">(a/b) ÷ (c/d) = (a×d) / (b×c)</span></div>
-        <div class="pasos-lista">
-          <div class="paso-item"><div class="paso-n">1</div><span><strong>Multiplicación:</strong> multiplica numeradores entre sí y denominadores entre sí.</span></div>
-          <div class="paso-item"><div class="paso-n">2</div><span><strong>División:</strong> invierte la segunda fracción y multiplica.</span></div>
-          <div class="paso-item"><div class="paso-n">3</div><span>Simplifica el resultado con el MCD.</span></div>
-        </div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 División</div>
-          <div class="ej-texto">Tienes <strong>3/4</strong> de tu presupuesto para dividir en <strong>3/2</strong> partes. ¿Cuánto es cada parte?</div>
-          <div class="ej-operacion">(3/4) ÷ (3/2) = (3×2) / (4×3) = 6/12 = 1/2</div>
-          <div class="ej-resultado">✓ Cada parte es 1/2 del presupuesto</div>
-        </div>
-      </div>
-
-      <div class="teoria-bloque" style="border-left-color:var(--green2)">
-        <div class="tb-tipo" style="color:var(--green2)">Conversión</div>
-        <div class="tb-titulo">Fracción ↔ Decimal</div>
-        <div class="tb-desc">Toda fracción puede expresarse como decimal y viceversa. Esto es útil para interpretar tasas, cotizaciones y porcentajes en formatos distintos.</div>
-        <div class="formula-chip"><span class="fc-label">Fracc → Dec</span><span class="fc-val">Numerador ÷ Denominador</span></div>
-        <div class="formula-chip"><span class="fc-label">Dec → Fracc</span><span class="fc-val">decimal × 10ⁿ / 10ⁿ → simplificar</span></div>
-        <div class="ejemplo-bloque">
-          <div class="ej-label">📘 Ejemplo</div>
-          <div class="ej-texto">Tu cotización de salud es <strong>7/100</strong> de tu sueldo. ¿Cuánto es en decimal?</div>
-          <div class="ej-operacion">7 ÷ 100 = 0,07</div>
-          <div class="ej-resultado">✓ La cotización es 0,07 (es decir, el 7%)</div>
-        </div>
-        <div class="tip-bloque">
-          <span class="tip-ico">💡</span>
-          <div class="tip-txt">Nota: <strong>fracción → porcentaje</strong> es igual a fracción → decimal × 100. Por eso 7/100 = 0,07 = 7%.</div>
-        </div>
-      </div>
-
-      <!-- DIVISOR -->
-      <div class="teoria-practica-div">
-        <div class="tp-line"></div>
-        <div class="tp-label">✏️ Zona de práctica</div>
-        <div class="tp-line"></div>
-      </div>
-
-      <!-- EJERCICIOS FRACCIONES -->
-      <div class="subtipo-row" id="st-fracciones">
-        <button class="st-btn active" onclick="setSt('f',0)">🎲 Aleatorio</button>
-        <button class="st-btn" onclick="setSt('f','f1')">Suma y Resta</button>
-        <button class="st-btn" onclick="setSt('f','f2')">Mult. y División</button>
-        <button class="st-btn" onclick="setSt('f','f3')">Fracc. ↔ Decimal</button>
-        <button class="st-btn" onclick="setSt('f','fq')">🏛️ Quórum</button>
-      </div>
-      <div id="ej-f"></div>
-      <div class="ej-btns">
-        <button class="btn-s" onclick="nuevoEjercicio()">↻ Nuevo ejercicio</button>
-        <button class="btn-s danger" onclick="resetScore()">✕ Reiniciar puntaje</button>
-      </div>
+    <div class="prog-row" style="opacity:.3">
+      <div class="pr-lbl">Unidad 03</div>
+      <div class="pr-bg"><div class="pr-fill" style="width:0%;background:var(--amber)"></div></div>
+      <div class="pr-pct">—</div>
     </div>
-
-    <!-- ═══ MIXTO ═══ -->
-    <div class="page" id="page-mixto">
-      <div class="unidad-hero">
-        <div class="uh-ico">🎲</div>
-        <div class="uh-info">
-          <h2>Modo Mixto</h2>
-          <p>Ejercicios aleatorios de todas las unidades disponibles. Ideal para repasar antes de una prueba sin saber qué tema viene.</p>
-          <div class="uh-tags">
-            <span class="uh-tag">% Porcentajes</span>
-            <span class="uh-tag">½ Fracciones</span>
-          </div>
-        </div>
-      </div>
-      <div class="section-label">Ejercicio</div>
-      <div id="ej-m"></div>
-      <div class="ej-btns">
-        <button class="btn-s" onclick="nuevoEjercicio()">↻ Nuevo ejercicio</button>
-        <button class="btn-s danger" onclick="resetScore()">✕ Reiniciar puntaje</button>
-      </div>
-    </div>
-
-  </div><!-- /page-body -->
-</main>
+  </div>
 </div>
 
-<!-- BOTÓN FLOTANTE SUBIR -->
-<button class="fab-top" id="fab-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Subir arriba">↑</button>
+<!-- ══ PAGE: PORCENTAJES (resúmenes) ══ -->
+<div class="page" id="page-porcentajes">
+  <div class="unidad-hero">
+    <div class="uh-ico">%</div>
+    <div class="uh-info">
+      <h2>Porcentajes</h2>
+      <p>Aprende a resolver los 5 tipos de problemas con porcentajes aplicados a situaciones reales: presupuesto personal, IVA, AFP, arriendo y descuentos.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">💰 Finanzas personales</span>
+        <span class="uh-tag">🧾 Impuestos</span>
+        <span class="uh-tag">🏷️ Descuentos</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// CONCEPTO BASE</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Fundamento</div>
+    <div class="tb-titulo">¿Qué es un porcentaje?</div>
+    <div class="tb-desc">Un <strong>porcentaje</strong> significa "por cada cien". El símbolo <strong>%</strong> equivale a dividir entre 100. Es decir, <strong>25% = 25/100 = 0,25</strong>. Toda operación con porcentajes parte de esta conversión.</div>
+    <div class="formula-chip"><span class="fc-label">Clave</span><span class="fc-val">X% = X ÷ 100</span></div>
+    <div class="box-info"><strong>Antes de resolver, siempre pregúntate: ¿qué me dan? y ¿qué me piden?</strong> Esa pregunta define cuál de los 5 tipos usar.</div>
+  </div>
+
+  <div class="section-label">// TIPOS DE PROBLEMAS</div>
+
+  <div class="theory-section">
+    <div class="tb-tipo">Tipo 1</div>
+    <div class="tb-titulo">Calcular la parte de un total</div>
+    <div class="tb-desc">Cuando conoces el <strong>total</strong> y el <strong>porcentaje</strong>, y quieres saber a cuánto equivale ese porcentaje en términos concretos.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Parte = (% ÷ 100) × Total</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span>Convierte el % a decimal: divide entre 100.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span>Multiplica ese decimal por el total.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>El resultado es la parte que buscas.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">Tu sueldo es <strong>$600.000</strong>. El <strong>10%</strong> va a AFP. ¿Cuánto descuentan?</div>
+      <div class="ej-operacion">Parte = (10 / 100) × 600.000
+     = 0,10 × 600.000 = 60.000</div>
+      <div class="ej-resultado">[OK] Descuentan $60.000 para AFP</div>
+    </div>
+    <div class="box-warn"><strong>Error común:</strong> multiplicar por 10 en vez de 0,10. Recuerda <strong>siempre dividir el % entre 100</strong> antes de multiplicar.</div>
+  </div>
+
+  <div class="theory-section">
+    <div class="tb-tipo">Tipo 2</div>
+    <div class="tb-titulo">Encontrar el total</div>
+    <div class="tb-desc">Cuando conoces <strong>la parte</strong> y sabes <strong>qué porcentaje representa</strong>, pero necesitas el total del que proviene.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span>Multiplica la parte por 100.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span>Divide el resultado entre el porcentaje.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>Verifica: calcula el % del total y debe darte la parte.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">Pagaste <strong>$57.000</strong> de IVA, que equivale al <strong>19%</strong>. ¿Cuál era el precio neto?</div>
+      <div class="ej-operacion">Total = (57.000 × 100) / 19
+     = 5.700.000 / 19 = 300.000</div>
+      <div class="ej-resultado">[OK] El precio neto era $300.000</div>
+    </div>
+    <div class="box-info"><strong>Verificación:</strong> 0,19 × 300.000 = 57.000 ✓ Siempre puedes verificar con el Tipo 1.</div>
+  </div>
+
+  <div class="theory-section">
+    <div class="tb-tipo">Tipo 3</div>
+    <div class="tb-titulo">Aumento y descuento porcentual</div>
+    <div class="tb-desc">A una cantidad le <strong>sumas o restas</strong> un porcentaje de sí misma. El <strong>1</strong> representa el 100% original que ya tenías.</div>
+    <div class="formula-chip"><span class="fc-label">Aumento</span><span class="fc-val">Total × (1 + % ÷ 100)</span></div>
+    <div class="formula-chip"><span class="fc-label">Descuento</span><span class="fc-val">Total × (1 − % ÷ 100)</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span>Si es aumento: suma el % a 1 → ejemplo: 30% → 1,30.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span>Si es descuento: resta el % a 1 → ejemplo: 20% → 0,80.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>Multiplica el total por ese factor.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Aumento</div>
+      <div class="ej-texto">Tu arriendo era <strong>$350.000</strong> y subió un <strong>8%</strong>. ¿Cuánto pagas ahora?</div>
+      <div class="ej-operacion">350.000 × (1 + 0,08) = 350.000 × 1,08 = 378.000</div>
+      <div class="ej-resultado">[OK] Ahora pagas $378.000</div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Descuento</div>
+      <div class="ej-texto">Un celular costaba <strong>$250.000</strong> y tiene un descuento del <strong>15%</strong>. ¿Cuánto pagas?</div>
+      <div class="ej-operacion">250.000 × (1 − 0,15) = 250.000 × 0,85 = 212.500</div>
+      <div class="ej-resultado">[OK] Pagas $212.500</div>
+    </div>
+    <div class="box-warn"><strong>Error común:</strong> calcular solo el porcentaje y olvidar sumarlo/restarlo al total. La fórmula con el factor (1 ± %) lo hace en un solo paso.</div>
+  </div>
+
+  <div class="theory-section">
+    <div class="tb-tipo">Tipo 4</div>
+    <div class="tb-titulo">¿Qué porcentaje es una parte de un total?</div>
+    <div class="tb-desc">Cuando tienes <strong>la parte y el total</strong>, y quieres saber qué porcentaje representa la parte respecto al total.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">% = (Parte ÷ Total) × 100</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span>Divide la parte entre el total.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span>Multiplica el resultado por 100.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>El resultado es el porcentaje.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">Ganas <strong>$500.000</strong> y pagas <strong>$150.000</strong> de arriendo. ¿Qué % del sueldo es el arriendo?</div>
+      <div class="ej-operacion">% = (150.000 / 500.000) × 100 = 0,30 × 100 = 30%</div>
+      <div class="ej-resultado">[OK] El arriendo es el 30% del sueldo</div>
+    </div>
+  </div>
+
+  <div class="theory-section">
+    <div class="tb-tipo">Tipo 5</div>
+    <div class="tb-titulo">Encontrar el total cuando la parte representa cierto %</div>
+    <div class="tb-desc">Tienes <strong>una parte</strong> y sabes <strong>qué porcentaje debería representar</strong> del total. La fórmula es idéntica al Tipo 2 — solo cambia la redacción.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">Pagaste <strong>$45.000</strong> de impuesto, que representa el <strong>15%</strong> de tu ingreso. ¿Cuánto fue tu ingreso?</div>
+      <div class="ej-operacion">Total = (45.000 × 100) / 15 = 4.500.000 / 15 = 300.000</div>
+      <div class="ej-resultado">[OK] Tu ingreso fue $300.000</div>
+    </div>
+    <div class="box-info">Tipos 2 y 5 son idénticos en fórmula. La diferencia es solo cómo está redactado el enunciado. Si el <strong>% y la parte están dados, y buscas el total</strong> → siempre es (Parte × 100) ÷ %</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS PORCENTAJES ══ -->
+<div class="page" id="page-ejer-pct">
+  <div class="unidad-hero">
+    <div class="uh-ico">%</div>
+    <div class="uh-info">
+      <h2>Ejercicios — Porcentajes</h2>
+      <p>Banco de ejercicios interactivos generados aleatoriamente. Selecciona un tipo o practica en modo aleatorio.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">Tipos 1–5</span><span class="uh-tag">Herencias</span><span class="uh-tag">Presupuesto 50/30/20</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-porcentajes">
+    <button class="st-btn active" onclick="setSt('p',0)">[RAND]</button>
+    <button class="st-btn" onclick="setSt('p',1)">Tipo 1</button>
+    <button class="st-btn" onclick="setSt('p',2)">Tipo 2</button>
+    <button class="st-btn" onclick="setSt('p',3)">Tipo 3</button>
+    <button class="st-btn" onclick="setSt('p',4)">Tipo 4</button>
+    <button class="st-btn" onclick="setSt('p',5)">Tipo 5</button>
+    <button class="st-btn" onclick="setSt('p',6)">[HERENCIAS]</button>
+    <button class="st-btn" onclick="setSt('p',7)">[50/30/20]</button>
+    <button class="st-btn" onclick="setSt('p',8)">[INTESTADA]</button>
+    <button class="st-btn" onclick="setSt('p',9)">[TESTADA]</button>
+  </div>
+  <div id="ej-p"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicio()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: FLASHCARDS PORCENTAJES ══ -->
+<div class="page" id="page-flash-pct">
+  <div class="unidad-hero">
+    <div class="uh-ico">◈</div>
+    <div class="uh-info">
+      <h2>Flashcards — Porcentajes</h2>
+      <p>Repasa conceptos y fórmulas clave. Haz click en cada tarjeta para revelar la respuesta.</p>
+      <div class="uh-tags"><span class="uh-tag">click para voltear</span></div>
+    </div>
+  </div>
+  <div class="fc-filters" id="fc-pct-filters">
+    <button class="fc-filter-btn active" onclick="filterFC(this,'pct','all')">// TODAS</button>
+    <button class="fc-filter-btn" onclick="filterFC(this,'pct','def')">DEFINICIONES</button>
+    <button class="fc-filter-btn" onclick="filterFC(this,'pct','formula')">FÓRMULAS</button>
+    <button class="fc-filter-btn" onclick="filterFC(this,'pct','tip')">TIPS</button>
+  </div>
+  <div class="flashcards-grid" id="fc-pct-grid">
+    <div class="flashcard" data-cat="def" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// DEFINICIÓN</div>
+          <div class="fc-question">¿Qué significa "porcentaje"?</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// RESPUESTA</div>
+          <div class="fc-answer">"Por cada cien"
+X% = X / 100
+Ej: 25% = 0,25</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="formula" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// FÓRMULA</div>
+          <div class="fc-question">Tipo 1: tengo el total y el %, busco la parte</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// FÓRMULA</div>
+          <div class="fc-answer">Parte = (% / 100) × Total</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="formula" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// FÓRMULA</div>
+          <div class="fc-question">Tipo 2: tengo la parte y el %, busco el total</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// FÓRMULA</div>
+          <div class="fc-answer">Total = (Parte × 100) / %</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="formula" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// FÓRMULA</div>
+          <div class="fc-question">Tipo 3: Aumento del X% a un valor</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// FÓRMULA</div>
+          <div class="fc-answer">Total × (1 + X/100)
+Ej: +8% → × 1,08</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="formula" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// FÓRMULA</div>
+          <div class="fc-question">Tipo 3: Descuento del X% a un valor</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// FÓRMULA</div>
+          <div class="fc-answer">Total × (1 − X/100)
+Ej: −15% → × 0,85</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="formula" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// FÓRMULA</div>
+          <div class="fc-question">Tipo 4: tengo la parte y el total, busco el %</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// FÓRMULA</div>
+          <div class="fc-answer">% = (Parte / Total) × 100</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="def" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// DEFINICIÓN</div>
+          <div class="fc-question">Método presupuestario 50/30/20</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// RESPUESTA</div>
+          <div class="fc-answer">50% gastos fijos
+30% deseos/variables
+20% ahorro/inversión</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="def" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// DEFINICIÓN</div>
+          <div class="fc-question">¿Qué es la mitad legitimaria en herencia testada?</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// RESPUESTA</div>
+          <div class="fc-answer">El 50% de la masa hereditaria que se reparte según las reglas de herencia intestada.</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="tip" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// TIP</div>
+          <div class="fc-question">¿Cómo diferenciar Tipo 2 y Tipo 5?</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// TIP</div>
+          <div class="fc-answer">Son la misma fórmula. Ambos: Total = (Parte × 100) / %
+La redacción cambia pero el cálculo es idéntico.</div>
+        </div>
+      </div>
+    </div>
+    <div class="flashcard" data-cat="tip" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fc-cat">// TIP</div>
+          <div class="fc-question">IVA en Chile: tasa y cómo calcular precio neto</div>
+          <div class="fc-hint">click para revelar</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="fc-back-label">// TIP</div>
+          <div class="fc-answer">IVA = 19%
+Precio neto = Precio total / 1,19
+IVA pagado = Precio total − Precio neto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: GLOSARIO ══ -->
+<div class="page" id="page-glosario">
+  <div class="unidad-hero">
+    <div class="uh-ico">≡</div>
+    <div class="uh-info">
+      <h2>Glosario</h2>
+      <p>Términos y fórmulas clave del módulo de Álgebra Ciudadana.</p>
+    </div>
+  </div>
+  <div class="section-label">// PORCENTAJES</div>
+  <table>
+    <thead>
+      <tr><th>Término</th><th>Definición</th><th>Fórmula / Valor</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="td-term">Porcentaje</td><td>"Por cada cien". El símbolo % equivale a dividir entre 100.</td><td class="td-formula">X% = X/100</td></tr>
+      <tr><td class="td-term">Parte</td><td>Resultado de aplicar un porcentaje a un total.</td><td class="td-formula">Parte = (% / 100) × Total</td></tr>
+      <tr><td class="td-term">Total / Base</td><td>La cantidad completa sobre la que se aplica el porcentaje.</td><td class="td-formula">Total = (Parte × 100) / %</td></tr>
+      <tr><td class="td-term">Factor de aumento</td><td>Multiplicador para aplicar un aumento porcentual en un solo paso.</td><td class="td-formula">(1 + % / 100)</td></tr>
+      <tr><td class="td-term">Factor de descuento</td><td>Multiplicador para aplicar un descuento porcentual en un solo paso.</td><td class="td-formula">(1 − % / 100)</td></tr>
+      <tr><td class="td-term">AFP</td><td>Administradora de Fondos de Pensiones. Descuento obligatorio del sueldo.</td><td class="td-formula">~10% del sueldo bruto</td></tr>
+      <tr><td class="td-term">IVA</td><td>Impuesto al Valor Agregado. Se aplica a la compra de bienes y servicios.</td><td class="td-formula">19% en Chile</td></tr>
+      <tr><td class="td-term">Método 50/30/20</td><td>Distribución del ingreso: 50% gastos fijos, 30% deseos, 20% ahorro.</td><td class="td-formula">50/30/20</td></tr>
+      <tr><td class="td-term">Mitad legitimaria</td><td>En herencia testada, el 50% de la masa que se distribuye por ley.</td><td class="td-formula">50% de la masa</td></tr>
+      <tr><td class="td-term">Cuarta de mejoras</td><td>El 25% de la masa en herencia testada que el causante puede asignar libremente entre herederos.</td><td class="td-formula">25% de la masa</td></tr>
+      <tr><td class="td-term">Cuarta de libre disposición</td><td>El 25% restante en herencia testada, sin restricciones de asignación.</td><td class="td-formula">25% de la masa</td></tr>
+    </tbody>
+  </table>
+  <div class="section-label">// FRACCIONES</div>
+  <table>
+    <thead>
+      <tr><th>Término</th><th>Definición</th><th>Fórmula</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="td-term">Fracción</td><td>Representa una parte de un entero. Numerador / denominador.</td><td class="td-formula">a/b</td></tr>
+      <tr><td class="td-term">MCD</td><td>Máximo Común Divisor. Se usa para simplificar fracciones.</td><td class="td-formula">mcd(a,b)</td></tr>
+      <tr><td class="td-term">MCM</td><td>Mínimo Común Múltiplo. Se usa para igualar denominadores.</td><td class="td-formula">mcm(a,b) = a×b/mcd(a,b)</td></tr>
+      <tr><td class="td-term">Suma de fracciones</td><td>Se requiere denominador común antes de sumar numeradores.</td><td class="td-formula">a/b + c/d = (a×d + c×b) / (b×d)</td></tr>
+      <tr><td class="td-term">Multiplicación de fracciones</td><td>Numerador × numerador, denominador × denominador.</td><td class="td-formula">(a/b) × (c/d) = (a×c)/(b×d)</td></tr>
+      <tr><td class="td-term">División de fracciones</td><td>Se invierte la segunda fracción y se multiplica.</td><td class="td-formula">(a/b) ÷ (c/d) = (a×d)/(b×c)</td></tr>
+      <tr><td class="td-term">Fracción a decimal</td><td>Se divide el numerador entre el denominador.</td><td class="td-formula">a/b = a ÷ b</td></tr>
+      <tr><td class="td-term">Quórum parlamentario</td><td>Fracción mínima de parlamentarios requerida para aprobar un tipo de ley.</td><td class="td-formula">Cámara: 155 | Senado: 50</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ PAGE: NOTAS ══ -->
+<div class="page" id="page-notas">
+  <div class="unidad-hero">
+    <div class="uh-ico">✎</div>
+    <div class="uh-info">
+      <h2>Notas</h2>
+      <p>Editor personal. El contenido se guarda automáticamente en tu navegador.</p>
+      <div class="uh-tags"><span class="uh-tag">localStorage</span><span class="uh-tag">auto-guardado</span></div>
+    </div>
+  </div>
+  <div class="notes-wrap">
+    <div class="notes-header">
+      <div class="notes-title">// NOTAS PERSONALES</div>
+      <div class="notes-status" id="notes-status">[GUARDADO]</div>
+    </div>
+    <textarea class="notes-textarea" id="notes-area" placeholder="// escribe tus apuntes aquí...&#10;// se guardan automáticamente en tu navegador" oninput="saveNotes(this)"></textarea>
+    <div class="notes-footer">
+      <span class="notes-count" id="notes-count">0 caracteres</span>
+      <button class="btn-s" onclick="clearNotes()">✕ LIMPIAR NOTAS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: FRACCIONES ══ -->
+<div class="page" id="page-fracciones">
+  <div class="unidad-hero">
+    <div class="uh-ico">½</div>
+    <div class="uh-info">
+      <h2>Fracciones</h2>
+      <p>Domina las operaciones con fracciones en contextos cotidianos: dividir el sueldo, calcular cuotas, interpretar tasas y proporciones.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">💰 Presupuesto</span>
+        <span class="uh-tag">💳 Cuotas</span>
+        <span class="uh-tag">📊 Proporciones</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// CONCEPTO BASE</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Fundamento</div>
+    <div class="tb-titulo">¿Qué es una fracción?</div>
+    <div class="tb-desc">Una fracción representa una <strong>parte de un entero</strong>. Se escribe como <strong>numerador/denominador</strong>, donde el denominador indica en cuántas partes se divide el entero, y el numerador cuántas partes tomamos. Por ejemplo, <strong>3/4</strong> significa 3 de 4 partes iguales.</div>
+    <div class="box-info">Una fracción siempre debe presentarse <strong>simplificada</strong>: divide numerador y denominador por su MCD (Máximo Común Divisor).</div>
+  </div>
+
+  <div class="section-label">// OPERACIONES</div>
+
+  <div class="theory-section" style="border-left-color:var(--cyan)">
+    <div class="tb-tipo" style="color:var(--cyan)">Suma y Resta</div>
+    <div class="tb-titulo">Sumar y restar fracciones</div>
+    <div class="tb-desc">Si los denominadores son <strong>iguales</strong>: opera directamente los numeradores. Si son <strong>distintos</strong>: busca el MCM (Mínimo Común Múltiplo) para igualar denominadores.</div>
+    <div class="formula-chip"><span class="fc-label">Suma</span><span class="fc-val">a/b + c/d = (a×d + c×b) / (b×d)</span></div>
+    <div class="formula-chip"><span class="fc-label">Resta</span><span class="fc-val">a/b − c/d = (a×d − c×b) / (b×d)</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span>Calcula el MCM de los denominadores.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span>Convierte ambas fracciones al denominador común.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>Opera los numeradores y simplifica el resultado.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">De tu sueldo, <strong>1/3</strong> va a arriendo y <strong>1/4</strong> a alimentación. ¿Qué fracción del sueldo usas?</div>
+      <div class="ej-operacion">MCM(3,4) = 12
+1/3 + 1/4 = 4/12 + 3/12 = 7/12</div>
+      <div class="ej-resultado">[OK] Usas 7/12 del sueldo</div>
+    </div>
+    <div class="box-warn"><strong>Error común:</strong> sumar numeradores Y denominadores directamente → 1/3 + 1/4 ≠ 2/7. Los denominadores no se suman.</div>
+  </div>
+
+  <div class="theory-section" style="border-left-color:var(--amber)">
+    <div class="tb-tipo" style="color:var(--amber)">Multiplicación y División</div>
+    <div class="tb-titulo">Multiplicar y dividir fracciones</div>
+    <div class="tb-desc">La multiplicación es directa: <strong>numerador × numerador</strong> y <strong>denominador × denominador</strong>. La división se convierte en multiplicación invirtiendo la segunda fracción.</div>
+    <div class="formula-chip"><span class="fc-label">Multiplicación</span><span class="fc-val">(a/b) × (c/d) = (a×c) / (b×d)</span></div>
+    <div class="formula-chip"><span class="fc-label">División</span><span class="fc-val">(a/b) ÷ (c/d) = (a×d) / (b×c)</span></div>
+    <div class="pasos-lista">
+      <div class="paso-item"><div class="paso-n">1</div><span><strong>Multiplicación:</strong> multiplica numeradores entre sí y denominadores entre sí.</span></div>
+      <div class="paso-item"><div class="paso-n">2</div><span><strong>División:</strong> invierte la segunda fracción y multiplica.</span></div>
+      <div class="paso-item"><div class="paso-n">3</div><span>Simplifica el resultado con el MCD.</span></div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 División</div>
+      <div class="ej-texto">Tienes <strong>3/4</strong> de tu presupuesto para dividir en <strong>3/2</strong> partes. ¿Cuánto es cada parte?</div>
+      <div class="ej-operacion">(3/4) ÷ (3/2) = (3×2) / (4×3) = 6/12 = 1/2</div>
+      <div class="ej-resultado">[OK] Cada parte es 1/2 del presupuesto</div>
+    </div>
+  </div>
+
+  <div class="theory-section" style="border-left-color:var(--green)">
+    <div class="tb-tipo" style="color:var(--green)">Conversión</div>
+    <div class="tb-titulo">Fracción ↔ Decimal</div>
+    <div class="tb-desc">Toda fracción puede expresarse como decimal y viceversa. Esto es útil para interpretar tasas, cotizaciones y porcentajes en formatos distintos.</div>
+    <div class="formula-chip"><span class="fc-label">Fracc → Dec</span><span class="fc-val">Numerador ÷ Denominador</span></div>
+    <div class="formula-chip"><span class="fc-label">Dec → Fracc</span><span class="fc-val">decimal × 10ⁿ / 10ⁿ → simplificar</span></div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-texto">Tu cotización de salud es <strong>7/100</strong> de tu sueldo. ¿Cuánto es en decimal?</div>
+      <div class="ej-operacion">7 ÷ 100 = 0,07</div>
+      <div class="ej-resultado">[OK] La cotización es 0,07 (es decir, el 7%)</div>
+    </div>
+    <div class="box-info"><strong>Nota:</strong> fracción → porcentaje es igual a fracción → decimal × 100. Por eso 7/100 = 0,07 = 7%.</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS FRACCIONES ══ -->
+<div class="page" id="page-ejer-frac">
+  <div class="unidad-hero">
+    <div class="uh-ico">½</div>
+    <div class="uh-info">
+      <h2>Ejercicios — Fracciones</h2>
+      <p>Practica suma, resta, multiplicación, división y conversión de fracciones en contexto cotidiano.</p>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-fracciones">
+    <button class="st-btn active" onclick="setSt('f',0)">[RAND]</button>
+    <button class="st-btn" onclick="setSt('f','f1')">Suma y Resta</button>
+    <button class="st-btn" onclick="setSt('f','f2')">Mult. / División</button>
+    <button class="st-btn" onclick="setSt('f','f3')">Fracc. ↔ Decimal</button>
+    <button class="st-btn" onclick="setSt('f','fq')">[QUÓRUM]</button>
+  </div>
+  <div id="ej-f"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicio()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: MIXTO ══ -->
+<div class="page" id="page-mixto">
+  <div class="unidad-hero">
+    <div class="uh-ico">◈</div>
+    <div class="uh-info">
+      <h2>Modo Mixto</h2>
+      <p>Ejercicios aleatorios de todas las unidades disponibles. Ideal para repasar antes de una prueba sin saber qué tema viene.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">% Porcentajes</span>
+        <span class="uh-tag">½ Fracciones</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIO ALEATORIO</div>
+  <div id="ej-m"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicio()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+</div><!-- /page-body -->
+</main>
+</div><!-- /layout -->
+
+<button class="fab-top" id="fab-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Subir">↑</button>
 
 <script>
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // ESTADO
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 let pagina='inicio', historial=['inicio'];
 let stP=0, stF=0;
 let ejercicio=null, respondido=false;
 let sOk=0, sErr=0;
 let spP={ok:0,tot:0}, spF={ok:0,tot:0};
 
-// ════════════════════════════════════════════
+const PAGINAS_EJERCICIOS=['ejer-pct','ejer-frac','mixto'];
+const MOD_PAGINA={
+  'ejer-pct':'porcentajes',
+  'ejer-frac':'fracciones',
+  'mixto':'mixto'
+};
+
+// ══════════════════════════════════════
 // HELPERS
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 const rnd=(a,b,s=1)=>a+Math.floor(Math.random()*((b-a)/s+1))*s;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const r2=n=>Math.round(n*100)/100;
@@ -840,9 +1484,9 @@ const CTXS=[
 ];
 const ctx=()=>pick(CTXS);
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // GENERADORES PORCENTAJES
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 function gP1(){
   const p=pick([5,7,10,12,15,19,20,25,30]);
   const tot=rnd(200000,900000,10000);
@@ -913,56 +1557,6 @@ function gP4(){
     pasos:`(${fmt(par)} / ${fmt(tot)}) × 100 = ${r2(par/tot)} × 100 = ${p}%`,
     inputType:'simple',mod:'p'};
 }
-function gP6(){
-  // Genera herederos con porcentajes que suman 100
-  const configs = [
-    { herederos:[{n:'cónyuge',p:50},{n:'hijo mayor',p:30},{n:'hijo menor',p:20}] },
-    { herederos:[{n:'hijo 1',p:40},{n:'hijo 2',p:40},{n:'cónyuge',p:20}] },
-    { herederos:[{n:'cónyuge',p:60},{n:'hijo único',p:25},{n:'iglesia/donación',p:15}] },
-    { herederos:[{n:'hijo 1',p:35},{n:'hijo 2',p:35},{n:'hijo 3',p:30}] },
-    { herederos:[{n:'cónyuge',p:50},{n:'hermano',p:30},{n:'sobrino',p:20}] },
-    { herederos:[{n:'hijo 1',p:45},{n:'hijo 2',p:30},{n:'madre',p:25}] },
-  ];
-  const cfg = pick(configs);
-  const total = rnd(10000000, 80000000, 1000000);
-  // elegir un heredero al azar como pregunta
-  const objetivo = pick(cfg.herederos);
-  const monto = r2(objetivo.p / 100 * total);
-
-  // qué pregunta hacer: a veces pedir el monto, a veces el %
-  const tipoPregunta = pick(['monto','pct','total']);
-
-  let enunciado, formula, respuesta, unidad, pasos;
-
-  const listaHerederos = cfg.herederos
-    .map(h => `<strong>${h.n}: ${h.p}%</strong>`)
-    .join(', ');
-
-  if(tipoPregunta === 'monto'){
-    enunciado = `Una herencia de <strong>$${fmt(total)}</strong> se reparte así: ${listaHerederos}. ¿Cuánto recibe el/la <strong>${objetivo.n}</strong>?`;
-    formula = 'Parte = (% / 100) × Total';
-    respuesta = monto;
-    unidad = '$';
-    pasos = `(${objetivo.p} / 100) × ${fmt(total)} = ${r2(objetivo.p/100)} × ${fmt(total)} = $${fmt(monto)}`;
-  } else if(tipoPregunta === 'pct'){
-    enunciado = `Una herencia de <strong>$${fmt(total)}</strong> se reparte entre ${cfg.herederos.length} herederos. El/la <strong>${objetivo.n}</strong> recibe <strong>$${fmt(monto)}</strong>. ¿Qué porcentaje de la herencia le corresponde?`;
-    formula = '% = (Parte / Total) × 100';
-    respuesta = objetivo.p;
-    unidad = '%';
-    pasos = `(${fmt(monto)} / ${fmt(total)}) × 100 = ${r2(monto/total)} × 100 = ${objetivo.p}%`;
-  } else {
-    enunciado = `En un testamento, al/la <strong>${objetivo.n}</strong> le corresponde el <strong>${objetivo.p}%</strong> de la herencia. Si recibirá <strong>$${fmt(monto)}</strong>, ¿cuál era el valor total de la herencia?`;
-    formula = 'Total = (Parte × 100) / %';
-    respuesta = total;
-    unidad = '$';
-    pasos = `(${fmt(monto)} × 100) / ${objetivo.p} = ${fmt(monto*100)} / ${objetivo.p} = $${fmt(total)}`;
-  }
-
-  return { tipo:'p6', tag:'t-mo', label:'Herencias', enunciado, formula,
-    ctx:{ico:'🏛️', nom:'Herencia'}, respuesta, unidad, pasos,
-    inputType:'simple', mod:'p' };
-}
-
 function gP5(){
   const p=pick([5,10,15,20,25,30]);
   const tot=rnd(100000,500000,10000);
@@ -978,17 +1572,134 @@ function gP5(){
     pasos:`(${fmt(par)} × 100) / ${p} = $${fmt(tot)}`,
     inputType:'simple',mod:'p'};
 }
+function gP6(){
+  const configs=[
+    {herederos:[{n:'cónyuge',p:50},{n:'hijo mayor',p:30},{n:'hijo menor',p:20}]},
+    {herederos:[{n:'hijo 1',p:40},{n:'hijo 2',p:40},{n:'cónyuge',p:20}]},
+    {herederos:[{n:'cónyuge',p:60},{n:'hijo único',p:25},{n:'iglesia/donación',p:15}]},
+    {herederos:[{n:'hijo 1',p:35},{n:'hijo 2',p:35},{n:'hijo 3',p:30}]},
+    {herederos:[{n:'cónyuge',p:50},{n:'hermano',p:30},{n:'sobrino',p:20}]},
+    {herederos:[{n:'hijo 1',p:45},{n:'hijo 2',p:30},{n:'madre',p:25}]},
+  ];
+  const cfg=pick(configs);
+  const total=rnd(10000000,80000000,1000000);
+  const objetivo=pick(cfg.herederos);
+  const monto=r2(objetivo.p/100*total);
+  const tipoPregunta=pick(['monto','pct','total']);
+  let enunciado,formula,respuesta,unidad,pasos;
+  const listaHerederos=cfg.herederos.map(h=>`<strong>${h.n}: ${h.p}%</strong>`).join(', ');
+  if(tipoPregunta==='monto'){
+    enunciado=`Una herencia de <strong>$${fmt(total)}</strong> se reparte así: ${listaHerederos}. ¿Cuánto recibe el/la <strong>${objetivo.n}</strong>?`;
+    formula='Parte = (% / 100) × Total';respuesta=monto;unidad='$';
+    pasos=`(${objetivo.p} / 100) × ${fmt(total)} = ${r2(objetivo.p/100)} × ${fmt(total)} = $${fmt(monto)}`;
+  }else if(tipoPregunta==='pct'){
+    enunciado=`Una herencia de <strong>$${fmt(total)}</strong> se reparte entre ${cfg.herederos.length} herederos. El/la <strong>${objetivo.n}</strong> recibe <strong>$${fmt(monto)}</strong>. ¿Qué porcentaje de la herencia le corresponde?`;
+    formula='% = (Parte / Total) × 100';respuesta=objetivo.p;unidad='%';
+    pasos=`(${fmt(monto)} / ${fmt(total)}) × 100 = ${r2(monto/total)} × 100 = ${objetivo.p}%`;
+  }else{
+    enunciado=`En un testamento, al/la <strong>${objetivo.n}</strong> le corresponde el <strong>${objetivo.p}%</strong> de la herencia. Si recibirá <strong>$${fmt(monto)}</strong>, ¿cuál era el valor total de la herencia?`;
+    formula='Total = (Parte × 100) / %';respuesta=total;unidad='$';
+    pasos=`(${fmt(monto)} × 100) / ${objetivo.p} = ${fmt(monto*100)} / ${objetivo.p} = $${fmt(total)}`;
+  }
+  return{tipo:'p6',tag:'t-mo',label:'Herencias',enunciado,formula,ctx:{ico:'🏛️',nom:'Herencia'},respuesta,unidad,pasos,inputType:'simple',mod:'p'};
+}
+function gP7(){
+  const ingresos=rnd(400000,2000000,50000);
+  const fijos=Math.round(ingresos*0.50);
+  const deseos=Math.round(ingresos*0.30);
+  const ahorros=Math.round(ingresos*0.20);
+  const variante=pick(['monto_fijos','monto_deseos','monto_ahorros','ingreso_desde_deseos','ingreso_desde_ahorros','ingreso_desde_fijos']);
+  const categorias={
+    monto_fijos:{cat:'gastos fijos (50%)',p:50,res:fijos,formula:'Parte = (50/100) × Ingreso'},
+    monto_deseos:{cat:'gastos variables/deseos (30%)',p:30,res:deseos,formula:'Parte = (30/100) × Ingreso'},
+    monto_ahorros:{cat:'ahorros e inversiones (20%)',p:20,res:ahorros,formula:'Parte = (20/100) × Ingreso'},
+    ingreso_desde_deseos:{cat:'gastos variables/deseos (30%)',p:30,res:ingresos,monto:deseos,formula:'Ingreso = (Parte × 100) / 30'},
+    ingreso_desde_ahorros:{cat:'ahorros e inversiones (20%)',p:20,res:ingresos,monto:ahorros,formula:'Ingreso = (Parte × 100) / 20'},
+    ingreso_desde_fijos:{cat:'gastos fijos (50%)',p:50,res:ingresos,monto:fijos,formula:'Ingreso = (Parte × 100) / 50'},
+  };
+  const v=categorias[variante];
+  let enunciado,pasos,respuesta;
+  if(variante.startsWith('monto')){
+    enunciado=`Una persona aplica el método <strong>50/30/20</strong> a su ingreso mensual de <strong>$${fmt(ingresos)}</strong>. ¿Cuánto dinero debe destinar a <strong>${v.cat}</strong>?`;
+    pasos=`(${v.p}/100) × ${fmt(ingresos)} = ${v.p/100} × ${fmt(ingresos)} = $${fmt(v.res)}`;
+    respuesta=v.res;
+  }else{
+    enunciado=`Una persona aplica el método <strong>50/30/20</strong> y destina <strong>$${fmt(v.monto)}</strong> a <strong>${v.cat}</strong>. ¿Cuál es su ingreso mensual?`;
+    pasos=`(${fmt(v.monto)} × 100) / ${v.p} = ${fmt(v.monto*100)} / ${v.p} = $${fmt(ingresos)}`;
+    respuesta=ingresos;
+  }
+  return{tipo:'p7',tag:'t-vd',label:'Presupuesto 50/30/20',enunciado,formula:v.formula,ctx:{ico:'💰',nom:'Presupuesto'},respuesta,unidad:'$',pasos,inputType:'simple',mod:'p'};
+}
+function gP8(){
+  const masa=rnd(5000000,80000000,500000);
+  const numHijos=rnd(1,4);
+  const tieneConyugue=Math.random()>0.2;
+  let partes,descripcion,quienPregunta,respuesta,pasos;
+  if(numHijos===1&&tieneConyugue){
+    partes=2;
+    const porCada=Math.round(masa/2);
+    quienPregunta=pick(['el cónyuge sobreviviente','el hijo/a']);
+    respuesta=porCada;
+    descripcion=`Una herencia intestada de <strong>$${fmt(masa)}</strong> debe repartirse entre <strong>1 hijo/a</strong> y el <strong>cónyuge sobreviviente</strong>. Con un solo hijo/a, ambos heredan en partes iguales. ¿Cuánto recibe <strong>${quienPregunta}</strong>?`;
+    pasos=`1 hijo + cónyuge = 2 partes iguales\n$${fmt(masa)} / 2 = $${fmt(porCada)} cada uno`;
+  }else if(tieneConyugue){
+    const totalPartes=numHijos+2;
+    const partePorHijo=Math.round(masa/totalPartes);
+    const parteConyugue=partePorHijo*2;
+    quienPregunta=pick(['el cónyuge','cada hijo/a']);
+    respuesta=quienPregunta.includes('cónyuge')?parteConyugue:partePorHijo;
+    descripcion=`Una herencia intestada de <strong>$${fmt(masa)}</strong> se reparte entre <strong>${numHijos} hijos/as</strong> y el <strong>cónyuge sobreviviente</strong>. Los hijos heredan en partes iguales y el cónyuge recibe el doble que cualquier hijo. ¿Cuánto recibe <strong>${quienPregunta}</strong>?`;
+    pasos=`Total partes = ${numHijos} hijos + 2 (cónyuge cuenta doble) = ${totalPartes} partes\nPor hijo = $${fmt(masa)} / ${totalPartes} = $${fmt(partePorHijo)}\nCónyuge = $${fmt(partePorHijo)} × 2 = $${fmt(parteConyugue)}`;
+  }else{
+    const porCada=Math.round(masa/numHijos);
+    quienPregunta='cada hijo/a';
+    respuesta=porCada;
+    descripcion=`Una herencia intestada de <strong>$${fmt(masa)}</strong> debe repartirse en partes iguales entre <strong>${numHijos} hijos/as</strong> (no hay cónyuge sobreviviente). ¿Cuánto recibe <strong>cada hijo/a</strong>?`;
+    pasos=`$${fmt(masa)} / ${numHijos} = $${fmt(porCada)} por hijo/a`;
+  }
+  return{tipo:'p8',tag:'t-mo',label:'Herencia intestada',enunciado:descripcion,formula:'Masa ÷ N° de partes',ctx:{ico:'🏠',nom:'Herencia'},respuesta,unidad:'$',pasos,inputType:'simple',mod:'p'};
+}
+function gP9(){
+  const masa=rnd(10000000,100000000,1000000);
+  const legitimaria=Math.round(masa*0.50);
+  const mejoras=Math.round(masa*0.25);
+  const libreDisp=Math.round(masa*0.25);
+  const variante=pick(['calc_legitimaria','calc_mejoras','calc_libre','ingreso_desde_mejoras','pct_legitimaria']);
+  let enunciado,formula,respuesta,pasos;
+  if(variante==='calc_legitimaria'){
+    enunciado=`En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>mitad legitimaria (50%)</strong> se reparte según las reglas de la herencia intestada. ¿Cuánto corresponde a la mitad legitimaria?`;
+    formula='Parte = (50/100) × Masa total';respuesta=legitimaria;
+    pasos=`(50/100) × ${fmt(masa)} = 0,50 × ${fmt(masa)} = $${fmt(legitimaria)}`;
+  }else if(variante==='calc_mejoras'){
+    enunciado=`En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de mejoras (25%)</strong> puede ser repartida libremente entre los herederos según la voluntad del causante. ¿Cuánto representa?`;
+    formula='Parte = (25/100) × Masa total';respuesta=mejoras;
+    pasos=`(25/100) × ${fmt(masa)} = 0,25 × ${fmt(masa)} = $${fmt(mejoras)}`;
+  }else if(variante==='calc_libre'){
+    enunciado=`En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de libre disposición (25%)</strong> puede destinarse a quien el causante estime conveniente. ¿Cuánto es ese monto?`;
+    formula='Parte = (25/100) × Masa total';respuesta=libreDisp;
+    pasos=`(25/100) × ${fmt(masa)} = 0,25 × ${fmt(masa)} = $${fmt(libreDisp)}`;
+  }else if(variante==='ingreso_desde_mejoras'){
+    enunciado=`En una herencia testada, la cuarta de mejoras asciende a <strong>$${fmt(mejoras)}</strong>. ¿Cuál es el valor total de la masa hereditaria?`;
+    formula='Masa total = (Cuarta mejoras × 100) / 25';respuesta=masa;
+    pasos=`(${fmt(mejoras)} × 100) / 25 = ${fmt(mejoras*100)} / 25 = $${fmt(masa)}`;
+  }else{
+    enunciado=`Un causante dejó <strong>$${fmt(legitimaria)}</strong> como mitad legitimaria de su herencia testada. ¿Cuál es el valor total de la masa hereditaria?`;
+    formula='Masa total = (Mitad legitimaria × 100) / 50';respuesta=masa;
+    pasos=`(${fmt(legitimaria)} × 100) / 50 = ${fmt(legitimaria*100)} / 50 = $${fmt(masa)}`;
+  }
+  return{tipo:'p9',tag:'t-am',label:'Herencia testada',enunciado,formula,ctx:{ico:'📜',nom:'Testamento'},respuesta,unidad:'$',pasos,inputType:'simple',mod:'p'};
+}
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // GENERADORES FRACCIONES
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 function gF1(){
   const esS=Math.random()>.4;
   const d1=pick([2,3,4,5,6,8,10,12]),d2=pick([2,3,4,5,6,8,10,12]);
   const n1=rnd(1,d1),n2=rnd(1,d2);
   const g=mcd(d1,d2),mcmv=(d1*d2)/g;
   const rn=esS?n1*(mcmv/d1)+n2*(mcmv/d2):n1*(mcmv/d1)-n2*(mcmv/d2);
-  const [rs,rd]=simp(Math.abs(rn),mcmv);
+  const[rs,rd]=simp(Math.abs(rn),mcmv);
   const neg=rn<0;
   const sig=esS?'+':'−';
   const eS=pick([
@@ -1010,8 +1721,8 @@ function gF1(){
 function gF2(){
   const esMul=Math.random()>.4;
   const n1=rnd(1,7),d1=rnd(2,9),n2=rnd(1,7),d2=rnd(2,9);
-  const [rn,rd]=esMul?[n1*n2,d1*d2]:[n1*d2,d1*n2];
-  const [rs,rds]=simp(rn,rd);
+  const[rn,rd]=esMul?[n1*n2,d1*d2]:[n1*d2,d1*n2];
+  const[rs,rds]=simp(rn,rd);
   const eM=pick([
     `Tienes <strong>${n1}/${d1}</strong> del sueldo disponible y gastarás <strong>${n2}/${d2}</strong> de eso en vacaciones. ¿Qué fracción del sueldo total es?`,
     `Un proyecto abarca <strong>${n1}/${d1}</strong> del año y llevas <strong>${n2}/${d2}</strong> del proyecto. ¿Qué fracción del año es?`,
@@ -1031,7 +1742,7 @@ function gF3(){
   const esFD=Math.random()>.4;
   const n=rnd(1,9),d=pick([2,4,5,8,10,20,25,100]);
   const dec=r2(n/d);
-  const [rs,rds]=simp(n,d);
+  const[rs,rds]=simp(n,d);
   const eFD=pick([
     `Gastas <strong>${n}/${d}</strong> de tu sueldo en arriendo. ¿Cuánto es en número decimal?`,
     `Tu cotización de AFP es <strong>${n}/${d}</strong> del ingreso. ¿Cuánto es en decimal?`,
@@ -1051,212 +1762,72 @@ function gF3(){
     pasos:`${dec} = ${n}/${d} → MCD(${n},${d})=${mcd(n,d)} → ${rs}/${rds}`,
     inputType:'fraccion',mod:'f'};
 }
-
-// ════════════════════════════════════════════
-// GENERADORES NUEVOS — SITUACIONES DE MODELACIÓN
-// ════════════════════════════════════════════
-
-// PRESUPUESTO 50/30/20
-function gP7(){
-  const ingresos = rnd(400000, 2000000, 50000);
-  const fijos    = Math.round(ingresos * 0.50);
-  const deseos   = Math.round(ingresos * 0.30);
-  const ahorros  = Math.round(ingresos * 0.20);
-
-  // 3 variantes: calcular monto de categoría, o calcular ingreso desde una categoría
-  const variante = pick(['monto_fijos','monto_deseos','monto_ahorros','ingreso_desde_deseos','ingreso_desde_ahorros','ingreso_desde_fijos']);
-
-  const categorias = {
-    monto_fijos:    { cat:'gastos fijos (50%)',           p:50, res:fijos,   formula:'Parte = (50/100) × Ingreso' },
-    monto_deseos:   { cat:'gastos variables/deseos (30%)',p:30, res:deseos,  formula:'Parte = (30/100) × Ingreso' },
-    monto_ahorros:  { cat:'ahorros e inversiones (20%)',  p:20, res:ahorros, formula:'Parte = (20/100) × Ingreso' },
-    ingreso_desde_deseos:  { cat:'gastos variables/deseos (30%)', p:30, res:ingresos, monto:deseos,  formula:'Ingreso = (Parte × 100) / 30' },
-    ingreso_desde_ahorros: { cat:'ahorros e inversiones (20%)',   p:20, res:ingresos, monto:ahorros, formula:'Ingreso = (Parte × 100) / 20' },
-    ingreso_desde_fijos:   { cat:'gastos fijos (50%)',            p:50, res:ingresos, monto:fijos,   formula:'Ingreso = (Parte × 100) / 50' },
-  };
-  const v = categorias[variante];
-
-  let enunciado, pasos, respuesta;
-  if(variante.startsWith('monto')){
-    enunciado = `Una persona aplica el método <strong>50/30/20</strong> a su ingreso mensual de <strong>$${fmt(ingresos)}</strong>. ¿Cuánto dinero debe destinar a <strong>${v.cat}</strong>?`;
-    pasos     = `(${v.p}/100) × ${fmt(ingresos)} = ${v.p/100} × ${fmt(ingresos)} = $${fmt(v.res)}`;
-    respuesta = v.res;
-  } else {
-    enunciado = `Una persona aplica el método <strong>50/30/20</strong> y destina <strong>$${fmt(v.monto)}</strong> a <strong>${v.cat}</strong>. ¿Cuál es su ingreso mensual?`;
-    pasos     = `(${fmt(v.monto)} × 100) / ${v.p} = ${fmt(v.monto*100)} / ${v.p} = $${fmt(ingresos)}`;
-    respuesta = ingresos;
-  }
-
-  return { tipo:'p7', tag:'t-vd', label:'Presupuesto 50/30/20',
-    enunciado, formula:v.formula, ctx:{ico:'💰',nom:'Presupuesto'},
-    respuesta, unidad:'$', pasos, inputType:'simple', mod:'p' };
-}
-
-// HERENCIA INTESTADA — lógica real del Código Civil chileno
-function gP8(){
-  const masa = rnd(5000000, 80000000, 500000);
-  // escenarios: 1 hijo + cónyuge (partes iguales), 2-4 hijos + cónyuge (cónyuge = doble)
-  const numHijos = rnd(1, 4);
-  const tieneConyugue = Math.random() > 0.2;
-
-  let partes, descripcion, quienPregunta, respuesta, pasos;
-
-  if(numHijos === 1 && tieneConyugue){
-    // 1 hijo + cónyuge → partes iguales → cada uno recibe masa/2
-    partes = 2;
-    const porCada = Math.round(masa / 2);
-    quienPregunta = pick(['el cónyuge sobreviviente','el hijo/a']);
-    respuesta = porCada;
-    descripcion = `Una herencia intestada de <strong>$${fmt(masa)}</strong> debe repartirse entre <strong>1 hijo/a</strong> y el <strong>cónyuge sobreviviente</strong>. Con un solo hijo/a, ambos heredan en partes iguales. ¿Cuánto recibe <strong>${quienPregunta}</strong>?`;
-    pasos = `1 hijo + cónyuge = 2 partes iguales\n$${fmt(masa)} / 2 = $${fmt(porCada)} cada uno`;
-  } else if(tieneConyugue){
-    // 2+ hijos + cónyuge → cónyuge recibe doble que cada hijo
-    // partes totales = numHijos + 2 (cónyuge cuenta doble)
-    const totalPartes = numHijos + 2;
-    const partePorHijo = Math.round(masa / totalPartes);
-    const parteConyugue = partePorHijo * 2;
-    quienPregunta = pick(['el cónyuge','cada hijo/a']);
-    respuesta = quienPregunta.includes('cónyuge') ? parteConyugue : partePorHijo;
-    descripcion = `Una herencia intestada de <strong>$${fmt(masa)}</strong> se reparte entre <strong>${numHijos} hijos/as</strong> y el <strong>cónyuge sobreviviente</strong>. Los hijos heredan en partes iguales y el cónyuge recibe el doble que cualquier hijo. ¿Cuánto recibe <strong>${quienPregunta}</strong>?`;
-    pasos = `Total partes = ${numHijos} hijos + 2 (cónyuge cuenta doble) = ${totalPartes} partes\nPor hijo = $${fmt(masa)} / ${totalPartes} = $${fmt(partePorHijo)}\nCónyuge = $${fmt(partePorHijo)} × 2 = $${fmt(parteConyugue)}`;
-  } else {
-    // Solo hijos, partes iguales
-    const porCada = Math.round(masa / numHijos);
-    quienPregunta = 'cada hijo/a';
-    respuesta = porCada;
-    descripcion = `Una herencia intestada de <strong>$${fmt(masa)}</strong> debe repartirse en partes iguales entre <strong>${numHijos} hijos/as</strong> (no hay cónyuge sobreviviente). ¿Cuánto recibe <strong>cada hijo/a</strong>?`;
-    pasos = `$${fmt(masa)} / ${numHijos} = $${fmt(porCada)} por hijo/a`;
-  }
-
-  return { tipo:'p8', tag:'t-mo', label:'Herencia intestada',
-    enunciado:descripcion, formula:'Masa ÷ N° de partes',
-    ctx:{ico:'🏠',nom:'Herencia'}, respuesta, unidad:'$',
-    pasos, inputType:'simple', mod:'p' };
-}
-
-// HERENCIA TESTADA — 50% legitimaria + 25% mejoras + 25% libre disposición
-function gP9(){
-  const masa = rnd(10000000, 100000000, 1000000);
-  const legitimaria  = Math.round(masa * 0.50);
-  const mejoras      = Math.round(masa * 0.25);
-  const libreDisp    = Math.round(masa * 0.25);
-
-  const variante = pick(['calc_legitimaria','calc_mejoras','calc_libre','ingreso_desde_mejoras','pct_legitimaria']);
-
-  let enunciado, formula, respuesta, pasos;
-
-  if(variante === 'calc_legitimaria'){
-    enunciado = `En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>mitad legitimaria (50%)</strong> se reparte según las reglas de la herencia intestada. ¿Cuánto corresponde a la mitad legitimaria?`;
-    formula   = 'Parte = (50/100) × Masa total';
-    respuesta = legitimaria;
-    pasos     = `(50/100) × ${fmt(masa)} = 0,50 × ${fmt(masa)} = $${fmt(legitimaria)}`;
-  } else if(variante === 'calc_mejoras'){
-    enunciado = `En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de mejoras (25%)</strong> puede ser repartida libremente entre los herederos según la voluntad del causante. ¿Cuánto representa?`;
-    formula   = 'Parte = (25/100) × Masa total';
-    respuesta = mejoras;
-    pasos     = `(25/100) × ${fmt(masa)} = 0,25 × ${fmt(masa)} = $${fmt(mejoras)}`;
-  } else if(variante === 'calc_libre'){
-    enunciado = `En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de libre disposición (25%)</strong> puede destinarse a quien el causante estime conveniente. ¿Cuánto es ese monto?`;
-    formula   = 'Parte = (25/100) × Masa total';
-    respuesta = libreDisp;
-    pasos     = `(25/100) × ${fmt(masa)} = 0,25 × ${fmt(masa)} = $${fmt(libreDisp)}`;
-  } else if(variante === 'ingreso_desde_mejoras'){
-    enunciado = `En una herencia testada, la cuarta de mejoras asciende a <strong>$${fmt(mejoras)}</strong>. ¿Cuál es el valor total de la masa hereditaria?`;
-    formula   = 'Masa total = (Cuarta mejoras × 100) / 25';
-    respuesta = masa;
-    pasos     = `(${fmt(mejoras)} × 100) / 25 = ${fmt(mejoras*100)} / 25 = $${fmt(masa)}`;
-  } else {
-    enunciado = `Un causante dejó <strong>$${fmt(legitimaria)}</strong> como mitad legitimaria de su herencia testada. ¿Cuál es el valor total de la masa hereditaria?`;
-    formula   = 'Masa total = (Mitad legitimaria × 100) / 50';
-    respuesta = masa;
-    pasos     = `(${fmt(legitimaria)} × 100) / 50 = ${fmt(legitimaria*100)} / 50 = $${fmt(masa)}`;
-  }
-
-  return { tipo:'p9', tag:'t-am', label:'Herencia testada',
-    enunciado, formula, ctx:{ico:'📜',nom:'Testamento'},
-    respuesta, unidad:'$', pasos, inputType:'simple', mod:'p' };
-}
-
-// QUÓRUM PARLAMENTARIO — Cámara de Diputados: 155, Senado: 50
 function gFQ(){
-  const camaras = [
-    { nombre:'Cámara de Diputadas y Diputados', total:155 },
-    { nombre:'Senado', total:50 },
+  const camaras=[
+    {nombre:'Cámara de Diputadas y Diputados',total:155},
+    {nombre:'Senado',total:50},
   ];
-  const camara = pick(camaras);
-  const N = camara.total;
-
-  // fracciones según el ARPA: 1/3 asistencia, 3/5, 4/7, mayoría absoluta (50%+1), 2/3
-  const tiposQuorum = [
-    { ley:'Ley ordinaria (asistencia mínima)',         frac:[1,3], label:'1/3' },
-    { ley:'Ley interpretativa de la Constitución',     frac:[3,5], label:'3/5' },
-    { ley:'Ley orgánica constitucional',               frac:[4,7], label:'4/7' },
-    { ley:'Reforma constitucional (opción 1)',          frac:[3,5], label:'3/5' },
-    { ley:'Reforma constitucional (opción 2)',          frac:[2,3], label:'2/3' },
+  const camara=pick(camaras);const N=camara.total;
+  const tiposQuorum=[
+    {ley:'Ley ordinaria (asistencia mínima)',frac:[1,3],label:'1/3'},
+    {ley:'Ley interpretativa de la Constitución',frac:[3,5],label:'3/5'},
+    {ley:'Ley orgánica constitucional',frac:[4,7],label:'4/7'},
+    {ley:'Reforma constitucional (opción 1)',frac:[3,5],label:'3/5'},
+    {ley:'Reforma constitucional (opción 2)',frac:[2,3],label:'2/3'},
   ];
-  const tq = pick(tiposQuorum);
-  const [num, den] = tq.frac;
-  const resultado = Math.ceil(N * num / den);
-
-  const variante = pick(['cuantos','fraccion_de_total','total_desde_resultado']);
-
-  let enunciado, formula, respuesta, pasos, inputType;
-  respuesta = resultado;
-  inputType = 'simple';
-
-  if(variante === 'cuantos'){
-    enunciado = `Para aprobar una <strong>${tq.ley}</strong>, se requiere que <strong>${tq.label}</strong> de los parlamentarios en ejercicio de la <strong>${camara.nombre}</strong> asistan y voten a favor. Si la cámara tiene <strong>${N} parlamentarios</strong>, ¿cuántos deben votar a favor?`;
-    formula   = `Resultado = (${num}/${den}) × ${N}`;
-    pasos     = `(${num}/${den}) × ${N} = ${r2(num/den)} × ${N} = ${resultado} parlamentarios`;
-  } else if(variante === 'fraccion_de_total'){
-    enunciado = `Se necesitan <strong>${resultado} votos</strong> de la <strong>${camara.nombre}</strong> (${N} miembros) para aprobar una <strong>${tq.ley}</strong>. ¿Qué fracción del total representa eso? Ingresa numerador y denominador simplificados.`;
-    formula   = '% = (votos / total) × 100 → o como fracción simplificada';
-    const [rs,rd] = simp(resultado, N);
-    respuesta = rs; // para fraccion pedimos numerador
-    inputType = 'fraccion';
-    pasos     = `${resultado}/${N} → MCD(${resultado},${N})=${mcd(resultado,N)} → ${rs}/${rd}`;
-    return { tipo:'fq', tag:'t-ci', label:'Quórum parlamentario',
-      enunciado, formula, ctx:{ico:'🏛️',nom:'Parlamento'},
-      respuestaN:rs, respuestaD:rd, pasos, inputType:'fraccion', mod:'f' };
-  } else {
-    const pct = r2(resultado/N*100);
-    enunciado = `En la <strong>${camara.nombre}</strong> se exige un quórum del <strong>${tq.label}</strong> para aprobar una <strong>${tq.ley}</strong>. Si se sabe que se necesitan exactamente <strong>${resultado} parlamentarios</strong>, ¿cuántos miembros tiene la cámara en total?`;
-    formula   = `Total = (votos × ${den}) / ${num}`;
-    pasos     = `(${resultado} × ${den}) / ${num} = ${resultado*den} / ${num} = ${N} parlamentarios`;
-    respuesta = N;
+  const tq=pick(tiposQuorum);
+  const[num,den]=tq.frac;
+  const resultado=Math.ceil(N*num/den);
+  const variante=pick(['cuantos','fraccion_de_total','total_desde_resultado']);
+  let enunciado,formula,respuesta,pasos,inputType;
+  respuesta=resultado;inputType='simple';
+  if(variante==='cuantos'){
+    enunciado=`Para aprobar una <strong>${tq.ley}</strong>, se requiere que <strong>${tq.label}</strong> de los parlamentarios en ejercicio de la <strong>${camara.nombre}</strong> asistan y voten a favor. Si la cámara tiene <strong>${N} parlamentarios</strong>, ¿cuántos deben votar a favor?`;
+    formula=`Resultado = (${num}/${den}) × ${N}`;
+    pasos=`(${num}/${den}) × ${N} = ${r2(num/den)} × ${N} = ${resultado} parlamentarios`;
+  }else if(variante==='fraccion_de_total'){
+    enunciado=`Se necesitan <strong>${resultado} votos</strong> de la <strong>${camara.nombre}</strong> (${N} miembros) para aprobar una <strong>${tq.ley}</strong>. ¿Qué fracción del total representa eso? Ingresa numerador y denominador simplificados.`;
+    formula='% = (votos / total) × 100 → o como fracción simplificada';
+    const[rs,rd]=simp(resultado,N);
+    return{tipo:'fq',tag:'t-ci',label:'Quórum parlamentario',
+      enunciado,formula,ctx:{ico:'🏛️',nom:'Parlamento'},
+      respuestaN:rs,respuestaD:rd,pasos:`${resultado}/${N} → MCD(${resultado},${N})=${mcd(resultado,N)} → ${rs}/${rd}`,inputType:'fraccion',mod:'f'};
+  }else{
+    enunciado=`En la <strong>${camara.nombre}</strong> se exige un quórum del <strong>${tq.label}</strong> para aprobar una <strong>${tq.ley}</strong>. Si se sabe que se necesitan exactamente <strong>${resultado} parlamentarios</strong>, ¿cuántos miembros tiene la cámara en total?`;
+    formula=`Total = (votos × ${den}) / ${num}`;
+    pasos=`(${resultado} × ${den}) / ${num} = ${resultado*den} / ${num} = ${N} parlamentarios`;
+    respuesta=N;
   }
-
-  return { tipo:'fq', tag:'t-ci', label:'Quórum parlamentario',
-    enunciado, formula, ctx:{ico:'🏛️',nom:'Parlamento'},
-    respuesta, unidad:'', pasos, inputType, mod:'f' };
+  return{tipo:'fq',tag:'t-ci',label:'Quórum parlamentario',enunciado,formula,ctx:{ico:'🏛️',nom:'Parlamento'},respuesta,unidad:'',pasos,inputType,mod:'f'};
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // GENERAR
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 function generar(){
-  if(pagina==='porcentajes'){
-    if(stP===7) return gP7();
-    if(stP===8) return gP8();
-    if(stP===9) return gP9();
-    if(stP===6) return gP6();
+  const mod=MOD_PAGINA[pagina]||'mixto';
+  if(mod==='porcentajes'){
+    if(stP===7)return gP7();
+    if(stP===8)return gP8();
+    if(stP===9)return gP9();
+    if(stP===6)return gP6();
     const t=stP===0?rnd(1,9):stP;
     const gens=[gP1,gP2,gP3,gP4,gP5,gP6,gP7,gP8,gP9];
     return gens[t-1]();
   }
-  if(pagina==='fracciones'){
-    if(stF==='f1') return gF1();
-    if(stF==='f2') return gF2();
-    if(stF==='f3') return gF3();
-    if(stF==='fq') return gFQ();
+  if(mod==='fracciones'){
+    if(stF==='f1')return gF1();
+    if(stF==='f2')return gF2();
+    if(stF==='f3')return gF3();
+    if(stF==='fq')return gFQ();
     return pick([gF1,gF2,gF3,gFQ])();
   }
   return pick([gP1,gP2,gP3,gP4,gP5,gP6,gP7,gP8,gP9,gF1,gF2,gF3,gFQ])();
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // RENDER
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 function renderInput(ej){
   if(ej.inputType==='fraccion') return `
     <div class="frac-row">
@@ -1267,8 +1838,8 @@ function renderInput(ej){
         <input type="number" id="inp-d" placeholder="?" onkeydown="if(event.key==='Enter')verificar()">
         <label>Denominador</label>
       </div>
-      <span class="frac-hint">← fracción<br>simplificada</span>
-      <button class="btn-ver" id="btn-v" onclick="verificar()">Verificar →</button>
+      <span class="frac-hint">← fracción simplificada</span>
+      <button class="btn-ver" id="btn-v" onclick="verificar()">VERIFICAR →</button>
     </div>`;
   return `
     <div class="input-row">
@@ -1277,12 +1848,13 @@ function renderInput(ej){
           onkeydown="if(event.key==='Enter')verificar()">
         <span class="unit">${ej.unidad||'#'}</span>
       </div>
-      <button class="btn-ver" id="btn-v" onclick="verificar()">Verificar →</button>
+      <button class="btn-ver" id="btn-v" onclick="verificar()">VERIFICAR →</button>
     </div>`;
 }
 
 function renderEj(ej){
-  const id=pagina==='porcentajes'?'ej-p':pagina==='fracciones'?'ej-f':'ej-m';
+  const map={'ejer-pct':'ej-p','ejer-frac':'ej-f','mixto':'ej-m'};
+  const id=map[pagina]||'ej-m';
   document.getElementById(id).innerHTML=`
   <div class="ej-card" id="card-ej">
     <div class="ec-top">
@@ -1293,8 +1865,8 @@ function renderEj(ej){
     </div>
     <div class="ec-body">
       <p class="ec-enunciado">${ej.enunciado}</p>
-      <button class="btn-toggle-formula" onclick="toggleFormula()" id="btn-tf">👁 Mostrar fórmula</button>
-      <div class="ec-formula" id="formula-box" style="display:none"><span class="ef-lbl">Fórmula</span>${ej.formula}</div>
+      <button class="btn-toggle-formula" onclick="toggleFormula()" id="btn-tf">▸ MOSTRAR FÓRMULA</button>
+      <div class="ec-formula" id="formula-box" style="display:none"><span class="ef-lbl">FÓRMULA</span>&nbsp;${ej.formula}</div>
       ${renderInput(ej)}
       <div class="feedback" id="fb"></div>
     </div>
@@ -1302,24 +1874,24 @@ function renderEj(ej){
   setTimeout(()=>{const i=document.getElementById('inp-s')||document.getElementById('inp-n');if(i)i.focus();},80);
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // VERIFICAR
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 function verificar(){
-  if(respondido) return;
+  if(respondido)return;
   const ej=ejercicio;let ok=false;
   if(ej.inputType==='fraccion'){
     const vn=parseInt(document.getElementById('inp-n').value);
     const vd=parseInt(document.getElementById('inp-d').value);
-    if(isNaN(vn)||isNaN(vd)) return;
+    if(isNaN(vn)||isNaN(vd))return;
     const[us,ud]=simp(Math.abs(vn),Math.abs(vd));
     const[es,ed]=simp(Math.abs(ej.respuestaN),Math.abs(ej.respuestaD));
     ok=us===es&&ud===ed;
     document.getElementById('inp-n').classList.add(ok?'ok':'err');
     document.getElementById('inp-d').classList.add(ok?'ok':'err');
-  } else {
+  }else{
     const v=parseFloat(document.getElementById('inp-s').value);
-    if(isNaN(v)) return;
+    if(isNaN(v))return;
     ok=Math.abs(v-ej.respuesta)<0.6;
     document.getElementById('inp-s').classList.add(ok?'ok':'err');
   }
@@ -1333,56 +1905,56 @@ function verificar(){
     :`${ej.unidad==='$'?'$':''}${fmt(ej.respuesta)}${ej.unidad==='%'?'%':''}`;
   const fb=document.getElementById('fb');
   fb.innerHTML=ok
-    ?`<div class="fb-t">✓ ¡Correcto!</div><div class="fb-p">${ej.pasos}</div>`
-    :`<div class="fb-t">✗ Incorrecto — la respuesta era <strong>${rStr}</strong></div><div class="fb-p">${ej.pasos}</div>`;
+    ?`<span class="fb-t">¡Correcto!</span><span class="fb-p">${ej.pasos}</span>`
+    :`<span class="fb-t">Incorrecto — la respuesta era <strong>${rStr}</strong></span><span class="fb-p">${ej.pasos}</span>`;
   fb.className=`feedback show ${ok?'ok':'err'}`;
   updateScore();
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 // NAV
-// ════════════════════════════════════════════
+// ══════════════════════════════════════
 const TITULOS={
-  inicio:'Inicio', porcentajes:'Porcentajes',
-  fracciones:'Fracciones', mixto:'Modo Mixto'
+  inicio:'INICIO',porcentajes:'PORCENTAJES',fracciones:'FRACCIONES',
+  'ejer-pct':'EJERCICIOS %','ejer-frac':'EJERCICIOS ½',
+  'flash-pct':'FLASHCARDS','glosario':'GLOSARIO','notas':'NOTAS',
+  mixto:'MODO MIXTO'
 };
 
 function ir(id){
-  if(id===pagina) return;
+  if(id===pagina)return;
   historial.push(id);
   pagina=id;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  // highlight sidebar
-  document.querySelectorAll('.nav-btn').forEach(b=>{
-    if(b.getAttribute('onclick')===`ir('${id}')`) b.classList.add('active');
-  });
-  document.getElementById('bc-current').textContent=TITULOS[id]||id;
-  const conEj=['porcentajes','fracciones','mixto'].includes(id);
+  // nav highlight
+  document.querySelectorAll('.nav-btn,.nav-sub-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+id);
+  if(nb)nb.classList.add('active');
+  document.getElementById('bc-current').textContent=TITULOS[id]||id.toUpperCase();
   document.getElementById('btn-back').style.display=historial.length>1?'flex':'none';
-  if(conEj) nuevoEjercicio();
+  if(PAGINAS_EJERCICIOS.includes(id))nuevoEjercicio();
   window.scrollTo({top:0,behavior:'smooth'});
+  closeSidebar();
 }
 
 function irAtras(){
-  if(historial.length<=1) return;
+  if(historial.length<=1)return;
   historial.pop();
   const prev=historial[historial.length-1];
   pagina=prev;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+prev).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>{
-    if(b.getAttribute('onclick')===`ir('${prev}')`) b.classList.add('active');
-  });
-  document.getElementById('bc-current').textContent=TITULOS[prev]||prev;
+  document.querySelectorAll('.nav-btn,.nav-sub-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+prev);
+  if(nb)nb.classList.add('active');
+  document.getElementById('bc-current').textContent=TITULOS[prev]||prev.toUpperCase();
   document.getElementById('btn-back').style.display=historial.length>1?'flex':'none';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function setSt(mod,val){
-  if(mod==='p') stP=val; else stF=val;
+  if(mod==='p')stP=val;else stF=val;
   const stId=mod==='p'?'st-porcentajes':'st-fracciones';
   const vals=mod==='p'?[0,1,2,3,4,5,6,7,8,9]:[0,'f1','f2','f3','fq'];
   document.querySelectorAll(`#${stId} .st-btn`).forEach((b,i)=>b.classList.toggle('active',vals[i]==val));
@@ -1412,7 +1984,7 @@ function toggleFormula(){
   const btn=document.getElementById('btn-tf');
   const visible=box.style.display!=='none';
   box.style.display=visible?'none':'inline-flex';
-  btn.textContent=visible?'👁 Mostrar fórmula':'🙈 Ocultar fórmula';
+  btn.textContent=visible?'▸ MOSTRAR FÓRMULA':'▸ OCULTAR FÓRMULA';
 }
 
 function resetScore(){
@@ -1420,19 +1992,109 @@ function resetScore(){
   updateScore();nuevoEjercicio();
 }
 
-// highlight inicio al cargar
-document.querySelectorAll('.nav-btn').forEach(b=>{
-  if(b.getAttribute('onclick')==="ir('inicio')") b.classList.add('active');
+// ══════════════════════════════════════
+// SIDEBAR TOGGLE
+// ══════════════════════════════════════
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sb-overlay').classList.add('active');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('active');
+}
+
+function toggleUnit(u){
+  const hdr=document.getElementById(`unit-${u}-hdr`);
+  const sub=document.getElementById(`unit-${u}-sub`);
+  hdr.classList.toggle('open');
+  sub.classList.toggle('open');
+}
+
+// ══════════════════════════════════════
+// NOTAS
+// ══════════════════════════════════════
+function saveNotes(ta){
+  try{
+    localStorage.setItem('algebra-notas',ta.value);
+    document.getElementById('notes-status').textContent='[GUARDADO]';
+    document.getElementById('notes-count').textContent=ta.value.length+' caracteres';
+  }catch(e){}
+}
+function clearNotes(){
+  if(!confirm('¿Limpiar todas las notas?'))return;
+  document.getElementById('notes-area').value='';
+  try{localStorage.removeItem('algebra-notas');}catch(e){}
+  document.getElementById('notes-status').textContent='[VACÍO]';
+  document.getElementById('notes-count').textContent='0 caracteres';
+}
+// load notas
+(function(){
+  try{
+    const saved=localStorage.getItem('algebra-notas');
+    if(saved){
+      document.getElementById('notes-area').value=saved;
+      document.getElementById('notes-count').textContent=saved.length+' caracteres';
+    }
+  }catch(e){}
+})();
+
+// ══════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════
+const SEARCH_DATA=[
+  {page:'porcentajes',title:'Porcentajes — Fundamento',text:'porcentaje por cada cien símbolo equivale dividir 100 conversión'},
+  {page:'porcentajes',title:'Tipo 1 — Calcular la parte',text:'parte total porcentaje calcular Parte = (% / 100) × Total AFP descuento'},
+  {page:'porcentajes',title:'Tipo 2 — Encontrar el total',text:'total parte porcentaje Total = (Parte × 100) / % IVA precio neto'},
+  {page:'porcentajes',title:'Tipo 3 — Aumento y descuento',text:'aumento descuento factor Total × (1 + % / 100) arriendo celular vuelo'},
+  {page:'porcentajes',title:'Tipo 4 — Calcular el %',text:'qué porcentaje parte total % = (Parte / Total) × 100 sueldo arriendo'},
+  {page:'porcentajes',title:'Tipo 5 — Total desde parte',text:'total desde parte porcentaje Total = (Parte × 100) / % impuesto ingreso'},
+  {page:'ejer-pct',title:'Ejercicios de Porcentajes',text:'ejercicios interactivos porcentajes tipos herencia presupuesto 50 30 20'},
+  {page:'fracciones',title:'Fracciones — Fundamento',text:'fracción parte entero numerador denominador simplificada MCD'},
+  {page:'fracciones',title:'Suma y Resta de Fracciones',text:'sumar restar fracciones MCM denominador común a/b + c/d'},
+  {page:'fracciones',title:'Multiplicación y División',text:'multiplicar dividir fracciones (a/b)×(c/d) = (a×c)/(b×d) invertir'},
+  {page:'fracciones',title:'Fracción ↔ Decimal',text:'fracción decimal conversión numerador dividir denominador cotización'},
+  {page:'ejer-frac',title:'Ejercicios de Fracciones',text:'ejercicios fracciones suma resta multiplicación división quórum parlamentario'},
+  {page:'glosario',title:'Glosario — Términos',text:'glosario términos definiciones IVA AFP MCD MCM legitimaria mejoras libre disposición quórum'},
+  {page:'flash-pct',title:'Flashcards — Porcentajes',text:'flashcards repaso conceptos fórmulas clave porcentajes'},
+  {page:'notas',title:'Notas personales',text:'notas apuntes editor personal'},
+];
+
+function doSearch(q){
+  const res=document.getElementById('search-results');
+  if(!q||q.length<2){res.innerHTML='';return;}
+  const q2=q.toLowerCase();
+  const matches=SEARCH_DATA.filter(d=>d.title.toLowerCase().includes(q2)||d.text.toLowerCase().includes(q2));
+  if(!matches.length){res.innerHTML='<div style="font-size:11px;color:var(--text3);padding:8px 0;">[NULL] Sin resultados</div>';return;}
+  res.innerHTML=matches.map(m=>`
+    <div class="sr-item" onclick="ir('${m.page}');document.getElementById('search-input').value='';document.getElementById('search-results').innerHTML='';">
+      <div class="sri-title">&gt; ${m.title}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// FLASHCARD FILTER
+// ══════════════════════════════════════
+function filterFC(btn,deck,cat){
+  const grid=document.getElementById(`fc-${deck}-grid`);
+  const filters=document.getElementById(`fc-${deck}-filters`);
+  filters.querySelectorAll('.fc-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  grid.querySelectorAll('.flashcard').forEach(fc=>{
+    fc.style.display=(cat==='all'||fc.dataset.cat===cat)?'block':'none';
+  });
+}
+
+// ══════════════════════════════════════
+// FAB / SCROLL
+// ══════════════════════════════════════
+const fab=document.getElementById('fab-top');
+window.addEventListener('scroll',()=>{
+  fab.classList.toggle('visible',window.scrollY>300);
 });
 
-// Botón flotante subir
-const fab=document.getElementById('fab-top');
-document.querySelector('.content').addEventListener('scroll',()=>{
-  fab.classList.toggle('visible', document.querySelector('.content').scrollTop>300);
-});
-window.addEventListener('scroll',()=>{
-  fab.classList.toggle('visible', window.scrollY>300);
-});
+// init
+document.getElementById('nav-inicio').classList.add('active');
 </script>
 </body>
 </html>
