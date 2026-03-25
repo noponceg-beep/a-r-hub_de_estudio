@@ -3,1112 +3,1518 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Introducción a la Automatización · INACAP</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>INACAP // Automatización Industrial</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  /* ── RESET & BASE ────────────────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ═══════════════════════════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:        #0D0F14;
-    --bg2:       #13161E;
-    --bg3:       #1A1E2A;
-    --border:    #252A38;
-    --border2:   #2E3447;
-    --text:      #C8D0E8;
-    --text-dim:  #636E8A;
-    --text-bright: #EEF1FA;
-    --accent:    #4F8EF7;
-    --accent2:   #6EECD5;
-    --accent3:   #F7BE4F;
-    --accent4:   #F76F6F;
-    --accent5:   #A78BFA;
-    --sidebar-w: 270px;
-    --topbar-h:  56px;
-    --radius:    10px;
-  }
+:root {
+  --bg:        #080c10;
+  --bg2:       #0d1117;
+  --bg3:       #111822;
+  --bg4:       #161e2a;
+  --border:    #1a2535;
+  --border2:   #1f2d40;
+  --text:      #8fa8c0;
+  --text-dim:  #3a5068;
+  --text-bright: #c8ddef;
+  --green:     #00ff9d;
+  --cyan:      #00c8ff;
+  --amber:     #ffb700;
+  --red:       #ff4060;
+  --purple:    #a855f7;
+  --sidebar-w: 260px;
+  --topbar-h:  52px;
+}
 
-  html, body { height: 100%; }
+html, body { height: 100%; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow: hidden;
-    font-size: 15px;
-  }
+body {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  overflow: hidden;
+  position: relative;
+}
 
-  /* ── LAYOUT ─────────────────────────────────────────────────────── */
-  #app { display: flex; height: 100vh; overflow: hidden; }
+/* scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.07) 2px,
+    rgba(0,0,0,.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
 
-  /* ── HAMBURGER BUTTON (hidden on desktop) ─────────────────────── */
-  #hamburger {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px 6px;
-    flex-direction: column;
-    gap: 5px;
-    margin-right: 4px;
-  }
-  #hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--text);
-    border-radius: 2px;
-    transition: all .25s;
-  }
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
 
-  /* overlay for mobile sidebar */
-  #sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.55);
-    z-index: 99;
-  }
-  #sidebar-overlay.visible { display: block; }
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════════ */
+#app { display: flex; height: 100vh; overflow: hidden; }
 
-  /* ── SIDEBAR ─────────────────────────────────────────────────────── */
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+  transition: transform .3s ease;
+}
+
+.sidebar-logo {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.sidebar-logo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--green), transparent);
+}
+
+.logo-badge {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.logo-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--text-bright);
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.logo-title span {
+  color: var(--green);
+  animation: cursorBlink 1.2s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.logo-sub {
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* sidebar search */
+.sidebar-search {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-search input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  padding: 7px 10px;
+  color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  border-radius: 0;
+}
+.sidebar-search input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 8px rgba(0,255,157,.15);
+}
+.sidebar-search input::placeholder { color: var(--text-dim); }
+
+/* nav */
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+
+.nav-section-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 12px 16px 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: all .15s;
+  border-left: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  user-select: none;
+}
+.nav-item:hover { color: var(--text-bright); background: rgba(0,255,157,.03); }
+.nav-item.active {
+  color: var(--green);
+  border-left-color: var(--green);
+  background: rgba(0,255,157,.05);
+}
+
+.nav-item .nav-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-item .nav-count {
+  margin-left: auto;
+  font-size: 9px;
+  color: var(--text-dim);
+  border: 1px solid var(--border2);
+  padding: 1px 6px;
+  font-family: 'Orbitron', monospace;
+}
+.nav-item.active .nav-count { border-color: var(--green); color: var(--green); }
+
+/* collapsible sub nav */
+.nav-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: color .15s;
+  user-select: none;
+  border-left: 2px solid transparent;
+}
+.nav-group-toggle:hover { color: var(--cyan); }
+.nav-group-toggle.open { color: var(--cyan); border-left-color: var(--cyan); }
+.nav-group-toggle .arrow {
+  margin-left: auto;
+  font-size: 11px;
+  transition: transform .2s;
+  color: var(--text-dim);
+}
+.nav-group-toggle.open .arrow { transform: rotate(90deg); color: var(--cyan); }
+
+.nav-sub {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease;
+}
+.nav-sub.open { max-height: 300px; }
+.nav-sub .nav-item {
+  padding-left: 34px;
+  font-size: 11px;
+  border-left: 2px solid transparent;
+}
+.nav-sub .nav-item.active { border-left-color: var(--green); }
+
+/* sidebar bottom */
+.sidebar-bottom {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--green);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 6px var(--green); opacity: 1; }
+  50% { box-shadow: 0 0 14px var(--green); opacity: .6; }
+}
+
+/* ── MAIN ── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+#topbar {
+  height: var(--topbar-h);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+}
+#topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent 60%);
+}
+
+/* hamburger */
+#hamburger {
+  display: none;
+  background: none;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  padding: 5px 7px;
+  flex-direction: column;
+  gap: 4px;
+  margin-right: 6px;
+}
+#hamburger span { display: block; width: 18px; height: 1px; background: var(--text); }
+
+/* breadcrumb */
+.topbar-breadcrumb {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.topbar-breadcrumb .current { color: var(--cyan); }
+.topbar-breadcrumb .sep { color: var(--border2); }
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbar-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+}
+.topbar-tag.accent {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 8px rgba(0,255,157,.2);
+  animation: borderBlink 2s step-end infinite;
+}
+@keyframes borderBlink {
+  0%, 100% { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.2); }
+  50% { border-color: rgba(0,255,157,.3); box-shadow: none; }
+}
+
+#content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+}
+
+/* panels */
+.panel { display: none; }
+.panel.active {
+  display: block;
+  animation: fadeUp .3s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════════════════ */
+.page-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+.page-title span { color: var(--green); }
+
+.page-subtitle {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEORY SECTIONS
+═══════════════════════════════════════════════════════════════ */
+.theory-section {
+  border-left: 3px solid var(--cyan);
+  padding: 18px 20px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  position: relative;
+  transition: box-shadow .2s, border-left-color .2s;
+}
+.theory-section:hover {
+  box-shadow: -3px 0 16px rgba(0,200,255,.15), 0 0 30px rgba(0,200,255,.04);
+}
+
+.theory-section h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.theory-section h2 .num {
+  background: var(--cyan);
+  color: var(--bg);
+  font-size: 9px;
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+.theory-section h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2), transparent);
+}
+
+.theory-section h3 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-bright);
+  margin: 14px 0 6px;
+  letter-spacing: 1px;
+}
+.theory-section h3::before {
+  content: '▸ ';
+  color: var(--green);
+}
+
+.theory-section p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.hi  { color: var(--green); font-weight: 500; }
+.hi2 { color: var(--cyan); font-weight: 500; }
+.hi3 { color: var(--amber); font-weight: 500; }
+.hi4 { color: var(--red); font-weight: 500; }
+.hi5 { color: var(--purple); font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ALERT BOXES
+═══════════════════════════════════════════════════════════════ */
+.box-ok, .box-info, .box-warn, .box-def {
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+}
+.box-ok {
+  border-left: 3px solid var(--green);
+  background: rgba(0,255,157,.05);
+  color: var(--text-bright);
+}
+.box-ok::before { content: '[OK] '; color: var(--green); font-weight: 700; }
+
+.box-info {
+  border-left: 3px solid var(--cyan);
+  background: rgba(0,200,255,.05);
+  color: var(--text-bright);
+}
+.box-info::before { content: '[INFO] '; color: var(--cyan); font-weight: 700; }
+
+.box-warn {
+  border-left: 3px solid var(--red);
+  background: rgba(255,64,96,.05);
+  color: var(--text-bright);
+}
+.box-warn::before { content: '[WARN] '; color: var(--red); font-weight: 700; }
+
+.box-def {
+  border-left: 3px solid var(--purple);
+  background: rgba(168,85,247,.05);
+  color: var(--text-bright);
+}
+.box-def::before { content: '[DEF] '; color: var(--purple); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════════════════════════ */
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.data-table thead th {
+  background: rgba(0,200,255,.08);
+  color: var(--cyan);
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--cyan);
+}
+.data-table tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+.data-table tbody tr:hover td {
+  background: rgba(0,255,157,.03);
+  color: var(--text-bright);
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.card:hover { border-color: var(--border2); box-shadow: 0 4px 20px rgba(0,0,0,.3); }
+.card:hover::before { opacity: 1; }
+
+/* corner decoration */
+.card::after {
+  content: '◢';
+  position: absolute;
+  bottom: 4px; right: 6px;
+  color: var(--border2);
+  font-size: 10px;
+  animation: cornerAnim 3s ease-in-out infinite;
+}
+@keyframes cornerAnim {
+  0%, 100% { color: var(--border2); }
+  50% { color: var(--green); opacity: .5; }
+}
+
+.card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID
+═══════════════════════════════════════════════════════════════ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STAT BOXES
+═══════════════════════════════════════════════════════════════ */
+.stat-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+}
+.stat-n {
+  font-family: 'Orbitron', monospace;
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--green);
+  display: block;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+.stat-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHAIN / FLOW
+═══════════════════════════════════════════════════════════════ */
+.chain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.chain-step {
+  border: 1px solid var(--border2);
+  padding: 10px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-bright);
+  text-align: center;
+  min-width: 100px;
+  position: relative;
+  transition: border-color .2s, box-shadow .2s;
+}
+.chain-step:hover { border-color: var(--green); box-shadow: 0 0 12px rgba(0,255,157,.15); }
+.chain-step .step-label {
+  display: block;
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  font-family: 'Orbitron', monospace;
+}
+.chain-step.s1 { border-color: rgba(0,255,157,.3); color: var(--green); }
+.chain-step.s2 { border-color: rgba(0,200,255,.3); color: var(--cyan); }
+.chain-step.s3 { border-color: rgba(168,85,247,.3); color: var(--purple); }
+.chain-step.s4 { border-color: rgba(255,183,0,.3); color: var(--amber); }
+.chain-arrow { color: var(--green); font-size: 16px; font-family: 'Share Tech Mono', monospace; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TECH COMPARISON
+═══════════════════════════════════════════════════════════════ */
+.tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+.tech-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.tech-card:hover { border-color: var(--border2); }
+.tech-header {
+  padding: 12px 16px;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.tech-card.cableada .tech-header { color: var(--amber); border-bottom-color: rgba(255,183,0,.3); background: rgba(255,183,0,.04); }
+.tech-card.plc .tech-header { color: var(--cyan); border-bottom-color: rgba(0,200,255,.3); background: rgba(0,200,255,.04); }
+.tech-body { padding: 14px 16px; }
+.tech-body li {
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+.tech-body li:last-child { border-bottom: none; }
+.tech-body li::before { content: '›'; color: var(--text-dim); flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════════
+   EXERCISES
+═══════════════════════════════════════════════════════════════ */
+.exercise {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.exercise-header {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background .15s;
+}
+.exercise-header:hover { background: var(--bg3); }
+.exercise.open .exercise-header { border-bottom-color: var(--border); }
+
+.exercise-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--green);
+  color: var(--bg);
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+.exercise-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-bright);
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.exercise-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+  border: 1px solid;
+  text-transform: uppercase;
+}
+.exercise-tag.tipo-analisis { color: var(--purple); border-color: var(--purple); }
+.exercise-tag.tipo-clasificacion { color: var(--cyan); border-color: var(--cyan); }
+.exercise-tag.tipo-definicion { color: var(--amber); border-color: var(--amber); }
+
+.exercise-chevron {
+  color: var(--text-dim);
+  font-size: 12px;
+  transition: transform .2s;
+  font-family: 'Share Tech Mono', monospace;
+}
+.exercise.open .exercise-chevron { transform: rotate(180deg); color: var(--green); }
+
+.exercise-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+}
+.exercise.open .exercise-body { max-height: 800px; padding: 18px; }
+
+.exercise-question {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text);
+  padding: 12px 16px;
+  border-left: 3px solid var(--cyan);
+  background: rgba(0,200,255,.04);
+  margin-bottom: 14px;
+}
+
+.exercise-answer-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════════════════ */
+.btn {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+  padding: 8px 18px;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 0;
+}
+.btn:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 16px rgba(0,255,157,.3); }
+
+.btn-reveal {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  padding: 7px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 10px;
+  border-radius: 0;
+}
+.btn-reveal:hover { border-color: var(--green); color: var(--green); }
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  padding: 8px 18px;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 0;
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.answer-content { display: none; }
+.answer-content.visible { display: block; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STYLED LIST
+═══════════════════════════════════════════════════════════════ */
+ul.styled { list-style: none; padding: 0; }
+ul.styled li {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+ul.styled li:last-child { border-bottom: none; }
+ul.styled li::before { content: '›'; color: var(--green); flex-shrink: 0; font-size: 14px; }
+
+/* tags */
+.tag {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+.tag.blue { border: 1px solid rgba(0,200,255,.4); color: var(--cyan); background: rgba(0,200,255,.06); }
+.tag.green { border: 1px solid rgba(0,255,157,.4); color: var(--green); background: rgba(0,255,157,.06); }
+.tag.yellow { border: 1px solid rgba(255,183,0,.4); color: var(--amber); background: rgba(255,183,0,.06); }
+.tag.purple { border: 1px solid rgba(168,85,247,.4); color: var(--purple); background: rgba(168,85,247,.06); }
+.tag.red { border: 1px solid rgba(255,64,96,.4); color: var(--red); background: rgba(255,64,96,.06); }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOSSARY
+═══════════════════════════════════════════════════════════════ */
+.glosario-search {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: 10px 14px;
+  color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  border-radius: 0;
+  transition: border-color .2s, box-shadow .2s;
+  margin-bottom: 16px;
+}
+.glosario-search:focus { border-color: var(--green); box-shadow: 0 0 10px rgba(0,255,157,.1); }
+.glosario-search::placeholder { color: var(--text-dim); }
+
+.term-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: border-color .2s;
+}
+.term-card:hover { border-color: var(--green); }
+.term-word {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 160px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-top: 2px;
+}
+.term-def { font-size: 12.5px; line-height: 1.65; color: var(--text); }
+.term-source {
+  display: inline-block;
+  margin-top: 5px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NOTES
+═══════════════════════════════════════════════════════════════ */
+.note-area {
+  width: 100%;
+  min-height: 180px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  resize: vertical;
+  outline: none;
+  border-radius: 0;
+  transition: border-color .2s, box-shadow .2s;
+}
+.note-area:focus { border-color: var(--green); box-shadow: 0 0 10px rgba(0,255,157,.1); }
+
+.note-saved-msg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 2px;
+  margin-top: 8px;
+  display: none;
+}
+
+.note-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  position: relative;
+  transition: border-color .2s;
+}
+.note-item:hover { border-color: var(--border2); }
+.note-item-date {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.note-item-text { font-size: 12.5px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
+.note-item-del {
+  position: absolute;
+  top: 10px; right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  transition: color .15s;
+}
+.note-item-del:hover { color: var(--red); }
+
+/* ═══════════════════════════════════════════════════════════════
+   FLASHCARDS
+═══════════════════════════════════════════════════════════════ */
+.flashcard-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.fc-filter {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  padding: 5px 14px;
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  border-radius: 0;
+}
+.fc-filter:hover, .fc-filter.active { border-color: var(--green); color: var(--green); }
+
+.flashcards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+
+.flashcard-wrap {
+  perspective: 800px;
+  height: 160px;
+  cursor: pointer;
+}
+.flashcard {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .5s ease;
+}
+.flashcard-wrap.flipped .flashcard { transform: rotateY(180deg); }
+
+.fc-front, .fc-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.fc-back { transform: rotateY(180deg); }
+
+.fc-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.fc-front .fc-label { color: var(--cyan); }
+.fc-back .fc-label { color: var(--green); }
+
+.fc-front { background: var(--bg2); }
+.fc-back { background: rgba(0,255,157,.03); border-color: rgba(0,255,157,.25); }
+
+.fc-term {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.fc-def {
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.fc-category {
+  margin-top: 8px;
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   QUIZ
+═══════════════════════════════════════════════════════════════ */
+.quiz-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.quiz-score {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-left: auto;
+  letter-spacing: 1px;
+}
+.quiz-score span { color: var(--green); animation: glowPulse 2s ease-in-out infinite; }
+
+.quiz-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.quiz-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+}
+
+.quiz-qtag {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quiz-qtag .qtag-label {
+  border: 1px solid var(--border2);
+  padding: 1px 7px;
+  color: var(--cyan);
+  border-color: rgba(0,200,255,.3);
+}
+
+.quiz-question {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-option {
+  background: transparent;
+  border: 1px solid var(--border2);
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quiz-option:hover:not(:disabled) { border-color: var(--green); color: var(--text-bright); background: rgba(0,255,157,.03); }
+.quiz-option:disabled { cursor: default; }
+.quiz-option.correct { border-color: var(--green); background: rgba(0,255,157,.08); color: var(--green); }
+.quiz-option.incorrect { border-color: var(--red); background: rgba(255,64,96,.08); color: var(--red); }
+.quiz-option .opt-letter {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  width: 20px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+}
+.quiz-option.correct .opt-letter { color: var(--green); }
+.quiz-option.incorrect .opt-letter { color: var(--red); }
+
+.quiz-feedback {
+  margin-top: 12px;
+  padding: 10px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  border-left: 3px solid;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { border-color: var(--green); color: var(--green); background: rgba(0,255,157,.04); }
+.quiz-feedback.ok::before { content: '[OK] '; }
+.quiz-feedback.err { border-color: var(--red); color: var(--red); background: rgba(255,64,96,.04); }
+.quiz-feedback.err::before { content: '[ERR] '; }
+
+.next-question-btn {
+  margin-top: 12px;
+  display: none;
+}
+.next-question-btn.show { display: block; }
+
+/* ═══════════════════════════════════════════════════════════════
+   OBJ CARDS
+═══════════════════════════════════════════════════════════════ */
+.obj-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: border-color .2s;
+  cursor: default;
+}
+.obj-card:hover { border-color: var(--green); }
+.obj-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.obj-body h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+.obj-body p { font-size: 12px; color: var(--text); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════════════════════
+   OVERLAY & HAMBURGER (MOBILE)
+═══════════════════════════════════════════════════════════════ */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 99;
+}
+#sidebar-overlay.visible { display: block; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  body { overflow: auto; }
+  #app { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
   #sidebar {
-    width: var(--sidebar-w);
-    min-width: var(--sidebar-w);
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
     height: 100vh;
-    overflow: hidden;
-    position: relative;
-    z-index: 10;
-  }
-
-  .sidebar-logo {
-    padding: 20px 18px 14px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .sidebar-logo .badge {
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    font-weight: 700;
-  }
-
-  .sidebar-logo h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--text-bright);
-    line-height: 1.3;
-  }
-
-  .sidebar-logo p {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 3px;
-    font-weight: 400;
-  }
-
-  /* search */
-  .sidebar-search {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-search input {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 7px;
-    padding: 7px 12px;
-    color: var(--text);
-    font-size: 12.5px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color .2s;
-  }
-  .sidebar-search input:focus { border-color: var(--accent); }
-  .sidebar-search input::placeholder { color: var(--text-dim); }
-
-  /* nav */
-  .sidebar-nav { flex: 1; overflow-y: auto; padding: 10px 0; }
-  .sidebar-nav::-webkit-scrollbar { width: 4px; }
-  .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
-
-  .nav-section-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    font-weight: 600;
-    padding: 10px 18px 5px;
-    font-family: 'Space Mono', monospace;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 18px;
-    cursor: pointer;
-    border-radius: 0;
-    font-size: 13.5px;
-    color: var(--text-dim);
-    transition: all .18s;
-    border-left: 2px solid transparent;
-    position: relative;
-  }
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-  .nav-item.active {
-    background: var(--bg3);
-    color: var(--accent);
-    border-left-color: var(--accent);
-    font-weight: 600;
-  }
-  .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; }
-  .nav-item .nav-count {
-    margin-left: auto;
-    background: var(--bg);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    font-size: 10px;
-    padding: 1px 7px;
-    font-family: 'Space Mono', monospace;
-    color: var(--text-dim);
-  }
-  .nav-item.active .nav-count { border-color: var(--accent); color: var(--accent); }
-
-  .nav-sub {
-    padding-left: 20px;
-    border-left: 1px dashed var(--border2);
-    margin-left: 28px;
-    margin-top: 2px;
-    margin-bottom: 4px;
-  }
-  .nav-sub .nav-item { font-size: 12.5px; padding: 6px 10px; }
-
-  /* sidebar bottom */
-  .sidebar-bottom {
-    padding: 12px 18px;
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .sidebar-bottom .dot {
-    width: 7px; height: 7px;
-    background: var(--accent2);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; } 50% { opacity: .3; }
-  }
-
-  /* ── MAIN ─────────────────────────────────────────────────────────── */
-  #main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: var(--bg);
-  }
-
-  /* topbar */
-  #topbar {
-    height: var(--topbar-h);
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 28px;
-    gap: 14px;
-    flex-shrink: 0;
-  }
-
-  .topbar-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .topbar-breadcrumb .current {
-    color: var(--text-bright);
-    font-weight: 600;
-  }
-  .topbar-breadcrumb .sep { color: var(--border2); }
-
-  .topbar-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .topbar-tag {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    padding: 3px 11px;
-    font-size: 11.5px;
-    color: var(--text-dim);
-    font-family: 'Space Mono', monospace;
-  }
-  .topbar-tag.accent { border-color: var(--accent); color: var(--accent); }
-
-  /* content area */
-  #content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 32px 36px;
-  }
-  #content::-webkit-scrollbar { width: 6px; }
-  #content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
-
-  /* panels */
-  .panel { display: none; animation: fadeIn .25s ease; }
-  .panel.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
-
-  /* ── TYPOGRAPHY ───────────────────────────────────────────────────── */
-  .page-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--text-bright);
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-  .page-subtitle {
-    font-size: 13.5px;
-    color: var(--text-dim);
-    margin-bottom: 28px;
-  }
-
-  h2.section-head {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin: 28px 0 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  h2.section-head::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  h2.section-head .num {
-    background: var(--accent);
-    color: #fff;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-
-  /* ── CARDS ─────────────────────────────────────────────────────────── */
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    margin-bottom: 16px;
-    transition: border-color .2s;
-  }
-  .card:hover { border-color: var(--border2); }
-
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card p { font-size: 13.5px; line-height: 1.7; color: var(--text); }
-  .card p + p { margin-top: 8px; }
-
-  /* definition box */
-  .def-box {
-    background: linear-gradient(135deg, rgba(79,142,247,.08), rgba(110,236,213,.06));
-    border: 1px solid rgba(79,142,247,.3);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin: 12px 0;
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text-bright);
-    position: relative;
-  }
-  .def-box::before {
-    content: '"';
-    font-family: 'Syne', sans-serif;
-    font-size: 48px;
-    color: var(--accent);
-    opacity: .3;
-    position: absolute;
-    top: -4px;
-    left: 10px;
-    line-height: 1;
-  }
-  .def-box p { padding-left: 10px; }
-
-  /* highlight */
-  .hi { color: var(--accent); font-weight: 600; }
-  .hi2 { color: var(--accent2); font-weight: 600; }
-  .hi3 { color: var(--accent3); font-weight: 600; }
-  .hi4 { color: var(--accent4); font-weight: 600; }
-  .hi5 { color: var(--accent5); font-weight: 600; }
-
-  /* ── GRID ─────────────────────────────────────────────────────────── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
-
-  /* ── TABLE ─────────────────────────────────────────────────────────── */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-    margin: 10px 0;
-  }
-  .data-table thead th {
-    background: var(--bg3);
-    color: var(--text-bright);
-    font-weight: 600;
-    padding: 10px 14px;
-    text-align: left;
-    border-bottom: 2px solid var(--accent);
-    font-family: 'Space Mono', monospace;
-    font-size: 11.5px;
-    letter-spacing: .5px;
-  }
-  .data-table tbody td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
-  }
-  .data-table tbody tr:last-child td { border-bottom: none; }
-  .data-table tbody tr:hover td { background: var(--bg3); }
-
-  /* ── CHAIN ─────────────────────────────────────────────────────────── */
-  .chain {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin: 14px 0;
-  }
-  .chain-step {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--text-bright);
-    text-align: center;
-    min-width: 110px;
-  }
-  .chain-step .step-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px;
-    color: var(--text-dim);
-    display: block;
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .chain-arrow { color: var(--accent); font-size: 18px; font-weight: 700; }
-
-  .chain-step.s1 { border-color: var(--accent2); color: var(--accent2); }
-  .chain-step.s2 { border-color: var(--accent); color: var(--accent); }
-  .chain-step.s3 { border-color: var(--accent5); color: var(--accent5); }
-  .chain-step.s4 { border-color: var(--accent3); color: var(--accent3); }
-
-  /* ── OBJECTIVE CARDS ─────────────────────────────────────────────── */
-  .obj-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    transition: border-color .2s, transform .2s;
-    cursor: default;
-  }
-  .obj-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .obj-card .obj-icon {
-    font-size: 24px;
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .obj-card .obj-body h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin-bottom: 4px;
-  }
-  .obj-card .obj-body p { font-size: 12.5px; color: var(--text-dim); line-height: 1.6; }
-
-  /* ── TECH COMPARISON ─────────────────────────────────────────────── */
-  .tech-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin: 14px 0;
-  }
-  .tech-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color .2s;
-  }
-  .tech-card:hover { border-color: var(--border2); }
-  .tech-card .tech-header {
-    padding: 14px 18px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .tech-card .tech-body { padding: 14px 18px; }
-  .tech-card .tech-body li {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.7;
-    list-style: none;
-    padding-left: 0;
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    margin-bottom: 5px;
-  }
-  .tech-card .tech-body li::before { content: '—'; color: var(--text-dim); flex-shrink: 0; }
-
-  .tech-card.cableada .tech-header { background: rgba(247,190,79,.06); color: var(--accent3); border-color: rgba(247,190,79,.2); }
-  .tech-card.plc .tech-header { background: rgba(79,142,247,.06); color: var(--accent); border-color: rgba(79,142,247,.2); }
-
-  /* ── EXERCISE ────────────────────────────────────────────────────── */
-  .exercise {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .exercise-header {
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    transition: background .15s;
-  }
-  .exercise-header:hover { background: var(--bg3); }
-  .exercise-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    background: var(--accent);
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 700;
-  }
-  .exercise-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-bright);
-    flex: 1;
-  }
-  .exercise-tag {
-    font-size: 11px;
-    padding: 2px 9px;
-    border-radius: 20px;
-    border: 1px solid;
-    font-family: 'Space Mono', monospace;
-  }
-  .exercise-tag.tipo-analisis { color: var(--accent5); border-color: var(--accent5); }
-  .exercise-tag.tipo-clasificacion { color: var(--accent2); border-color: var(--accent2); }
-  .exercise-tag.tipo-definicion { color: var(--accent3); border-color: var(--accent3); }
-  .exercise-chevron {
-    color: var(--text-dim);
-    font-size: 16px;
-    transition: transform .2s;
-    font-weight: 700;
-  }
-  .exercise.open .exercise-chevron { transform: rotate(180deg); }
-  .exercise-body {
-    padding: 0 20px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height .3s ease, padding .3s ease;
-  }
-  .exercise.open .exercise-body { max-height: 600px; padding: 18px 20px; }
-  .exercise-question {
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text);
-    margin-bottom: 14px;
-    padding: 12px 16px;
-    background: var(--bg3);
-    border-radius: 8px;
-    border-left: 3px solid var(--accent);
-  }
-  .exercise-answer-label {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    font-family: 'Space Mono', monospace;
-    margin-bottom: 8px;
-  }
-  .exercise-answer {
-    font-size: 13.5px;
-    line-height: 1.7;
-    color: var(--text);
-  }
-
-  /* reveal answer btn */
-  .btn-reveal {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 7px;
-    padding: 8px 16px;
-    font-size: 12.5px;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all .18s;
-    margin-bottom: 10px;
-  }
-  .btn-reveal:hover { border-color: var(--accent); color: var(--accent); }
-  .answer-content { display: none; }
-  .answer-content.visible { display: block; }
-
-  /* ── GLOSSARY ────────────────────────────────────────────────────── */
-  .glosario-search {
-    width: 100%;
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 10px 16px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color .2s;
-    margin-bottom: 18px;
-  }
-  .glosario-search:focus { border-color: var(--accent); }
-  .glosario-search::placeholder { color: var(--text-dim); }
-
-  .term-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 10px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    transition: border-color .2s;
-  }
-  .term-card:hover { border-color: var(--border2); }
-  .term-word {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    font-weight: 700;
-    min-width: 170px;
-    flex-shrink: 0;
-    padding-top: 2px;
-  }
-  .term-def { font-size: 13.5px; line-height: 1.65; color: var(--text); }
-  .term-def .term-source {
-    display: inline-block;
-    margin-top: 5px;
-    font-size: 10.5px;
-    color: var(--text-dim);
-    font-family: 'Space Mono', monospace;
-    background: var(--bg3);
-    padding: 1px 7px;
-    border-radius: 4px;
-  }
-
-  /* ── NOTES ───────────────────────────────────────────────────────── */
-  .note-area {
-    width: 100%;
-    min-height: 200px;
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    color: var(--text);
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    line-height: 1.7;
-    resize: vertical;
-    outline: none;
-    transition: border-color .2s;
-  }
-  .note-area:focus { border-color: var(--accent); }
-
-  .btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 20px;
-    font-size: 13.5px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity .2s;
-    margin-top: 10px;
-  }
-  .btn:hover { opacity: .85; }
-  .btn.secondary {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    color: var(--text);
-  }
-  .btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
-
-  .note-saved-msg {
-    font-size: 12px;
-    color: var(--accent2);
-    margin-top: 8px;
-    display: none;
-    font-family: 'Space Mono', monospace;
-  }
-
-  .note-item {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 10px;
-    position: relative;
-  }
-  .note-item-date {
-    font-size: 10.5px;
-    color: var(--text-dim);
-    font-family: 'Space Mono', monospace;
-    margin-bottom: 6px;
-  }
-  .note-item-text { font-size: 13.5px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
-  .note-item-del {
-    position: absolute;
-    top: 12px; right: 12px;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 15px;
-    transition: color .15s;
-  }
-  .note-item-del:hover { color: var(--accent4); }
-
-  /* ── OVERVIEW STATS ──────────────────────────────────────────────── */
-  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    text-align: center;
-  }
-  .stat-box .stat-n {
-    font-family: 'Space Mono', monospace;
-    font-size: 28px;
-    color: var(--accent);
-    font-weight: 700;
-    display: block;
-  }
-  .stat-box .stat-label { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
-
-  /* ── MISC ────────────────────────────────────────────────────────── */
-  .tag {
-    display: inline-block;
-    font-size: 10.5px;
-    padding: 2px 9px;
-    border-radius: 20px;
-    font-family: 'Space Mono', monospace;
-    margin-right: 5px;
-  }
-  .tag.blue { background: rgba(79,142,247,.12); color: var(--accent); border: 1px solid rgba(79,142,247,.25); }
-  .tag.green { background: rgba(110,236,213,.1); color: var(--accent2); border: 1px solid rgba(110,236,213,.2); }
-  .tag.yellow { background: rgba(247,190,79,.1); color: var(--accent3); border: 1px solid rgba(247,190,79,.2); }
-  .tag.purple { background: rgba(167,139,250,.1); color: var(--accent5); border: 1px solid rgba(167,139,250,.2); }
-  .tag.red { background: rgba(247,111,111,.1); color: var(--accent4); border: 1px solid rgba(247,111,111,.2); }
-
-  ul.styled { padding-left: 0; list-style: none; }
-  ul.styled li {
-    font-size: 13.5px;
-    color: var(--text);
-    line-height: 1.7;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 10px;
-  }
-  ul.styled li:last-child { border-bottom: none; }
-  ul.styled li::before { content: '›'; color: var(--accent); font-weight: 700; }
-
-  .monospace { font-family: 'Space Mono', monospace; }
-
-  /* signature */
-  .sig {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: .5px;
-    margin-top: 4px;
-  }
-
-  /* table wrapper for horizontal scroll */
-  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-  /* ── RESPONSIVE ──────────────────────────────────────────────────── */
-  @media (max-width: 768px) {
-    body { overflow: auto; }
-    #app { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
-
-    #sidebar {
-      position: fixed;
-      top: 0; left: 0;
-      height: 100vh;
-      width: 280px;
-      transform: translateX(-100%);
-      transition: transform .28s ease;
-      z-index: 100;
-      box-shadow: 4px 0 24px rgba(0,0,0,.5);
-    }
-    #sidebar.open { transform: translateX(0); }
-    #hamburger { display: flex; }
-
-    #main { width: 100%; height: auto; min-height: 100vh; overflow: visible; }
-    #topbar { position: sticky; top: 0; z-index: 50; }
-    #content { overflow: visible; height: auto; padding: 20px 16px 40px; }
-
-    .grid-2, .grid-3, .tech-grid { grid-template-columns: 1fr !important; }
-    .stat-row { grid-template-columns: repeat(2, 1fr); }
-    .obj-card { grid-column: auto !important; }
-    .chain { flex-wrap: wrap; gap: 8px; }
-    .chain-step { min-width: 90px; font-size: 11.5px; }
-    .term-card { flex-direction: column; gap: 8px; }
-    .term-word { min-width: unset; }
-    .page-title { font-size: 21px; }
-    .topbar-breadcrumb { font-size: 12px; }
-    .topbar-tag { display: none; }
-    .topbar-tag.accent { display: inline; }
-  }
-
-  @media (max-width: 480px) {
-    .stat-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .exercise-header { flex-wrap: wrap; gap: 6px; }
-    .exercise-tag { display: none; }
-    #content { padding: 14px 10px 40px; }
-    .card { padding: 14px 14px; }
-  }
+    transform: translateX(-100%);
+    z-index: 100;
+  }
+  #sidebar.open { transform: translateX(0); }
+  #hamburger { display: flex; }
+  #main { width: 100%; }
+  #topbar { position: sticky; top: 0; z-index: 50; }
+  #content { overflow: visible; height: auto; padding: 18px 14px 40px; }
+  .grid-2, .grid-3, .grid-4, .tech-grid { grid-template-columns: 1fr !important; }
+  .chain { flex-wrap: wrap; }
+  .term-card { flex-direction: column; gap: 6px; }
+  .term-word { min-width: unset; }
+  .page-title { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .exercise-tag { display: none; }
+  .topbar-tag { display: none; }
+  .topbar-tag.accent { display: inline; }
+  #content { padding: 12px 10px 40px; }
+}
 </style>
 </head>
 <body>
+
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 <div id="app">
 
-  <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
   <nav id="sidebar">
     <div class="sidebar-logo">
-      <span class="badge">INACAP · 2025</span>
-      <h1>Introducción a la<br>Automatización</h1>
-      <p class="sig">Automatización y Robótica</p>
+      <span class="logo-badge">INACAP // 2025</span>
+      <div class="logo-title">Automatización<br>Industrial<span>_</span></div>
+      <div class="logo-sub">Automatización y Robótica</div>
     </div>
 
     <div class="sidebar-search">
-      <input type="text" placeholder="🔍  Buscar en los apuntes..." id="globalSearch">
+      <input type="text" id="globalSearch" placeholder="// buscar en apuntes...">
     </div>
 
     <div class="sidebar-nav">
       <div class="nav-section-label">Principal</div>
-      <div class="nav-item active" onclick="navigate('resumen', this)">
-        <span class="nav-icon">📋</span>
-        Resúmenes de Clase
-        <span class="nav-count">1</span>
+
+      <div class="nav-item active" onclick="navigate('overview', this)">
+        <span class="nav-icon">⌂</span>
+        Inicio
       </div>
-      <div class="nav-sub" id="sub-resumen">
-        <div class="nav-item active" onclick="navigateClass(1, this)">
-          <span class="nav-icon">①</span> Clase 1 — Conceptos Base
+
+      <!-- Clase 1 collapse -->
+      <div class="nav-group-toggle open" onclick="toggleNavGroup(this)">
+        ◈ Clase 1 — Conceptos Base
+        <span class="arrow">›</span>
+      </div>
+      <div class="nav-sub open">
+        <div class="nav-item" onclick="navigate('resumen', this)">
+          <span class="nav-icon">≡</span>
+          Resúmenes
+        </div>
+        <div class="nav-item" onclick="navigate('ejercicios', this)">
+          <span class="nav-icon">⚡</span>
+          Ejercicios
+          <span class="nav-count">3</span>
+        </div>
+        <div class="nav-item" onclick="navigate('quiz', this)">
+          <span class="nav-icon">◎</span>
+          Quiz Aleatorio
+        </div>
+        <div class="nav-item" onclick="navigate('flashcards', this)">
+          <span class="nav-icon">▣</span>
+          Flashcards
+          <span class="nav-count">8</span>
+        </div>
+        <div class="nav-item" onclick="navigate('glosario', this)">
+          <span class="nav-icon">✦</span>
+          Glosario
+          <span class="nav-count">8</span>
         </div>
       </div>
 
-      <div class="nav-item" onclick="navigate('ejercicios', this)">
-        <span class="nav-icon">⚡</span>
-        Ejercicios Prácticos
-        <span class="nav-count">3</span>
-      </div>
-
-      <div class="nav-item" onclick="navigate('glosario', this)">
-        <span class="nav-icon">📖</span>
-        Glosario
-        <span class="nav-count">8</span>
-      </div>
-
       <div class="nav-item" onclick="navigate('notas', this)">
-        <span class="nav-icon">✏️</span>
+        <span class="nav-icon">✎</span>
         Notas Personales
-      </div>
-
-      <div class="nav-section-label" style="margin-top:10px">Info</div>
-      <div class="nav-item" onclick="navigate('overview', this)">
-        <span class="nav-icon">🏠</span>
-        Inicio / Resumen General
       </div>
     </div>
 
     <div class="sidebar-bottom">
-      <div class="dot"></div>
-      Semestre activo · Clase 1 completada
+      <div class="status-dot"></div>
+      SEMESTRE ACTIVO · CLASE 1
     </div>
   </nav>
 
-  <!-- ── MAIN ───────────────────────────────────────────────── -->
+  <!-- ══ MAIN ══════════════════════════════════════════════════ -->
   <div id="main">
     <div id="topbar">
       <button id="hamburger" onclick="toggleSidebar()" aria-label="Menú">
         <span></span><span></span><span></span>
       </button>
       <div class="topbar-breadcrumb">
-        <span>Automatización</span>
-        <span class="sep">›</span>
-        <span class="current" id="breadcrumb-current">Resúmenes de Clase</span>
+        <span>INACAP</span>
+        <span class="sep">//</span>
+        <span class="current" id="breadcrumb-current">INICIO</span>
       </div>
       <div class="topbar-right">
-        <span class="topbar-tag">Beto</span>
-        <span class="topbar-tag accent">Clase 1</span>
+        <span class="topbar-tag">BETO</span>
+        <span class="topbar-tag accent">C1 ONLINE</span>
       </div>
     </div>
 
     <div id="content">
 
-      <!-- ══ PANEL: OVERVIEW ══════════════════════════════════════ -->
-      <div class="panel" id="panel-overview">
-        <div class="page-title">🏠 Bienvenido a tus Apuntes</div>
-        <div class="page-subtitle">Introducción a la Automatización · INACAP · Automatización y Robótica</div>
+      <!-- ════════════════════════════════════════════════════
+           PANEL: OVERVIEW
+      ════════════════════════════════════════════════════ -->
+      <div class="panel active" id="panel-overview">
+        <div class="page-title">// <span>SYS</span>INIT</div>
+        <div class="page-subtitle">Introducción a la Automatización Industrial · INACAP · 2025</div>
 
-        <div class="stat-row">
+        <div class="grid-4" style="margin-bottom:20px">
           <div class="stat-box">
             <span class="stat-n">1</span>
             <div class="stat-label">Clases registradas</div>
           </div>
-          <div class="stat-box">
-            <span class="stat-n">3</span>
-            <div class="stat-label">Ejercicios prácticos</div>
+          <div class="stat-box" style="--green:var(--cyan)">
+            <span class="stat-n" style="color:var(--cyan)">3</span>
+            <div class="stat-label">Ejercicios</div>
           </div>
-          <div class="stat-box">
-            <span class="stat-n">8</span>
-            <div class="stat-label">Términos en glosario</div>
+          <div class="stat-box" style="--green:var(--amber)">
+            <span class="stat-n" style="color:var(--amber)">8</span>
+            <div class="stat-label">Términos</div>
           </div>
-          <div class="stat-box">
-            <span class="stat-n" id="stat-notas">0</span>
-            <div class="stat-label">Notas personales</div>
+          <div class="stat-box" style="--green:var(--purple)">
+            <span class="stat-n" style="color:var(--purple)" id="stat-notas">0</span>
+            <div class="stat-label">Notas</div>
           </div>
         </div>
 
+        <!-- search bar -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">// Búsqueda global</div>
+          <input type="text" id="homeSearch" placeholder="// buscar en teoría, glosario, ejercicios..." 
+            style="width:100%;background:var(--bg);border:1px solid var(--border2);padding:10px 14px;color:var(--text-bright);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;border-radius:0;transition:border-color .2s,box-shadow .2s;"
+            onfocus="this.style.borderColor='var(--green)';this.style.boxShadow='0 0 10px rgba(0,255,157,.1)'"
+            onblur="this.style.borderColor='var(--border2)';this.style.boxShadow='none'"
+            oninput="homeSearchFn(this.value)">
+          <div id="search-results" style="margin-top:12px;display:none"></div>
+        </div>
+
         <div class="card">
-          <div class="card-title">📋 Contenidos por clase</div>
+          <div class="card-title">// Registro de clases</div>
           <div class="table-wrap"><table class="data-table">
             <thead>
-              <tr>
-                <th>Clase</th>
-                <th>Tema principal</th>
-                <th>Conceptos</th>
-                <th>Estado</th>
-              </tr>
+              <tr><th>Clase</th><th>Tema</th><th>Conceptos</th><th>Estado</th></tr>
             </thead>
             <tbody>
               <tr>
-                <td><span class="monospace">C1</span></td>
+                <td style="font-family:'Orbitron',monospace;color:var(--green)">C1</td>
                 <td>Fundamentos de la Automatización Industrial</td>
-                <td><span class="tag blue">Automatización</span><span class="tag green">Control</span><span class="tag yellow">PLC</span></td>
-                <td><span class="tag green">✓ Completado</span></td>
+                <td><span class="tag blue">Auto</span><span class="tag green">Control</span><span class="tag yellow">PLC</span></td>
+                <td><span class="tag green">✓ COMPLETADO</span></td>
               </tr>
               <tr>
-                <td><span class="monospace" style="color:var(--text-dim)">C2</span></td>
+                <td style="font-family:'Orbitron',monospace;color:var(--text-dim)">C2</td>
                 <td style="color:var(--text-dim)">Por agregar...</td>
                 <td>—</td>
-                <td><span class="tag" style="background:var(--bg3);color:var(--text-dim);border:1px solid var(--border2);">Pendiente</span></td>
+                <td><span class="tag" style="border:1px solid var(--border2);color:var(--text-dim)">PENDIENTE</span></td>
               </tr>
             </tbody>
           </table></div>
         </div>
 
         <div class="card">
-          <div class="card-title">💡 Cómo usar este cuaderno</div>
+          <div class="card-title">// Instrucciones del sistema</div>
           <ul class="styled">
-            <li>Usa el <strong>sidebar izquierdo</strong> para navegar entre secciones</li>
-            <li>Los <strong>Ejercicios Prácticos</strong> tienen respuestas ocultables para repasar</li>
-            <li>En <strong>Notas Personales</strong> puedes guardar reflexiones o dudas</li>
-            <li>El <strong>Glosario</strong> tiene buscador para encontrar términos rápido</li>
-            <li>Con cada nueva clase traes tus apuntes y se agrega una nueva sección</li>
+            <li>Usa la <strong>sidebar izquierda</strong> para navegar entre secciones</li>
+            <li>Los <strong>ejercicios</strong> tienen respuestas ocultables para repasar</li>
+            <li>El <strong>Quiz Aleatorio</strong> genera preguntas de opción múltiple con feedback instantáneo</li>
+            <li>Las <strong>Flashcards</strong> tienen flip 3D al hacer click, filtrables por categoría</li>
+            <li>El <strong>Glosario</strong> es buscable en tiempo real</li>
+            <li>En <strong>Notas</strong> puedes guardar reflexiones — se guardan automáticamente</li>
           </ul>
         </div>
       </div>
 
-      <!-- ══ PANEL: RESUMEN ══════════════════════════════════════ -->
-      <div class="panel active" id="panel-resumen">
+      <!-- ════════════════════════════════════════════════════
+           PANEL: RESUMEN
+      ════════════════════════════════════════════════════ -->
+      <div class="panel" id="panel-resumen">
+        <div class="page-title">// <span>CLASE</span> 01</div>
+        <div class="page-subtitle">Fundamentos de la Automatización Industrial · Conceptos Base</div>
 
-        <!-- CLASE 1 -->
-        <div id="clase-1">
-          <div class="page-title">Clase 1 — Conceptos Base</div>
-          <div class="page-subtitle">
-            Automatización Industrial · Control Automático · Definición de Sistema · Objetivos · Tecnologías
-          </div>
+        <!-- 01 Automatización Industrial -->
+        <div class="theory-section" data-search-content="automatización industrial tecnología controlar proceso sistema productivo mínima participación humana informática electrónica electricidad mecánica">
+          <h2><span class="num">01</span> Automatización Industrial</h2>
+          <p>Tecnología que busca <span class="hi">controlar un proceso o sistema productivo</span> con la <span class="hi2">mínima participación humana</span>. Es una disciplina multidisciplinaria que combina conocimientos de distintas áreas:</p>
+          <div class="table-wrap"><table class="data-table" style="margin-top:12px">
+            <thead>
+              <tr><th>Disciplina</th><th>Aporte a la Automatización</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>💻 <strong>Informática</strong></td><td>Programación, procesamiento de datos, control digital</td></tr>
+              <tr><td>⚡ <strong>Electrónica</strong></td><td>Sensores, circuitos de control y señales eléctricas</td></tr>
+              <tr><td>🔌 <strong>Electricidad</strong></td><td>Alimentación, motores y actuadores eléctricos</td></tr>
+              <tr><td>⚙️ <strong>Mecánica</strong></td><td>Estructuras, transmisiones y sistemas de movimiento</td></tr>
+            </tbody>
+          </table></div>
+        </div>
 
-          <!-- ── 1. Automatización Industrial ── -->
-          <h2 class="section-head"><span class="num">01</span> Automatización Industrial</h2>
-          <div class="card">
-            <p>Tecnología que busca <span class="hi">controlar un proceso o sistema productivo</span> con la <span class="hi2">mínima participación humana</span>. Es una disciplina multidisciplinaria que combina conocimientos de distintas áreas:</p>
-            <div style="margin-top:14px">
-              <div class="table-wrap"><table class="data-table">
-                <thead>
-                  <tr><th>Disciplina</th><th>Aporte a la Automatización</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>💻 <strong>Informática</strong></td><td>Programación, procesamiento de datos, control digital</td></tr>
-                  <tr><td>⚡ <strong>Electrónica</strong></td><td>Sensores, circuitos de control y señales eléctricas</td></tr>
-                  <tr><td>🔌 <strong>Electricidad</strong></td><td>Alimentación, motores y actuadores eléctricos</td></tr>
-                  <tr><td>⚙️ <strong>Mecánica</strong></td><td>Estructuras, transmisiones y sistemas de movimiento</td></tr>
-                </tbody>
-              </table></div>
-            </div>
+        <!-- 02 Control Automático -->
+        <div class="theory-section" data-search-content="control automático componentes medición transmisión control fuerza comunicación cadena medir transmitir controlar actuar">
+          <h2><span class="num">02</span> Control Automático</h2>
+          <p>Conjunto de <span class="hi">componentes</span> (medición, transmisión, control, fuerza y comunicación) que trabajan en conjunto según los requerimientos del sistema productivo para lograr el control de un proceso.</p>
+          <h3>Cadena de Control</h3>
+          <div class="chain">
+            <div class="chain-step s1"><span class="step-label">paso 1</span>📡 Medir</div>
+            <div class="chain-arrow">→</div>
+            <div class="chain-step s2"><span class="step-label">paso 2</span>📶 Transmitir</div>
+            <div class="chain-arrow">→</div>
+            <div class="chain-step s3"><span class="step-label">paso 3</span>🧠 Controlar</div>
+            <div class="chain-arrow">→</div>
+            <div class="chain-step s4"><span class="step-label">paso 4</span>⚡ Actuar</div>
           </div>
+        </div>
 
-          <!-- ── 2. Control Automático ── -->
-          <h2 class="section-head"><span class="num">02</span> Control Automático</h2>
-          <div class="card">
-            <p>Conjunto de <span class="hi">componentes</span> (medición, transmisión, control, fuerza y comunicación) que trabajan en conjunto según los requerimientos del sistema productivo para lograr el control de un proceso.</p>
-            <p style="margin-top:12px; font-size:13px; color:var(--text-dim)">Cadena de control:</p>
-            <div class="chain">
-              <div class="chain-step s1">
-                <span class="step-label">paso 1</span>
-                📡 Medir
-              </div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s2">
-                <span class="step-label">paso 2</span>
-                📶 Transmitir
-              </div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s3">
-                <span class="step-label">paso 3</span>
-                🧠 Controlar
-              </div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s4">
-                <span class="step-label">paso 4</span>
-                ⚡ Actuar
-              </div>
-            </div>
-          </div>
-
-          <!-- ── 3. Sistema ── -->
-          <h2 class="section-head"><span class="num">03</span> Definición de Sistema</h2>
-          <div class="def-box">
-            <p>"Combinación de todos los <strong>componentes</strong> que actúan en conjunto para lograr un <strong>objetivo determinado</strong>."</p>
-          </div>
-          <div class="grid-3" style="margin-top:10px">
-            <div class="card" style="text-align:center; border-color: rgba(110,236,213,.3);">
+        <!-- 03 Sistema -->
+        <div class="theory-section" data-search-content="sistema combinación componentes objetivo entrada proceso salida inputs outputs">
+          <h2><span class="num">03</span> Definición de Sistema</h2>
+          <div class="box-def">Combinación de todos los <strong>componentes</strong> que actúan en conjunto para lograr un <strong>objetivo determinado</strong>.</div>
+          <div class="grid-3" style="margin-top:14px">
+            <div class="card" style="border-color:rgba(0,255,157,.2);text-align:center">
               <div style="font-size:22px;margin-bottom:6px">📥</div>
-              <div class="card-title" style="justify-content:center;color:var(--accent2)">Entrada</div>
-              <p style="font-size:12.5px;color:var(--text-dim)">Variables o datos que ingresan al sistema (inputs)</p>
+              <div class="card-title" style="justify-content:center;color:var(--green)">Entrada</div>
+              <p style="font-size:12px;color:var(--text-dim)">Variables o datos que ingresan al sistema (inputs)</p>
             </div>
-            <div class="card" style="text-align:center; border-color: rgba(79,142,247,.3);">
+            <div class="card" style="border-color:rgba(0,200,255,.2);text-align:center">
               <div style="font-size:22px;margin-bottom:6px">⚙️</div>
-              <div class="card-title" style="justify-content:center;color:var(--accent)">Proceso</div>
-              <p style="font-size:12.5px;color:var(--text-dim)">Transformación o tratamiento de las entradas</p>
+              <div class="card-title" style="justify-content:center;color:var(--cyan)">Proceso</div>
+              <p style="font-size:12px;color:var(--text-dim)">Transformación o tratamiento de las entradas</p>
             </div>
-            <div class="card" style="text-align:center; border-color: rgba(247,190,79,.3);">
+            <div class="card" style="border-color:rgba(255,183,0,.2);text-align:center">
               <div style="font-size:22px;margin-bottom:6px">📤</div>
-              <div class="card-title" style="justify-content:center;color:var(--accent3)">Salida</div>
-              <p style="font-size:12.5px;color:var(--text-dim)">Resultado del proceso (outputs)</p>
+              <div class="card-title" style="justify-content:center;color:var(--amber)">Salida</div>
+              <p style="font-size:12px;color:var(--text-dim)">Resultado del proceso (outputs)</p>
             </div>
           </div>
+        </div>
 
-          <!-- ── 4. Objetivos ── -->
-          <h2 class="section-head"><span class="num">04</span> Objetivos de la Automatización Industrial</h2>
-          <div class="grid-2">
+        <!-- 04 Objetivos -->
+        <div class="theory-section" data-search-content="objetivos automatización económico seguridad calidad productividad conectividad costos trabajadores uniformidad producción mercado información tiempo real">
+          <h2><span class="num">04</span> Objetivos de la Automatización Industrial</h2>
+          <div class="grid-2" style="margin-top:10px">
             <div class="obj-card">
-              <div class="obj-icon" style="background:rgba(247,190,79,.1)">💰</div>
+              <div class="obj-icon">💰</div>
               <div class="obj-body">
                 <h3>Económico</h3>
                 <p>Disminuir costos humanos, energéticos, materiales y operativos del proceso.</p>
               </div>
             </div>
             <div class="obj-card">
-              <div class="obj-icon" style="background:rgba(247,111,111,.1)">🛡️</div>
+              <div class="obj-icon">🛡️</div>
               <div class="obj-body">
                 <h3>Seguridad</h3>
                 <p>Evitar que el trabajador realice tareas repetitivas y/o peligrosas para su integridad.</p>
               </div>
             </div>
             <div class="obj-card">
-              <div class="obj-icon" style="background:rgba(110,236,213,.1)">✅</div>
+              <div class="obj-icon">✅</div>
               <div class="obj-body">
                 <h3>Calidad</h3>
                 <p>Mejorar y mantener la calidad del producto con uniformidad constante en la producción.</p>
               </div>
             </div>
             <div class="obj-card">
-              <div class="obj-icon" style="background:rgba(79,142,247,.1)">📈</div>
+              <div class="obj-icon">📈</div>
               <div class="obj-body">
                 <h3>Productividad</h3>
                 <p>Aumentar la producción y flexibilidad del sistema para adaptarse al mercado.</p>
               </div>
             </div>
-            <div class="obj-card" style="grid-column: 1/-1">
-              <div class="obj-icon" style="background:rgba(167,139,250,.1)">🌐</div>
+            <div class="obj-card" style="grid-column:1/-1">
+              <div class="obj-icon">🌐</div>
               <div class="obj-body">
                 <h3>Conectividad</h3>
                 <p>Obtener información en tiempo real del proceso productivo para tomar mejores decisiones.</p>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- ── 5. Tecnologías ── -->
-          <h2 class="section-head"><span class="num">05</span> Tecnologías de Control</h2>
+        <!-- 05 Tecnologías -->
+        <div class="theory-section" data-search-content="lógica cableada programable PLC relés contactores temporizadores Siemens Allen-Bradley OMRON Schneider modificar reprogramar flexibilidad diagnóstico">
+          <h2><span class="num">05</span> Tecnologías de Control</h2>
           <div class="tech-grid">
             <div class="tech-card cableada">
               <div class="tech-header">⚡ Lógica Cableada</div>
@@ -1134,31 +1540,30 @@
             </div>
           </div>
 
-          <div class="card" style="margin-top:0; border-color: rgba(79,142,247,.25); background: rgba(79,142,247,.04)">
-            <div class="card-title">📌 Comparación rápida</div>
-            <div class="table-wrap"><table class="data-table">
-              <thead>
-                <tr><th>Característica</th><th>Lógica Cableada</th><th>Lógica Programable (PLC)</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Modificación</td><td>Requiere recablear</td><td>Solo reprogramar</td></tr>
-                <tr><td>Costo inicial</td><td>Bajo</td><td>Mayor inversión</td></tr>
-                <tr><td>Flexibilidad</td><td>Baja</td><td>Alta</td></tr>
-                <tr><td>Diagnóstico de fallas</td><td>Difícil</td><td>Fácil (software)</td></tr>
-                <tr><td>Aplicación ideal</td><td>Sistemas simples y fijos</td><td>Sistemas complejos o variables</td></tr>
-              </tbody>
-            </table></div>
-          </div>
+          <h3>Comparación rápida</h3>
+          <div class="table-wrap"><table class="data-table">
+            <thead>
+              <tr><th>Característica</th><th>Lógica Cableada</th><th>Lógica Programable (PLC)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Modificación</td><td>Requiere recablear</td><td>Solo reprogramar</td></tr>
+              <tr><td>Costo inicial</td><td>Bajo</td><td>Mayor inversión</td></tr>
+              <tr><td>Flexibilidad</td><td>Baja</td><td>Alta</td></tr>
+              <tr><td>Diagnóstico de fallas</td><td>Difícil</td><td>Fácil (software)</td></tr>
+              <tr><td>Aplicación ideal</td><td>Sistemas simples y fijos</td><td>Sistemas complejos o variables</td></tr>
+            </tbody>
+          </table></div>
         </div>
-        <!-- fin clase-1 -->
       </div>
 
-      <!-- ══ PANEL: EJERCICIOS ═══════════════════════════════════ -->
+      <!-- ════════════════════════════════════════════════════
+           PANEL: EJERCICIOS
+      ════════════════════════════════════════════════════ -->
       <div class="panel" id="panel-ejercicios">
-        <div class="page-title">⚡ Ejercicios Prácticos</div>
-        <div class="page-subtitle">Clase 1 · Automatización Industrial · Repasa y pon a prueba lo aprendido</div>
+        <div class="page-title">// <span>EJERCICIOS</span> PRÁCTICOS</div>
+        <div class="page-subtitle">Clase 1 · Automatización Industrial · Repasa lo aprendido</div>
 
-        <!-- Ejercicio 1 -->
+        <!-- E01 -->
         <div class="exercise open">
           <div class="exercise-header" onclick="toggleExercise(this)">
             <span class="exercise-num">E01</span>
@@ -1170,8 +1575,8 @@
             <div class="exercise-question">
               En una planta embotelladora, un <strong>sensor de nivel</strong> detecta que el estanque está lleno y envía una señal al controlador, el que apaga la bomba de llenado. Identifica cada componente de la cadena de control automático en este ejemplo.
             </div>
-            <div class="exercise-answer-label">Tu respuesta / Solución</div>
-            <button class="btn-reveal" onclick="revealAnswer(this)">👁 Ver respuesta</button>
+            <div class="exercise-answer-label">// Solución</div>
+            <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
             <div class="answer-content exercise-answer">
               <ul class="styled">
                 <li><strong>Medición:</strong> El sensor de nivel (detecta que el estanque está lleno)</li>
@@ -1183,7 +1588,7 @@
           </div>
         </div>
 
-        <!-- Ejercicio 2 -->
+        <!-- E02 -->
         <div class="exercise">
           <div class="exercise-header" onclick="toggleExercise(this)">
             <span class="exercise-num">E02</span>
@@ -1199,7 +1604,7 @@
               c) Un tablero eléctrico con temporizadores físicos para encender luces.<br>
               d) Una línea de producción de automóviles controlada por Siemens S7.
             </div>
-            <button class="btn-reveal" onclick="revealAnswer(this)">👁 Ver respuesta</button>
+            <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
             <div class="answer-content exercise-answer">
               <ul class="styled">
                 <li><strong>a) Lógica Cableada:</strong> usa componentes físicos (relés y contactores), sin programación.</li>
@@ -1211,7 +1616,7 @@
           </div>
         </div>
 
-        <!-- Ejercicio 3 -->
+        <!-- E03 -->
         <div class="exercise">
           <div class="exercise-header" onclick="toggleExercise(this)">
             <span class="exercise-num">E03</span>
@@ -1223,7 +1628,7 @@
             <div class="exercise-question">
               Una empresa minera decide automatizar su sistema de extracción de mineral. Describe cómo la automatización impacta en <strong>cada uno de los 5 objetivos</strong> estudiados en este contexto específico.
             </div>
-            <button class="btn-reveal" onclick="revealAnswer(this)">👁 Ver respuesta</button>
+            <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
             <div class="answer-content exercise-answer">
               <ul class="styled">
                 <li><strong>Económico:</strong> Reducción de personal necesario en zonas de extracción y menor gasto energético por optimización de maquinaria.</li>
@@ -1237,101 +1642,126 @@
         </div>
       </div>
 
-      <!-- ══ PANEL: GLOSARIO ═════════════════════════════════════ -->
+      <!-- ════════════════════════════════════════════════════
+           PANEL: QUIZ
+      ════════════════════════════════════════════════════ -->
+      <div class="panel" id="panel-quiz">
+        <div class="page-title">// <span>QUIZ</span> ALEATORIO</div>
+        <div class="page-subtitle">Preguntas generadas del contenido de Clase 1 · Responde y evalúate</div>
+        <div class="quiz-controls">
+          <button class="btn" onclick="startQuiz()">▷ NUEVA PREGUNTA</button>
+          <button class="btn-secondary" onclick="resetQuiz()">↺ REINICIAR</button>
+          <div class="quiz-score">SCORE: <span id="quiz-score">0</span> / <span id="quiz-total">0</span></div>
+        </div>
+        <div id="quiz-container"></div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           PANEL: FLASHCARDS
+      ════════════════════════════════════════════════════ -->
+      <div class="panel" id="panel-flashcards">
+        <div class="page-title">// <span>FLASH</span>CARDS</div>
+        <div class="page-subtitle">Haz click en la tarjeta para voltearla · Filtra por categoría</div>
+        <div class="flashcard-filters" id="fc-filters">
+          <button class="fc-filter active" onclick="filterFC('all', this)">TODOS</button>
+          <button class="fc-filter" onclick="filterFC('definicion', this)">DEFINICIONES</button>
+          <button class="fc-filter" onclick="filterFC('componente', this)">COMPONENTES</button>
+          <button class="fc-filter" onclick="filterFC('objetivo', this)">OBJETIVOS</button>
+          <button class="fc-filter" onclick="filterFC('tecnologia', this)">TECNOLOGÍAS</button>
+        </div>
+        <div class="flashcards-grid" id="flashcards-grid"></div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           PANEL: GLOSARIO
+      ════════════════════════════════════════════════════ -->
       <div class="panel" id="panel-glosario">
-        <div class="page-title">📖 Glosario de Términos</div>
+        <div class="page-title">// <span>GLOSARIO</span></div>
         <div class="page-subtitle">Clase 1 · Automatización Industrial · Busca cualquier término</div>
 
-        <input type="text" class="glosario-search" placeholder="🔍  Buscar término..." id="glosarioSearch" oninput="filterGlosario()">
+        <input type="text" class="glosario-search" id="glosarioSearch" placeholder="// buscar término..." oninput="filterGlosario()">
 
         <div id="glosario-list">
-
           <div class="term-card" data-term="automatizacion industrial">
             <div class="term-word">Automatización<br>Industrial</div>
             <div class="term-def">
               Tecnología que permite controlar un proceso o sistema productivo buscando la mínima participación humana. Integra informática, electrónica, electricidad y mecánica.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
           <div class="term-card" data-term="control automatico">
             <div class="term-word">Control<br>Automático</div>
             <div class="term-def">
               Conjunto de componentes (medición, transmisión, control, actuación y comunicación) que trabajan en conjunto para controlar un proceso productivo sin intervención humana directa.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
           <div class="term-card" data-term="sistema">
             <div class="term-word">Sistema</div>
             <div class="term-def">
               Combinación de todos los componentes que actúan en conjunto para lograr un objetivo determinado. Todo sistema posee entradas, un proceso de transformación y salidas.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
-          <div class="term-card" data-term="logica cableada">
+          <div class="term-card" data-term="logica cableada reles contactores">
             <div class="term-word">Lógica Cableada</div>
             <div class="term-def">
               Sistema de control basado en conexiones físicas directas entre componentes electrónicos (relés, contactores, temporizadores). Para modificarlo se debe recablear físicamente.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
           <div class="term-card" data-term="logica programable plc">
             <div class="term-word">Lógica<br>Programable</div>
             <div class="term-def">
               Sistema de control basado en programación de software. Flexible y reprogramable sin cambios de hardware. Requiere un PLC (Programmable Logic Controller).
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
-          <div class="term-card" data-term="plc controlador logico programable">
+          <div class="term-card" data-term="plc controlador logico programable siemens">
             <div class="term-word">PLC</div>
             <div class="term-def">
               Programmable Logic Controller (Controlador Lógico Programable). Dispositivo electrónico industrial que ejecuta un programa para controlar máquinas y procesos. Ejemplos: Siemens S7, Allen-Bradley, OMRON.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
-          <div class="term-card" data-term="actuador">
+          <div class="term-card" data-term="actuador motor valvula bomba">
             <div class="term-word">Actuador</div>
             <div class="term-def">
               Componente que ejecuta la acción física en un sistema automatizado (motores, válvulas, pistones, bombas). Corresponde a la etapa de "Actuación" en la cadena de control.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
-          <div class="term-card" data-term="sensor medicion">
+          <div class="term-card" data-term="sensor medicion temperatura presion nivel posicion">
             <div class="term-word">Sensor</div>
             <div class="term-def">
               Dispositivo encargado de medir variables del proceso (temperatura, presión, nivel, posición, etc.) y convertirlas en señales eléctricas transmisibles. Corresponde a la etapa de "Medición" en la cadena de control.
-              <span class="term-source">Clase 1</span>
+              <span class="term-source">C1</span>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ══ PANEL: NOTAS ════════════════════════════════════════ -->
+      <!-- ════════════════════════════════════════════════════
+           PANEL: NOTAS
+      ════════════════════════════════════════════════════ -->
       <div class="panel" id="panel-notas">
-        <div class="page-title">✏️ Notas Personales</div>
+        <div class="page-title">// <span>NOTAS</span> PERSONALES</div>
         <div class="page-subtitle">Escribe dudas, reflexiones o cosas que quieras recordar</div>
 
         <div class="card">
-          <div class="card-title">Nueva nota</div>
-          <textarea class="note-area" id="noteInput" placeholder="Escribe tu nota aquí..."></textarea>
-          <div style="display:flex;gap:10px;align-items:center">
-            <button class="btn" onclick="saveNote()">💾 Guardar nota</button>
-            <button class="btn secondary" onclick="clearNote()">Limpiar</button>
+          <div class="card-title">// Nueva entrada</div>
+          <textarea class="note-area" id="noteInput" placeholder="// escribe tu nota aquí..." oninput="autoSaveNote()"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap">
+            <button class="btn" onclick="saveNote()">💾 GUARDAR NOTA</button>
+            <button class="btn-secondary" onclick="clearNote()">LIMPIAR</button>
           </div>
-          <div class="note-saved-msg" id="noteSavedMsg">✓ Nota guardada correctamente</div>
+          <div class="note-saved-msg" id="noteSavedMsg">// NOTA GUARDADA CORRECTAMENTE ✓</div>
         </div>
 
         <div style="margin-top:20px">
-          <h2 class="section-head"><span class="num" style="background:var(--accent5)">📝</span> Notas guardadas</h2>
+          <div class="card-title" style="margin-bottom:12px">// Notas guardadas</div>
           <div id="notes-list">
-            <p style="font-size:13px;color:var(--text-dim);padding:12px 0">Aún no tienes notas guardadas. ¡Escribe tu primera nota arriba!</p>
+            <p style="font-size:12px;color:var(--text-dim);padding:12px 0;font-family:'Share Tech Mono',monospace">// Sin notas. Escribe tu primera entrada arriba.</p>
           </div>
         </div>
       </div>
@@ -1341,128 +1771,374 @@
 </div><!-- /app -->
 
 <script>
-  // ── SIDEBAR TOGGLE (mobile) ────────────────────────────────
-  function toggleSidebar() {
-    const s = document.getElementById('sidebar');
-    const o = document.getElementById('sidebar-overlay');
-    s.classList.toggle('open');
-    o.classList.toggle('visible');
-  }
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('visible');
-  }
+// ══════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+const PANELS = ['overview','resumen','ejercicios','quiz','flashcards','glosario','notas'];
+const BREADCRUMBS = {
+  overview:'INICIO', resumen:'RESUMEN C1', ejercicios:'EJERCICIOS',
+  quiz:'QUIZ', flashcards:'FLASHCARDS', glosario:'GLOSARIO', notas:'NOTAS'
+};
 
-  // ── NAVIGATION ─────────────────────────────────────────────
-  const panels = ['overview','resumen','ejercicios','glosario','notas'];
-  const breadcrumbs = {
-    overview: 'Inicio', resumen: 'Resúmenes de Clase',
-    ejercicios: 'Ejercicios Prácticos', glosario: 'Glosario', notas: 'Notas Personales'
-  };
+function navigate(panel, el) {
+  PANELS.forEach(p => document.getElementById('panel-'+p).classList.remove('active'));
+  document.getElementById('panel-'+panel).classList.add('active');
+  document.getElementById('breadcrumb-current').textContent = BREADCRUMBS[panel];
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  closeSidebar();
+  if (panel === 'flashcards') renderFlashcards('all');
+  if (panel === 'quiz') { resetQuiz(); startQuiz(); }
+}
 
-  function navigate(panel, el) {
-    panels.forEach(p => {
-      document.getElementById('panel-'+p).classList.remove('active');
-    });
-    document.getElementById('panel-'+panel).classList.add('active');
-    document.getElementById('breadcrumb-current').textContent = breadcrumbs[panel];
+function toggleNavGroup(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
 
-    // update sidebar active
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (el) el.classList.add('active');
+// ══════════════════════════════════════════════════════════════════
+//  SIDEBAR (MOBILE)
+// ══════════════════════════════════════════════════════════════════
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('visible');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
 
-    // close sidebar on mobile
-    closeSidebar();
-  }
+// ══════════════════════════════════════════════════════════════════
+//  EXERCISES
+// ══════════════════════════════════════════════════════════════════
+function toggleExercise(header) {
+  header.parentElement.classList.toggle('open');
+}
+function revealAnswer(btn) {
+  const content = btn.nextElementSibling;
+  content.classList.toggle('visible');
+  btn.textContent = content.classList.contains('visible') ? '▽ Ocultar respuesta' : '▷ Ver respuesta';
+}
 
-  function navigateClass(n, el) {
-    navigate('resumen', null);
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    if (el) el.classList.add('active');
-    // scroll to clase
-    const target = document.getElementById('clase-'+n);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
-  }
+// ══════════════════════════════════════════════════════════════════
+//  GLOSSARY SEARCH
+// ══════════════════════════════════════════════════════════════════
+function filterGlosario() {
+  const q = norm(document.getElementById('glosarioSearch').value);
+  document.querySelectorAll('#glosario-list .term-card').forEach(c => {
+    c.style.display = norm(c.dataset.term + ' ' + c.textContent).includes(q) ? '' : 'none';
+  });
+}
+function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
 
-  // ── EXERCISES ──────────────────────────────────────────────
-  function toggleExercise(header) {
-    const exercise = header.parentElement;
-    exercise.classList.toggle('open');
-  }
-
-  function revealAnswer(btn) {
-    const content = btn.nextElementSibling;
-    content.classList.toggle('visible');
-    btn.textContent = content.classList.contains('visible') ? '🙈 Ocultar respuesta' : '👁 Ver respuesta';
-  }
-
-  // ── GLOSSARY SEARCH ────────────────────────────────────────
-  function filterGlosario() {
-    const q = document.getElementById('glosarioSearch').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    document.querySelectorAll('#glosario-list .term-card').forEach(card => {
-      const text = (card.dataset.term + ' ' + card.textContent).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-      card.style.display = text.includes(q) ? '' : 'none';
-    });
-  }
-
-  // ── NOTES ──────────────────────────────────────────────────
-  let notes = JSON.parse(localStorage.getItem('auto_notes') || '[]');
-
-  function renderNotes() {
-    const list = document.getElementById('notes-list');
-    document.getElementById('stat-notas').textContent = notes.length;
-    if (notes.length === 0) {
-      list.innerHTML = '<p style="font-size:13px;color:var(--text-dim);padding:12px 0">Aún no tienes notas guardadas. ¡Escribe tu primera nota arriba!</p>';
-      return;
+// ══════════════════════════════════════════════════════════════════
+//  HOME SEARCH
+// ══════════════════════════════════════════════════════════════════
+function homeSearchFn(q) {
+  const res = document.getElementById('search-results');
+  if (!q.trim()) { res.style.display = 'none'; return; }
+  const nq = norm(q);
+  const sections = document.querySelectorAll('.theory-section, .term-card, .exercise');
+  const hits = [];
+  sections.forEach(s => {
+    const text = norm(s.dataset.searchContent || s.textContent);
+    if (text.includes(nq)) {
+      const title = s.querySelector('h2, .term-word, .exercise-title');
+      hits.push(title ? title.textContent.replace(/\s+/g,' ').trim() : 'Resultado');
     }
-    list.innerHTML = notes.map((n, i) => `
-      <div class="note-item">
-        <div class="note-item-date">${n.date}</div>
-        <div class="note-item-text">${escapeHtml(n.text)}</div>
-        <button class="note-item-del" onclick="deleteNote(${i})" title="Eliminar">✕</button>
+  });
+  if (!hits.length) {
+    res.style.display = 'block';
+    res.innerHTML = '<div style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--red)">[ERR] Sin resultados para "'+escH(q)+'"</div>';
+  } else {
+    res.style.display = 'block';
+    res.innerHTML = hits.map(h => `<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);padding:3px 0">[OK] ${escH(h)}</div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FLASHCARDS DATA & RENDER
+// ══════════════════════════════════════════════════════════════════
+const FC_DATA = [
+  { term:'Automatización Industrial', def:'Tecnología que controla un proceso productivo con mínima participación humana. Integra informática, electrónica, electricidad y mecánica.', cat:'definicion', accent:'#00c8ff' },
+  { term:'Control Automático', def:'Conjunto de componentes (medición, transmisión, control, actuación, comunicación) que trabajan juntos para controlar un proceso productivo.', cat:'definicion', accent:'#00c8ff' },
+  { term:'Sistema', def:'Combinación de todos los componentes que actúan en conjunto para lograr un objetivo determinado. Posee entradas, proceso y salidas.', cat:'definicion', accent:'#00c8ff' },
+  { term:'Sensor', def:'Dispositivo que mide variables del proceso (temperatura, presión, nivel) y las convierte en señales eléctricas. Etapa de Medición.', cat:'componente', accent:'#00ff9d' },
+  { term:'Actuador', def:'Componente que ejecuta la acción física (motores, válvulas, bombas). Corresponde a la etapa de Actuación en la cadena de control.', cat:'componente', accent:'#00ff9d' },
+  { term:'PLC', def:'Programmable Logic Controller. Dispositivo electrónico industrial que ejecuta un programa para controlar máquinas y procesos. Ej: Siemens S7.', cat:'tecnologia', accent:'#ffb700' },
+  { term:'Lógica Cableada', def:'Control basado en conexiones físicas (relés, contactores). Para modificarlo se debe recablear. Baja flexibilidad, bajo costo inicial.', cat:'tecnologia', accent:'#ffb700' },
+  { term:'Lógica Programable', def:'Control basado en software. Flexible y reprogramable. Alta flexibilidad, diagnóstico fácil. Requiere PLC.', cat:'tecnologia', accent:'#ffb700' },
+];
+
+function renderFlashcards(filter) {
+  const grid = document.getElementById('flashcards-grid');
+  const items = filter === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === filter);
+  grid.innerHTML = items.map((f,i) => `
+    <div class="flashcard-wrap" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard">
+        <div class="fc-front">
+          <div class="fc-label">// TÉRMINO</div>
+          <div class="fc-term">${f.term}</div>
+          <div class="fc-category" style="color:${f.accent}">${f.cat.toUpperCase()}</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-label">// DEFINICIÓN</div>
+          <div class="fc-def">${f.def}</div>
+        </div>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('');
+}
 
-  function escapeHtml(t) {
-    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
+function filterFC(cat, btn) {
+  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFlashcards(cat);
+}
 
-  function saveNote() {
-    const text = document.getElementById('noteInput').value.trim();
-    if (!text) return;
-    const now = new Date();
-    notes.unshift({ text, date: now.toLocaleDateString('es-CL', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) });
-    localStorage.setItem('auto_notes', JSON.stringify(notes));
-    renderNotes();
-    document.getElementById('noteInput').value = '';
-    const msg = document.getElementById('noteSavedMsg');
-    msg.style.display = 'block';
-    setTimeout(() => msg.style.display = 'none', 2500);
-  }
+// ══════════════════════════════════════════════════════════════════
+//  QUIZ
+// ══════════════════════════════════════════════════════════════════
+const QUIZ_BANK = [
+  {
+    q: '¿Cuál es la definición de Automatización Industrial?',
+    tag: 'Definición',
+    opts: [
+      'Tecnología que controla procesos con mínima participación humana',
+      'Sistema exclusivo de informática aplicada',
+      'Técnica de mantenimiento de maquinaria industrial',
+      'Método de contabilidad de producción'
+    ],
+    correct: 0,
+    feedback: 'Correcto. La automatización industrial busca controlar procesos o sistemas productivos con la mínima participación humana.'
+  },
+  {
+    q: '¿Cuál es el orden correcto de la cadena de control automático?',
+    tag: 'Control',
+    opts: [
+      'Controlar → Medir → Transmitir → Actuar',
+      'Medir → Transmitir → Controlar → Actuar',
+      'Actuar → Controlar → Medir → Transmitir',
+      'Transmitir → Actuar → Medir → Controlar'
+    ],
+    correct: 1,
+    feedback: 'Correcto. La cadena es: Medir (sensor) → Transmitir (señal) → Controlar (controlador) → Actuar (actuador).'
+  },
+  {
+    q: 'Un sistema de control con relés y contactores sin software pertenece a:',
+    tag: 'Tecnologías',
+    opts: [
+      'Lógica Programable (PLC)',
+      'Control SCADA',
+      'Lógica Cableada',
+      'Control numérico computarizado (CNC)'
+    ],
+    correct: 2,
+    feedback: 'Correcto. Los relés y contactores son componentes físicos propios de la Lógica Cableada.'
+  },
+  {
+    q: '¿Cuál es una ventaja de la Lógica Programable (PLC) sobre la Lógica Cableada?',
+    tag: 'Tecnologías',
+    opts: [
+      'Menor costo inicial',
+      'Mayor flexibilidad y facilidad de reprogramación',
+      'No requiere electricidad',
+      'Es más resistente en ambientes sencillos'
+    ],
+    correct: 1,
+    feedback: 'Correcto. El PLC permite reprogramar el sistema sin cambios de hardware, siendo mucho más flexible.'
+  },
+  {
+    q: '¿Cuál objetivo de la automatización busca evitar que los trabajadores realicen tareas peligrosas?',
+    tag: 'Objetivos',
+    opts: [
+      'Objetivo Económico',
+      'Objetivo de Calidad',
+      'Objetivo de Seguridad',
+      'Objetivo de Productividad'
+    ],
+    correct: 2,
+    feedback: 'Correcto. El objetivo de Seguridad busca proteger la integridad de los trabajadores eliminando tareas peligrosas o repetitivas.'
+  },
+  {
+    q: 'Un sistema tiene entradas, un proceso de transformación y salidas. Esta descripción corresponde a:',
+    tag: 'Sistemas',
+    opts: [
+      'Una cadena de control',
+      'Un actuador',
+      'La definición de Sistema',
+      'La lógica programable'
+    ],
+    correct: 2,
+    feedback: 'Correcto. Un Sistema es la combinación de componentes que actúan juntos con entradas, proceso y salidas.'
+  },
+  {
+    q: '¿Cuál de estos es un PLC real utilizado en la industria?',
+    tag: 'PLC',
+    opts: [
+      'Arduino Mega',
+      'Siemens S7',
+      'Raspberry Pi',
+      'Intel Core i9'
+    ],
+    correct: 1,
+    feedback: 'Correcto. Siemens S7 es uno de los PLCs industriales más utilizados en el mundo.'
+  },
+  {
+    q: 'El objetivo de Conectividad en automatización industrial se refiere a:',
+    tag: 'Objetivos',
+    opts: [
+      'Conectar físicamente los cables del sistema',
+      'Obtener información en tiempo real del proceso para tomar mejores decisiones',
+      'Reducir los costos de producción',
+      'Aumentar la velocidad de la red eléctrica'
+    ],
+    correct: 1,
+    feedback: 'Correcto. Conectividad implica monitoreo en tiempo real del proceso productivo para facilitar la toma de decisiones.'
+  },
+];
 
-  function clearNote() {
-    document.getElementById('noteInput').value = '';
-  }
+let quizScore = 0, quizTotal = 0, usedQuestions = [], currentQ = null, answered = false;
 
-  function deleteNote(i) {
-    notes.splice(i, 1);
-    localStorage.setItem('auto_notes', JSON.stringify(notes));
-    renderNotes();
-  }
+function resetQuiz() {
+  quizScore = 0; quizTotal = 0; usedQuestions = []; currentQ = null; answered = false;
+  document.getElementById('quiz-score').textContent = '0';
+  document.getElementById('quiz-total').textContent = '0';
+  document.getElementById('quiz-container').innerHTML = '';
+}
 
-  // ── GLOBAL SEARCH ──────────────────────────────────────────
-  document.getElementById('globalSearch').addEventListener('input', function() {
-    const q = this.value.trim().toLowerCase();
-    if (!q) return;
-    // simple: navigate to glosario and search there
-    navigate('glosario', null);
-    document.getElementById('glosarioSearch').value = q;
-    filterGlosario();
+function startQuiz() {
+  if (usedQuestions.length >= QUIZ_BANK.length) {
+    document.getElementById('quiz-container').innerHTML = `
+      <div class="quiz-card">
+        <div class="quiz-question">// BANCO COMPLETADO. Score final: ${quizScore}/${quizTotal}</div>
+        <button class="btn" onclick="resetQuiz();startQuiz()">▷ REINICIAR QUIZ</button>
+      </div>`;
+    return;
+  }
+  let idx;
+  do { idx = Math.floor(Math.random() * QUIZ_BANK.length); } while (usedQuestions.includes(idx));
+  usedQuestions.push(idx);
+  currentQ = QUIZ_BANK[idx];
+  answered = false;
+
+  const letters = ['A','B','C','D'];
+  const opts = currentQ.opts.map((o,i) => `
+    <button class="quiz-option" onclick="answerQuiz(this,${i})" data-idx="${i}">
+      <span class="opt-letter">${letters[i]}</span>${escH(o)}
+    </button>`).join('');
+
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-qtag">
+        <span class="qtag-label">${escH(currentQ.tag)}</span>
+        PREGUNTA ${usedQuestions.length} / ${QUIZ_BANK.length}
+      </div>
+      <div class="quiz-question">${escH(currentQ.q)}</div>
+      <div class="quiz-options">${opts}</div>
+      <div class="quiz-feedback" id="q-feedback"></div>
+      <button class="btn next-question-btn" id="q-next" onclick="startQuiz()">▷ SIGUIENTE PREGUNTA</button>
+    </div>`;
+}
+
+function answerQuiz(btn, idx) {
+  if (answered) return;
+  answered = true;
+  quizTotal++;
+  const isCorrect = idx === currentQ.correct;
+  if (isCorrect) quizScore++;
+  document.getElementById('quiz-score').textContent = quizScore;
+  document.getElementById('quiz-total').textContent = quizTotal;
+
+  document.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.disabled = true;
+    if (i === currentQ.correct) b.classList.add('correct');
+    else if (i === idx && !isCorrect) b.classList.add('incorrect');
   });
 
-  // ── INIT ───────────────────────────────────────────────────
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'err');
+  fb.textContent = isCorrect ? currentQ.feedback : 'Incorrecto. ' + currentQ.feedback;
+
+  document.getElementById('q-next').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  NOTES
+// ══════════════════════════════════════════════════════════════════
+let notes = JSON.parse(localStorage.getItem('auto_notes_v2') || '[]');
+let autoSaveTimer;
+
+function renderNotes() {
+  document.getElementById('stat-notas').textContent = notes.length;
+  const list = document.getElementById('notes-list');
+  if (!notes.length) {
+    list.innerHTML = '<p style="font-size:12px;color:var(--text-dim);padding:12px 0;font-family:\'Share Tech Mono\',monospace">// Sin notas. Escribe tu primera entrada arriba.</p>';
+    return;
+  }
+  list.innerHTML = notes.map((n,i) => `
+    <div class="note-item">
+      <div class="note-item-date">// ${n.date}</div>
+      <div class="note-item-text">${escH(n.text)}</div>
+      <button class="note-item-del" onclick="deleteNote(${i})">✕</button>
+    </div>`).join('');
+}
+
+function saveNote() {
+  const text = document.getElementById('noteInput').value.trim();
+  if (!text) return;
+  const now = new Date();
+  notes.unshift({ text, date: now.toLocaleDateString('es-CL', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) });
+  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
   renderNotes();
+  document.getElementById('noteInput').value = '';
+  const msg = document.getElementById('noteSavedMsg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2500);
+}
+
+function autoSaveNote() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    const text = document.getElementById('noteInput').value.trim();
+    if (text) localStorage.setItem('auto_note_draft', text);
+  }, 800);
+}
+
+function clearNote() {
+  document.getElementById('noteInput').value = '';
+  localStorage.removeItem('auto_note_draft');
+}
+
+function deleteNote(i) {
+  notes.splice(i, 1);
+  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
+  renderNotes();
+}
+
+function escH(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  GLOBAL SEARCH (sidebar)
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('globalSearch').addEventListener('input', function() {
+  const q = this.value.trim();
+  if (!q) return;
+  navigate('glosario', null);
+  document.getElementById('glosarioSearch').value = q;
+  filterGlosario();
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+(function init() {
+  renderNotes();
+  const draft = localStorage.getItem('auto_note_draft');
+  if (draft) document.getElementById('noteInput').value = draft;
+})();
 </script>
 </body>
 </html>
