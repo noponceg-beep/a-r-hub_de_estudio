@@ -3,217 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <title>TERMINAL ACADÉMICO v7.5 — INACAP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #05070a;
-            --panel: #0d1117;
-            --border: #1f2937;
-            --accent: #4f8ef7;
-            --neon: #00ff9d;
-            --text: #e2e8f0;
+            --bg:    #020408;
+            --panel: #080d14;
+            --border:  #162033;
+            --border2: #1e3050;
+            --accent:  #3b82f6;
+            --neon:    #00ff9d;
+            --neon2:   #00cfff;
+            --warn:    #f59e0b;
+            --text:    #c9d8ec;
+            --muted:   #4a6080;
+            --glow-g:  rgba(0,255,157,0.15);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
         body {
-            background-color: var(--bg);
+            background: var(--bg);
             color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            display: flex;
+            font-family: 'Fira Code', monospace;
             height: 100vh;
             overflow: hidden;
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-        }
-
-        /* --- SIDEBAR IZQUIERDA --- */
-        .sidebar {
-            width: 350px;
-            background: var(--panel);
-            border-right: 2px solid var(--border);
-            padding: 25px;
             display: flex;
             flex-direction: column;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            background-image: repeating-linear-gradient(
+                0deg, transparent, transparent 3px,
+                rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+            );
+        }
+
+        /* ══ TOPBAR ══ */
+        .topbar {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 0 0;
+            height: 50px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border2);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .topbar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon2), transparent);
+            opacity: .5;
+        }
+
+        /* TICKER */
+        .ticker-wrap {
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 90%, transparent 100%);
+        }
+
+        .ticker-track {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 22s linear infinite;
+        }
+
+        .ticker-track span {
+            font-family: 'Share Tech Mono';
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .t-sep  { color: var(--border2); padding: 0 28px; }
+        .t-neon { color: var(--neon);  text-shadow: 0 0 10px var(--neon); }
+        .t-blue { color: var(--neon2); text-shadow: 0 0 10px var(--neon2); }
+        .t-warn { color: var(--warn);  text-shadow: 0 0 10px var(--warn); }
+        .t-dim  { color: var(--muted); }
+
+        @keyframes ticker {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
         #clock {
-            font-family: 'Share Tech Mono', sans-serif;
+            font-family: 'Share Tech Mono';
+            font-size: 20px;
             color: var(--neon);
-            font-size: 32px;
-            text-align: center;
-            padding: 15px;
-            border: 1px double var(--neon);
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px var(--neon);
+            text-shadow: 0 0 8px var(--neon);
+            letter-spacing: 2px;
+            flex-shrink: 0;
+            padding-left: 16px;
+            border-left: 1px solid var(--border2);
+            margin-left: 6px;
         }
 
-        .tool-label { font-size: 10px; color: var(--accent); margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        /* ══ LAYOUT ══ */
+        .workspace { display: flex; flex: 1; overflow: hidden; }
 
-        /* BOTÓN CALCULADORA */
-        .btn-tool {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--neon);
-            color: var(--neon);
-            padding: 15px;
-            font-family: 'JetBrains Mono';
-            font-size: 13px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn-tool:hover {
-            background: var(--neon);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
-        }
-
-        /* NOTAS */
-        .notes-container { flex: 1; display: flex; flex-direction: column; }
-        #quickNotes {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 15px;
-            font-family: 'JetBrains Mono';
-            font-size: 13px;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-        }
-        #quickNotes:focus { border-color: var(--accent); }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        .main {
-            flex: 1;
-            padding: 40px;
+        /* ══ SIDEBAR ══ */
+        .sidebar {
+            width: 280px;
+            background: var(--panel);
+            border-right: 1px solid var(--border2);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+            flex-shrink: 0;
             overflow-y: auto;
         }
 
-        .terminal-header {
+        .sidebar-section { display: flex; flex-direction: column; gap: 8px; }
+
+        .s-label {
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--muted);
             border-bottom: 1px solid var(--border);
-            margin-bottom: 30px;
-            padding-bottom: 15px;
+            padding-bottom: 6px;
         }
 
-        .search-bar {
+        /* BOTONES HERRAMIENTA */
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border2);
+            color: var(--neon2);
+            padding: 10px 14px;
+            font-family: 'Fira Code';
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
             width: 100%;
-            background: transparent;
-            border: 1px solid var(--accent);
-            padding: 15px;
-            color: var(--accent);
-            font-size: 18px;
-            font-family: 'Share Tech Mono';
-            margin-bottom: 30px;
-            outline: none;
+            text-align: left;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+        .tool-btn:not(:disabled):hover {
+            border-color: var(--neon2);
+            background: rgba(0,207,255,0.07);
+            box-shadow: 0 0 14px rgba(0,207,255,0.1);
         }
+
+        .tool-btn .t-icon { font-size: 15px; }
+        .tool-btn .t-name { flex: 1; }
+        .tool-btn .t-tag {
+            font-size: 8px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 1px 5px;
+            letter-spacing: 2px;
+        }
+
+        /* BARRAS DE PROGRESO */
+        .progress-item { margin-bottom: 8px; }
+        .pi-head { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
+        .pi-head .name { color: var(--text); }
+        .pi-head .pct  { color: var(--neon2); }
+        .bar-track { height: 4px; background: var(--border); }
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--neon2));
+            box-shadow: 0 0 6px var(--neon2);
+            width: 0;
+            transition: width 1.2s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* NOTAS — compactas, se expanden */
+        .notes-section { display: flex; flex-direction: column; gap: 8px; }
+
+        #quickNotes {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 9px 12px;
+            font-family: 'Fira Code';
+            font-size: 11px;
+            resize: none;
+            outline: none;
+            line-height: 1.6;
+            min-height: 34px;
+            max-height: 200px;
+            overflow-y: auto;
+            transition: border-color 0.2s;
+        }
+
+        #quickNotes:focus { border-color: var(--accent); }
+        #quickNotes::placeholder { color: var(--muted); }
+
+        /* ══ MAIN ══ */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* HOME VIEW */
+        #homeView {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+        }
+
+        .home-header { display: flex; flex-direction: column; gap: 6px; }
+
+        .prompt-line {
+            font-family: 'Share Tech Mono';
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        .home-title {
+            font-family: 'Share Tech Mono';
+            font-size: 28px;
+            color: var(--neon);
+            text-shadow: 0 0 20px var(--neon);
+            letter-spacing: 4px;
+        }
+
+        .home-sub { font-size: 10px; color: var(--accent); letter-spacing: 3px; }
+
+        /* SEARCH */
+        .search-wrap { position: relative; }
+
+        .search-wrap::before {
+            content: '>';
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon);
+            font-size: 16px;
+        }
+
+        #finder {
+            width: 100%;
+            background: rgba(0,255,157,0.03);
+            border: 1px solid var(--border2);
+            border-left: 3px solid var(--neon);
+            padding: 13px 16px 13px 36px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: 'Fira Code';
+            outline: none;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+
+        #finder:focus {
+            border-color: var(--neon);
+            background: rgba(0,255,157,0.05);
+        }
+
+        #finder::placeholder { color: var(--muted); }
+
+        /* GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
         .card {
             background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 25px;
+            border: 1px solid var(--border2);
+            padding: 22px 20px 18px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.25s;
             position: relative;
+            overflow: hidden;
+            animation: fadeSlideIn 0.4s ease both;
         }
 
-        .card:hover {
-            border-color: var(--neon);
-            background: #161b22;
-            transform: translateY(-3px);
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--neon);
+            opacity: 0; transition: opacity 0.2s;
+            box-shadow: 0 0 10px var(--neon);
         }
 
-        .card h3 { color: var(--accent); font-size: 14px; margin-bottom: 10px; }
-        .card p { color: #8b949e; font-size: 12px; line-height: 1.5; }
-        .card::before { content: ">"; position: absolute; left: 10px; color: var(--neon); opacity: 0; }
+        .card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--glow-g) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.25s;
+        }
+
+        .card:hover { border-color: var(--neon); transform: translateY(-2px); background: #0c1420; }
         .card:hover::before { opacity: 1; }
+        .card:hover::after  { opacity: 1; }
 
+        .card-icon { font-size: 26px; margin-bottom: 10px; display: block; position: relative; z-index: 1; }
+        .card h3   { color: var(--neon2); font-size: 12px; letter-spacing: 1px; margin-bottom: 7px; position: relative; z-index: 1; }
+        .card p    { color: var(--muted); font-size: 11px; line-height: 1.6; position: relative; z-index: 1; }
+
+        .card-tag {
+            position: absolute; top: 12px; right: 12px;
+            font-size: 8px; color: var(--muted);
+            border: 1px solid var(--border); padding: 2px 6px; letter-spacing: 2px;
+        }
+
+        .card:nth-child(1){animation-delay:.05s}
+        .card:nth-child(2){animation-delay:.10s}
+        .card:nth-child(3){animation-delay:.15s}
+        .card:nth-child(4){animation-delay:.20s}
+        .card:nth-child(5){animation-delay:.25s}
+
+        /* MODULE VIEW */
+        #moduleView { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        #moduleView.active { display: flex; }
+
+        .module-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 44px;
+            background: rgba(0,0,0,0.6);
+            border-bottom: 1px solid var(--border2);
+            flex-shrink: 0;
+        }
+
+        .module-path { font-family: 'Share Tech Mono'; font-size: 12px; color: var(--neon2); letter-spacing: 1px; }
+        .module-path span { color: var(--muted); }
+
+        .btn-close {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,60,60,0.07);
+            border: 1px solid rgba(255,60,60,0.3);
+            color: #ff6b6b;
+            padding: 6px 18px;
+            font-family: 'Fira Code'; font-size: 11px;
+            cursor: pointer; letter-spacing: 2px; transition: all 0.2s;
+        }
+
+        .btn-close:hover { background: rgba(255,60,60,0.18); border-color: #ff6b6b; }
+        .btn-close::before { content: '✕'; font-size: 12px; }
+
+        #moduleFrame { flex: 1; border: none; background: #fff; }
+
+        /* BOTTOMBAR */
+        .bottombar {
+            height: 26px;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center;
+            padding: 0 20px; gap: 22px; flex-shrink: 0;
+        }
+
+        .bb-item { font-size: 9px; color: var(--muted); letter-spacing: 2px; display: flex; align-items: center; gap: 6px; }
+
+        .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 6px var(--neon); animation: pulse 2s infinite; }
+        .dot.blue   { background: var(--neon2); box-shadow: 0 0 6px var(--neon2); }
+        .dot.yellow { background: var(--warn);  box-shadow: 0 0 6px var(--warn); animation-delay: .5s; }
+
+        @keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:.3} }
+        @keyframes fadeSlideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes blink       { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        .cursor { display: inline-block; animation: blink 1s infinite; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border2); }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <!-- ══ TOPBAR ══ -->
+    <header class="topbar">
+        <div class="ticker-wrap">
+            <div class="ticker-track">
+                <span class="t-neon">⚡ SOMOS EL MEJOR PAÍS DE CHILE</span>
+                <span class="t-sep">◆</span>
+                <span class="t-blue">AUTOMATIZACIÓN Y ROBÓTICA 2026</span>
+                <span class="t-sep">◆</span>
+                <span class="t-neon">INACAP CHILLÁN</span>
+                <span class="t-sep">◆</span>
+                <span class="t-warn">DixRuptive</span>
+                <span class="t-sep">◆◆◆</span>
+                <!-- duplicado para loop continuo -->
+                <span class="t-neon">⚡ SOMOS EL MEJOR PAÍS DE CHILE</span>
+                <span class="t-sep">◆</span>
+                <span class="t-blue">AUTOMATIZACIÓN Y ROBÓTICA 2026</span>
+                <span class="t-sep">◆</span>
+                <span class="t-neon">INACAP CHILLÁN</span>
+                <span class="t-sep">◆</span>
+                <span class="t-warn">DixRuptive</span>
+                <span class="t-sep">◆◆◆</span>
+            </div>
+        </div>
         <div id="clock">00:00:00</div>
-        
-        <span class="tool-label">[ HERRAMIENTAS_SISTEMA ]</span>
-        <a href="cuaderno_mantenimiento.html" class="btn-tool" target="_blank">
-            ⚡ ABRIR_CALCULADORA.EXE
-        </a>
+    </header>
 
-        <span class="tool-label">[ NOTAS_DE_SESIÓN ]</span>
-        <div class="notes-container">
-            <textarea id="quickNotes" placeholder="Escriba aquí sus apuntes rápidos..." oninput="saveNotes()"></textarea>
-        </div>
-    </aside>
+    <!-- ══ WORKSPACE ══ -->
+    <div class="workspace">
 
-    <main class="main">
-        <div class="terminal-header">
-            <h2 style="color: var(--neon); font-size: 18px;">> ROOT_SYSTEM_INACAP_2026</h2>
-            <p style="font-size: 10px; color: var(--accent);">LOCATION: CHILLÁN_NODE | STATUS: SECURE</p>
-        </div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
 
-        <input type="text" id="finder" class="search-bar" placeholder="ESCRIBA PARA FILTRAR ASIGNATURAS..." onkeyup="filter()">
+            <div class="sidebar-section">
+                <div class="s-label">// HERRAMIENTAS_DEL_SISTEMA</div>
 
-        <div class="grid">
-            <div class="card" onclick="window.open('cuaderno_electricidad_u1.html', '_blank')">
-                <h3>⚡ ELECTRICIDAD_APLICADA.SYS</h3>
-                <p>Circuitos CC, Ley de Ohm y análisis de mallas industriales.</p>
+                <button class="tool-btn" onclick="openModule('cuaderno_mantenimiento.html', 'CALC_RESISTENCIA')">
+                    <span class="t-icon">🔢</span>
+                    <span class="t-name">CALC_RESISTENCIA</span>
+                    <span class="t-tag">EXE</span>
+                </button>
+
+                <button class="tool-btn" disabled style="opacity:.4; cursor:not-allowed;">
+                    <span class="t-icon">📊</span>
+                    <span class="t-name">CALC_POTENCIA</span>
+                    <span class="t-tag" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">PRONTO</span>
+                </button>
+
+                <button class="tool-btn" disabled style="opacity:.4; cursor:not-allowed;">
+                    <span class="t-icon">🔌</span>
+                    <span class="t-name">LEY_DE_OHM</span>
+                    <span class="t-tag" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">PRONTO</span>
+                </button>
             </div>
-            <div class="card" onclick="window.open('automatizacion_inacap.html', '_blank')">
-                <h3>🦾 AUTOMATIZACION_SISTEMAS.SYS</h3>
-                <p>Control de procesos, sensores y lógica de actuadores.</p>
+
+            <div class="sidebar-section">
+                <div class="s-label">// CARGADOS_AL_SISTEMA</div>
+                <div id="progressBars"></div>
             </div>
-            <div class="card" onclick="window.open('ejercicios_porcentajes.html', '_blank')">
-                <h3>📐 ALGEBRA_CIUDADANA.LOG</h3>
-                <p>Cálculo de variaciones, porcentajes y lógica matemática.</p>
+
+            <div class="notes-section">
+                <div class="s-label">// NOTAS_DE_SESIÓN</div>
+                <textarea id="quickNotes" placeholder="> apuntes rápidos..." oninput="autoGrow(this); saveNotes()" rows="1"></textarea>
             </div>
-            <div class="card" onclick="window.open('Riesgos_Electricos_INACAP.html', '_blank')">
-                <h3>🛡️ SEGURIDAD_INDUSTRIAL.SEC</h3>
-                <p>Protocolos NFPA 70E y prevención de riesgos eléctricos.</p>
+
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <!-- HOME VIEW -->
+            <div id="homeView">
+                <div class="home-header">
+                    <span class="prompt-line">root@inacap-chillan:~$ ./launch_hub.sh</span>
+                    <div class="home-title">ROOT_SYSTEM <span class="cursor">█</span></div>
+                    <span class="home-sub">SISTEMA ACADÉMICO INTEGRADO · ELECTRICIDAD Y AUTOMATIZACIÓN</span>
+                </div>
+
+                <div class="search-wrap">
+                    <input type="text" id="finder" placeholder="filtrar asignaturas..." onkeyup="filter()">
+                </div>
+
+                <div class="grid" id="cardGrid">
+
+                    <div class="card" onclick="openModule('cuaderno_electricidad_u1.html', 'ELECTRICIDAD_APLICADA')">
+                        <span class="card-icon">⚡</span>
+                        <div class="card-tag">SYS</div>
+                        <h3>ELECTRICIDAD_APLICADA.SYS</h3>
+                        <p>Circuitos CC, Ley de Ohm y análisis de mallas industriales.</p>
+                    </div>
+
+                    <div class="card" onclick="openModule('automatizacion_inacap.html', 'AUTOMATIZACION_SISTEMAS')">
+                        <span class="card-icon">🦾</span>
+                        <div class="card-tag">SYS</div>
+                        <h3>AUTOMATIZACION_SISTEMAS.SYS</h3>
+                        <p>Control de procesos, sensores y lógica de actuadores.</p>
+                    </div>
+
+                    <div class="card" onclick="openModule('ejercicios_porcentajes.html', 'ALGEBRA_CIUDADANA')">
+                        <span class="card-icon">📐</span>
+                        <div class="card-tag">LOG</div>
+                        <h3>ALGEBRA_CIUDADANA.LOG</h3>
+                        <p>Cálculo de variaciones, porcentajes y lógica matemática.</p>
+                    </div>
+
+                    <div class="card" onclick="openModule('Riesgos_Electricos_INACAP.html', 'SEGURIDAD_INDUSTRIAL')">
+                        <span class="card-icon">🛡️</span>
+                        <div class="card-tag">SEC</div>
+                        <h3>SEGURIDAD_INDUSTRIAL.SEC</h3>
+                        <p>Protocolos NFPA 70E y prevención de riesgos eléctricos.</p>
+                    </div>
+
+                    <div class="card" onclick="openModule('cuaderno_mantenimiento.html', 'MANTENIMIENTO_ACTIVOS')">
+                        <span class="card-icon">⚙️</span>
+                        <div class="card-tag">DRV</div>
+                        <h3>MANTENIMIENTO_ACTIVOS.DRV</h3>
+                        <p>Planificación preventiva y gestión de fallos en equipos.</p>
+                    </div>
+
+                </div>
             </div>
-            <div class="card" onclick="window.open('cuaderno_mantenimiento.html', '_blank')">
-                <h3>⚙️ MANTENIMIENTO_ACTIVOS.DRV</h3>
-                <p>Planificación preventiva y gestión de fallos en equipos.</p>
+
+            <!-- MODULE VIEW -->
+            <div id="moduleView">
+                <div class="module-topbar">
+                    <div class="module-path">
+                        <span>root@inacap:~/módulos/</span><span id="moduleName">...</span>
+                    </div>
+                    <button class="btn-close" onclick="closeModule()">CERRAR MÓDULO</button>
+                </div>
+                <iframe id="moduleFrame" src=""></iframe>
             </div>
-        </div>
-    </main>
+
+        </main>
+    </div>
+
+    <!-- ══ BOTTOMBAR ══ -->
+    <footer class="bottombar">
+        <div class="bb-item"><span class="dot"></span> SISTEMA ACTIVO</div>
+        <div class="bb-item"><span class="dot blue"></span> RED SEGURA</div>
+        <div class="bb-item"><span class="dot yellow"></span> SESIÓN LOCAL</div>
+        <div class="bb-item" style="margin-left:auto; color: var(--muted)">btopg · CHILLÁN · 2026</div>
+    </footer>
 
     <script>
-        // Reloj tiempo real
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+        // ── RELOJ ──
+        function tick() {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL');
+        }
+        tick();
+        setInterval(tick, 1000);
 
-        // Buscador
+        // ── BUSCADOR ──
         function filter() {
-            let val = document.getElementById('finder').value.toLowerCase();
-            let cards = document.getElementsByClassName('card');
-            for(let c of cards) {
-                c.style.display = c.innerText.toLowerCase().includes(val) ? "block" : "none";
-            }
+            const val = document.getElementById('finder').value.toLowerCase();
+            document.querySelectorAll('.card').forEach(c => {
+                c.style.display = c.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
         }
 
-        // Notas Persistentes
-        function saveNotes() { 
-            localStorage.setItem('hacker_notes', document.getElementById('quickNotes').value); 
+        // ── NOTAS: autogrow ──
+        function autoGrow(el) {
+            el.style.minHeight = '34px';
+            el.style.minHeight = Math.min(el.scrollHeight, 200) + 'px';
         }
-        window.onload = () => { 
-            document.getElementById('quickNotes').value = localStorage.getItem('hacker_notes') || ''; 
-        };
+
+        function saveNotes() {
+            localStorage.setItem('hub_notes', document.getElementById('quickNotes').value);
+        }
+
+        const savedNotes = localStorage.getItem('hub_notes') || '';
+        const noteEl = document.getElementById('quickNotes');
+        noteEl.value = savedNotes;
+        if (savedNotes) autoGrow(noteEl);
+
+        // ── MÓDULOS INLINE ──
+        function openModule(src, name) {
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('moduleView').classList.add('active');
+            document.getElementById('moduleName').innerText = name;
+            document.getElementById('moduleFrame').src = src;
+        }
+
+        function closeModule() {
+            document.getElementById('moduleView').classList.remove('active');
+            document.getElementById('moduleFrame').src = '';
+            document.getElementById('homeView').style.display = 'flex';
+        }
+
+        // ── BARRAS PROGRESO ──
+        const ramos = [
+            { name: 'Electricidad',   pct: 72 },
+            { name: 'Automatización', pct: 55 },
+            { name: 'Álgebra',        pct: 88 },
+            { name: 'Seguridad',      pct: 40 },
+            { name: 'Mantenimiento',  pct: 63 },
+        ];
+
+        const pb = document.getElementById('progressBars');
+        ramos.forEach(r => {
+            pb.innerHTML += `
+                <div class="progress-item">
+                    <div class="pi-head">
+                        <span class="name">${r.name}</span>
+                        <span class="pct">${r.pct}%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" data-pct="${r.pct}"></div>
+                    </div>
+                </div>`;
+        });
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                document.querySelectorAll('.bar-fill').forEach(b => {
+                    b.style.width = b.dataset.pct + '%';
+                });
+            }, 300);
+        });
     </script>
 </body>
 </html>
