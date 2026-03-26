@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>TERMINAL-Automatización&Robótica</title>
+    <title>TERMINAL ACADÉMICO v7.5 — INACAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,6 +19,7 @@
             --muted:   #4a6080;
             --glow-g:  rgba(0,255,157,0.12);
             --red:     #ff4d4d;
+            --sem1:    #00ff9d;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -64,7 +65,6 @@
             opacity: .4;
         }
 
-        /* Botón hamburguesa */
         .menu-btn {
             width: 48px;
             height: 48px;
@@ -83,7 +83,6 @@
 
         .menu-btn:active { background: rgba(0,255,157,0.07); }
 
-        /* TICKER */
         .ticker-wrap {
             flex: 1;
             height: 100%;
@@ -129,7 +128,7 @@
         }
 
         /* ══════════════════════════
-           DRAWER LATERAL (sidebar)
+           DRAWER
         ══════════════════════════ */
         .drawer-overlay {
             display: none;
@@ -198,7 +197,6 @@
             padding-bottom: 6px;
         }
 
-        /* TOOL BUTTONS */
         .tool-btn {
             display: flex;
             align-items: center;
@@ -231,7 +229,6 @@
             letter-spacing: 2px;
         }
 
-        /* BARRAS */
         .progress-item { margin-bottom: 10px; }
         .pi-head { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
         .pi-head .name { color: var(--text); }
@@ -245,7 +242,6 @@
             transition: width 1.2s cubic-bezier(.4,0,.2,1);
         }
 
-        /* NOTAS */
         #quickNotes {
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--border);
@@ -276,7 +272,6 @@
             flex-direction: column;
         }
 
-        /* HOME VIEW */
         #homeView {
             flex: 1;
             overflow-y: auto;
@@ -311,7 +306,6 @@
             line-height: 1.5;
         }
 
-        /* SEARCH */
         .search-wrap { position: relative; }
 
         .search-wrap::before {
@@ -339,7 +333,66 @@
 
         #finder::placeholder { color: var(--muted); }
 
-        /* GRID — 1 columna en móvil */
+        /* ══════════════════════════
+           SEMESTER BLOCK
+        ══════════════════════════ */
+        .semester-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .semester-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(0,255,157,0.04);
+            border: 1px solid rgba(0,255,157,0.25);
+            border-left: 3px solid var(--neon);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .semester-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0,255,157,0.06), transparent);
+            pointer-events: none;
+        }
+
+        .semester-badge {
+            font-family: 'Share Tech Mono';
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--bg);
+            background: var(--neon);
+            padding: 4px 10px;
+            flex-shrink: 0;
+            text-shadow: none;
+            font-weight: bold;
+        }
+
+        .semester-title {
+            font-family: 'Share Tech Mono';
+            font-size: 13px;
+            color: var(--neon);
+            text-shadow: 0 0 10px rgba(0,255,157,0.5);
+            letter-spacing: 2px;
+            flex: 1;
+        }
+
+        .semester-count {
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            padding: 3px 8px;
+        }
+
+        /* GRID */
         .grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -392,7 +445,8 @@
         }
 
         .card-body { flex: 1; min-width: 0; }
-        .card h3   { color: var(--neon2); font-size: 12px; letter-spacing: .5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card h3   { color: var(--neon2); font-size: 11px; letter-spacing: .5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card .card-fullname { color: var(--text); font-size: 9px; letter-spacing: .5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.7; }
         .card p    { color: var(--muted); font-size: 10px; line-height: 1.5; }
 
         .card-tag {
@@ -590,54 +644,70 @@
                 <input type="text" id="finder" placeholder="filtrar asignaturas..." onkeyup="filter()" autocomplete="off">
             </div>
 
-            <div class="grid" id="cardGrid">
-
-                <div class="card" onclick="openModule('cuaderno_electricidad_u1.html', 'ELECTRICIDAD_APLICADA')">
-                    <div class="card-icon-wrap">⚡</div>
-                    <div class="card-body">
-                        <h3>ELECTRICIDAD_APLICADA.SYS</h3>
-                        <p>Circuitos CC, Ley de Ohm y análisis de mallas.</p>
-                    </div>
-                    <div class="card-tag">SYS</div>
+            <!-- SEMESTRE 1 -->
+            <div class="semester-block">
+                <div class="semester-header">
+                    <span class="semester-badge">SEM·01</span>
+                    <span class="semester-title">PRIMER SEMESTRE</span>
+                    <span class="semester-count">5 MÓDULOS</span>
                 </div>
 
-                <div class="card" onclick="openModule('automatizacion_inacap.html', 'AUTOMATIZACION_SISTEMAS')">
-                    <div class="card-icon-wrap">🦾</div>
-                    <div class="card-body">
-                        <h3>AUTOMATIZACION_SISTEMAS.SYS</h3>
-                        <p>Control de procesos, sensores y actuadores.</p>
-                    </div>
-                    <div class="card-tag">SYS</div>
-                </div>
+                <div class="grid" id="cardGrid">
 
-                <div class="card" onclick="openModule('ejercicios_porcentajes.html', 'ALGEBRA_CIUDADANA')">
-                    <div class="card-icon-wrap">📐</div>
-                    <div class="card-body">
-                        <h3>ALGEBRA_CIUDADANA.LOG</h3>
-                        <p>Porcentajes, variaciones y lógica matemática.</p>
+                    <div class="card" onclick="openModule('cuaderno_electricidad_u1.html', 'ELECTRICIDAD_APLICADA')">
+                        <div class="card-icon-wrap">⚡</div>
+                        <div class="card-body">
+                            <h3>ELECTRICIDAD_APLICADA.SYS</h3>
+                            <div class="card-fullname">Electricidad Aplicada a la Automatización</div>
+                            <p>Circuitos CC, Ley de Ohm y análisis de mallas.</p>
+                        </div>
+                        <div class="card-tag">SYS</div>
                     </div>
-                    <div class="card-tag">LOG</div>
-                </div>
 
-                <div class="card" onclick="openModule('Riesgos_Electricos_INACAP.html', 'SEGURIDAD_INDUSTRIAL')">
-                    <div class="card-icon-wrap">🛡️</div>
-                    <div class="card-body">
-                        <h3>SEGURIDAD_INDUSTRIAL.SEC</h3>
-                        <p>NFPA 70E y prevención de riesgos eléctricos.</p>
+                    <div class="card" onclick="openModule('automatizacion_inacap.html', 'AUTOMATIZACION_ROBOTICA')">
+                        <div class="card-icon-wrap">🦾</div>
+                        <div class="card-body">
+                            <h3>AUTOMATIZACION_ROBOTICA.SYS</h3>
+                            <div class="card-fullname">Introducción a la Automatización y Robótica</div>
+                            <p>Control de procesos, sensores y actuadores.</p>
+                        </div>
+                        <div class="card-tag">SYS</div>
                     </div>
-                    <div class="card-tag">SEC</div>
-                </div>
 
-                <div class="card" onclick="openModule('cuaderno_mantenimiento.html', 'MANTENIMIENTO_ACTIVOS')">
-                    <div class="card-icon-wrap">⚙️</div>
-                    <div class="card-body">
-                        <h3>MANTENIMIENTO_ACTIVOS.DRV</h3>
-                        <p>Planificación preventiva y gestión de fallos.</p>
+                    <div class="card" onclick="openModule('ejercicios_porcentajes.html', 'RESOLUCION_ALGEBRA')">
+                        <div class="card-icon-wrap">📐</div>
+                        <div class="card-body">
+                            <h3>RESOLUCION_ALGEBRA.LOG</h3>
+                            <div class="card-fullname">Resolución de Problemas en Álgebra</div>
+                            <p>Porcentajes, variaciones y lógica matemática.</p>
+                        </div>
+                        <div class="card-tag">LOG</div>
                     </div>
-                    <div class="card-tag">DRV</div>
-                </div>
 
+                    <div class="card" onclick="openModule('Riesgos_Electricos_INACAP.html', 'SEGURIDAD_RIESGOS')">
+                        <div class="card-icon-wrap">🛡️</div>
+                        <div class="card-body">
+                            <h3>SEGURIDAD_RIESGOS.SEC</h3>
+                            <div class="card-fullname">Seguridad y Riesgos Industriales</div>
+                            <p>NFPA 70E y prevención de riesgos eléctricos.</p>
+                        </div>
+                        <div class="card-tag">SEC</div>
+                    </div>
+
+                    <div class="card" onclick="openModule('cuaderno_mantenimiento.html', 'FUNDAMENTOS_MANTENIMIENTO')">
+                        <div class="card-icon-wrap">⚙️</div>
+                        <div class="card-body">
+                            <h3>FUNDAMENTOS_MANTEN.DRV</h3>
+                            <div class="card-fullname">Fundamentos del Mantenimiento para la Automatización</div>
+                            <p>Planificación preventiva y gestión de fallos.</p>
+                        </div>
+                        <div class="card-tag">DRV</div>
+                    </div>
+
+                </div>
             </div>
+            <!-- fin semestre 1 -->
+
         </div>
 
         <!-- MODULE VIEW -->
@@ -670,7 +740,6 @@
         // ── DRAWER ──
         function toggleDrawer() {
             const d = document.getElementById('drawer');
-            const o = document.getElementById('drawerOverlay');
             const open = d.classList.contains('open');
             open ? closeDrawer() : openDrawer();
         }
@@ -694,7 +763,6 @@
             document.getElementById('moduleFrame').src = src;
         }
 
-        // Abrir módulo desde drawer
         function openModuleFromDrawer(src, name) {
             closeDrawer();
             setTimeout(() => openModule(src, name), 180);
@@ -706,7 +774,7 @@
             document.getElementById('homeView').style.display = 'flex';
         }
 
-        // ── BUSCADOR ──
+        // ── BUSCADOR (busca dentro de cards) ──
         function filter() {
             const val = document.getElementById('finder').value.toLowerCase();
             document.querySelectorAll('.card').forEach(c => {
@@ -729,13 +797,13 @@
         noteEl.value = savedNotes;
         if (savedNotes) autoGrow(noteEl);
 
-        // ── BARRAS ──
+        // ── BARRAS (nombres actualizados) ──
         const ramos = [
-            { name: 'Electricidad',   pct: 72 },
-            { name: 'Automatización', pct: 55 },
-            { name: 'Álgebra',        pct: 88 },
-            { name: 'Seguridad',      pct: 40 },
-            { name: 'Mantenimiento',  pct: 63 },
+            { name: 'Elec. Aplicada',   pct: 72 },
+            { name: 'Automatización',   pct: 55 },
+            { name: 'Álgebra',          pct: 88 },
+            { name: 'Seguridad',        pct: 40 },
+            { name: 'Mantenimiento',    pct: 63 },
         ];
 
         const pb = document.getElementById('progressBars');
@@ -752,7 +820,6 @@
                 </div>`;
         });
 
-        // Animar cuando se abre el drawer
         document.getElementById('menuBtn').addEventListener('click', () => {
             setTimeout(() => {
                 document.querySelectorAll('.bar-fill').forEach(b => {
