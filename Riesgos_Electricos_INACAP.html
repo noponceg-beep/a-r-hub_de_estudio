@@ -4,1016 +4,868 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seguridad y Riesgos Industriales — INACAP</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0e13;
-  --surface:   #111820;
-  --surface2:  #161e28;
-  --border:    #1e3a4a;
-  --accent:    #00c8ff;
-  --accent2:   #f0a500;
-  --accent3:   #00e676;
-  --danger:    #ff4444;
-  --warning:   #ff9800;
-  --text:      #d0dde8;
-  --text-dim:  #607080;
-  --text-head: #ffffff;
-  --mono:      'Share Tech Mono', monospace;
-  --sans:      'Rajdhani', sans-serif;
-  --body:      'Inter', sans-serif;
+  --bg:#080c10; --panel:#0d1117; --panel2:#111820;
+  --border:#1a2a35; --border2:#0f1e28;
+  --green:#00ff9d; --cyan:#00c8ff; --amber:#ffb700; --red:#ff4060; --purple:#a855f7;
+  --gd:rgba(0,255,157,.08); --cd:rgba(0,200,255,.08);
+  --ad:rgba(255,183,0,.08);  --rd:rgba(255,64,96,.08);
+  --text:#b0c4d0; --tdim:#3d5560; --thead:#e8f4f8;
+  --mono:'JetBrains Mono',monospace;
+  --title:'Orbitron',monospace;
+  --code:'JetBrains Mono',monospace;
+  --sw:260px; --th:52px;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px)}
+::-webkit-scrollbar{width:5px;background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border)}
+::-webkit-scrollbar-thumb:hover{background:var(--green)}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--th);
+  background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;padding:0 18px}
+.tb-ham{display:none;background:none;border:1px solid var(--border);color:var(--cyan);
+  width:32px;height:32px;cursor:pointer;font-size:15px;align-items:center;justify-content:center}
+.tb-brand{font-family:var(--title);font-size:11px;font-weight:700;color:var(--green);letter-spacing:3px}
+.tb-sub{font-size:10px;color:var(--tdim);letter-spacing:1px}
+.tb-sep{flex:1}
+.tb-search{display:flex;align-items:center;gap:6px;border:1px solid var(--border);padding:5px 10px;background:var(--bg)}
+.tb-search input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:180px}
+.tb-search input::placeholder{color:var(--tdim)}
 
-html { scroll-behavior: smooth; }
+/* LAYOUT — sidebar empuja el contenido */
+.layout{display:flex;padding-top:var(--th);min-height:100vh;transition:none}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--body);
-  font-size: 15px;
-  line-height: 1.7;
-  min-height: 100vh;
+/* SIDEBAR */
+.sidebar{
+  width:var(--sw);min-width:var(--sw);
+  background:var(--panel);border-right:1px solid var(--border);
+  position:sticky;top:var(--th);
+  height:calc(100vh - var(--th));
+  overflow-y:auto;z-index:100;
+  display:flex;flex-direction:column;
+  flex-shrink:0;
+  transition:width .3s, min-width .3s, opacity .3s;
 }
+.sidebar.collapsed{
+  width:0;min-width:0;opacity:0;overflow:hidden;border:none;
+}
+.tb-ham{display:flex;background:none;border:1px solid var(--border);color:var(--cyan);
+  width:32px;height:32px;cursor:pointer;font-size:15px;align-items:center;justify-content:center;
+  flex-shrink:0;transition:border-color .2s}
+.tb-ham:hover{border-color:var(--green);color:var(--green)}
+.sb-head{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
+.sb-school{font-size:9px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.sb-subject{font-family:var(--title);font-size:11px;font-weight:700;color:var(--thead);line-height:1.3;margin-bottom:3px}
+.sb-career{font-size:10px;color:var(--tdim)}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto}
+.sb-gl{font-size:9px;color:var(--tdim);letter-spacing:2px;text-transform:uppercase;padding:12px 16px 5px}
+.sb-unit{border-bottom:1px solid var(--border2)}
+.sb-uh{display:flex;align-items:center;gap:7px;padding:9px 16px;cursor:pointer;user-select:none;
+  color:var(--text);font-size:12px;transition:background .15s}
+.sb-uh:hover{background:var(--gd)}
+.sb-uh .arr{margin-left:auto;color:var(--tdim);font-size:11px;transition:transform .2s}
+.sb-unit.open .arr{transform:rotate(90deg)}
+.sb-badge{font-size:9px;padding:1px 5px;border:1px solid;letter-spacing:1px}
+.bd{border-color:var(--green);color:var(--green)}
+.bl{border-color:var(--tdim);color:var(--tdim)}
+.sb-subs{display:none;background:var(--bg)}
+.sb-unit.open .sb-subs{display:block}
+.sb-score{margin:10px 12px;padding:10px 12px;background:rgba(0,255,157,.04);border:1px solid rgba(0,255,157,.15)}
+.sb-score-lbl{font-size:8px;color:var(--tdim);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.sb-score-val{font-family:var(--title);font-size:20px;color:var(--green);letter-spacing:2px;animation:glowPulse 3s ease-in-out infinite}
+.sb-score-val span{font-size:10px;color:var(--tdim)}
+.sb-ico{font-size:12px;width:16px;text-align:center;opacity:.7}
+.sb-ico-unit{font-size:13px;width:18px;text-align:center}
+.sb-uh-locked{cursor:default!important;opacity:.55}
+.sb-uh-locked:hover{background:none!important}
+.sb-lock{margin-left:auto;font-size:11px;opacity:.5}
+.sb-si{display:flex;align-items:center;gap:7px;padding:7px 16px 7px 28px;font-size:11px;
+  color:var(--tdim);cursor:pointer;border-left:2px solid transparent;transition:all .15s;user-select:none}
+.sb-si:hover,.sb-si.active{color:var(--green);border-left-color:var(--green);background:var(--gd)}
+.sb-uh .arr{margin-left:auto;color:var(--green);font-size:12px;font-weight:700;transition:none}
+.sb-unit.open .arr{content:'-'}
+.sb-item{display:flex;align-items:center;gap:7px;padding:9px 16px;cursor:pointer;user-select:none;
+  font-size:12px;color:var(--tdim);border-left:2px solid transparent;transition:all .15s}
+.sb-item:hover,.sb-item.active{color:var(--cyan);border-left-color:var(--cyan);background:var(--cd)}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--border);font-size:9px;color:var(--tdim);letter-spacing:1px}
 
-/* ── Grid background ─────────────────────────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0,200,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,200,255,.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
+/* MAIN */
+.main{flex:1;min-width:0;transition:none}
+.page{display:none;animation:fadeUp .3s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 8px rgba(255,183,0,.4)}50%{text-shadow:0 0 22px rgba(255,183,0,.9)}}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes borderBlink{0%,100%{box-shadow:0 0 0 rgba(0,255,157,0)}50%{box-shadow:0 0 8px rgba(0,255,157,.35)}}
 
-/* ── Layout ──────────────────────────────────────────────────────────────── */
-.layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+/* HERO */
+.hero{padding:38px 46px 30px;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#080c10 0%,#0a1520 60%,#080c10 100%);position:relative;overflow:hidden}
+.hero::before{content:'⚡';position:absolute;right:56px;top:50%;transform:translateY(-50%);
+  font-size:120px;opacity:.025;pointer-events:none}
+.hero-tag{font-size:10px;color:var(--green);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.hero-tag span{animation:cursorBlink 1s step-end infinite}
+.hero h1{font-family:var(--title);font-size:30px;font-weight:900;color:var(--thead);
+  line-height:1.1;margin-bottom:10px;letter-spacing:2px}
+.hero h1 em{color:var(--green);font-style:normal}
+.hero-sub{font-size:12px;color:var(--tdim);max-width:480px;line-height:1.7}
+.hero-search{display:flex;margin-top:22px;max-width:460px}
+.hero-search input{flex:1;background:var(--panel);border:1px solid var(--border);border-right:none;
+  color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 12px;outline:none;transition:border-color .2s}
+.hero-search input:focus{border-color:var(--green)}
+.hero-search input::placeholder{color:var(--tdim)}
+.hero-search-btn{background:var(--green);color:#000;border:none;padding:8px 14px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.hero-stats{display:flex;gap:32px;margin-top:24px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat-val{font-family:var(--title);font-size:22px;color:var(--amber);animation:glowPulse 3s ease-in-out infinite}
+.stat-lbl{font-size:9px;color:var(--tdim);letter-spacing:2px;text-transform:uppercase}
 
-/* ── Sidebar ─────────────────────────────────────────────────────────────── */
-.sidebar {
-  width: 260px; min-width: 260px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
-}
+/* CONTENT */
+.content{padding:34px 46px}
 
-.sidebar-logo {
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo .school {
-  font-family: var(--mono);
-  font-size: 10px; color: var(--accent); letter-spacing: 3px;
-  text-transform: uppercase; margin-bottom: 4px;
-}
-.sidebar-logo .subject {
-  font-family: var(--sans);
-  font-size: 17px; font-weight: 700; color: var(--text-head);
-  line-height: 1.2;
-}
-.sidebar-logo .career {
-  font-size: 11px; color: var(--text-dim); margin-top: 4px;
-}
+/* SECTION */
+.unit-section{margin-bottom:50px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:26px;padding-bottom:11px;border-bottom:1px solid var(--border)}
+.sec-tag{font-size:10px;color:var(--cyan);border:1px solid rgba(0,200,255,.3);padding:2px 7px;letter-spacing:2px}
+.sec-title{font-family:var(--title);font-size:14px;font-weight:700;color:var(--thead);letter-spacing:1px;text-transform:uppercase}
+.sec-status{margin-left:auto;font-size:9px;letter-spacing:1px;padding:2px 7px;border:1px solid}
+.s-done{border-color:var(--green);color:var(--green);animation:borderBlink 3s ease infinite}
+.s-lock{border-color:var(--tdim);color:var(--tdim)}
 
-.sidebar-nav { padding: 16px 0; flex: 1; }
+/* THEORY */
+.ts{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--cyan);
+  margin-bottom:18px;padding:20px 22px;position:relative;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+.ts:hover{box-shadow:0 0 18px rgba(0,200,255,.07);border-left-color:var(--green)}
+.ts h2{font-family:var(--title);font-size:12px;font-weight:700;color:var(--cyan);text-transform:uppercase;
+  letter-spacing:2px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px}
+.ts h2::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.ts h3{font-size:12px;color:var(--amber);margin:12px 0 7px;display:flex;align-items:center;gap:7px}
+.ts h3::before{content:'▸';color:var(--amber)}
+.ts p{font-size:12px;line-height:1.8;color:var(--text);margin-bottom:9px}
+.ts::after{content:'';position:absolute;bottom:0;right:0;width:18px;height:18px;
+  border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);opacity:.25;transition:all .2s}
+.ts:hover::after{opacity:1;width:28px;height:28px}
 
-.nav-group-label {
-  font-family: var(--mono);
-  font-size: 9px; color: var(--text-dim); letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 12px 20px 6px;
-}
+/* BOXES */
+.box{padding:11px 15px;margin:10px 0;font-size:12px;line-height:1.7;border-left:3px solid}
+.box-lbl{font-size:9px;letter-spacing:2px;font-weight:600;margin-bottom:5px;text-transform:uppercase}
+.ok{border-color:var(--green);background:var(--gd)} .ok .box-lbl{color:var(--green)}
+.wn{border-color:var(--red);background:var(--rd)}   .wn .box-lbl{color:var(--red)}
+.inf{border-color:var(--cyan);background:var(--cd)} .inf .box-lbl{color:var(--cyan)}
+.am{border-color:var(--amber);background:var(--ad)} .am .box-lbl{color:var(--amber)}
 
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 20px; cursor: pointer;
-  color: var(--text-dim); font-size: 13px;
-  transition: all .2s; border-left: 2px solid transparent;
-  user-select: none;
-}
-.nav-item:hover { color: var(--text); background: rgba(0,200,255,.05); border-left-color: var(--accent); }
-.nav-item.active { color: var(--accent); background: rgba(0,200,255,.08); border-left-color: var(--accent); }
-.nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
-.nav-item .badge {
-  margin-left: auto; font-family: var(--mono); font-size: 9px;
-  padding: 1px 6px; border-radius: 3px;
-  background: rgba(0,200,255,.15); color: var(--accent);
-}
-.nav-item .badge.locked {
-  background: rgba(96,112,128,.15); color: var(--text-dim);
-}
+/* FORMULA */
+.fw{position:relative;background:var(--panel);border:1px solid rgba(0,255,157,.22);
+  padding:20px 22px;margin:12px 0;text-align:center;overflow:hidden}
+.fw::before{content:'FÓRMULA';position:absolute;top:0;right:0;font-size:8px;color:var(--green);
+  background:rgba(0,255,157,.1);padding:3px 8px;letter-spacing:2px}
+.formula{font-family:var(--title);font-size:24px;font-weight:700;color:var(--green);
+  letter-spacing:5px;text-shadow:0 0 18px rgba(0,255,157,.45)}
+.fvars{font-size:11px;color:var(--tdim);margin-top:7px;letter-spacing:1px}
 
-.sidebar-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  font-family: var(--mono); font-size: 10px; color: var(--text-dim);
-}
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px;margin:12px 0}
+.card{background:var(--panel);border:1px solid var(--border);padding:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.card:hover{border-color:rgba(0,255,157,.28);transform:translateY(-2px)}
+.card:hover::before{transform:scaleX(1)}
+.c-lbl{font-size:9px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.c-val{font-family:var(--title);font-size:14px;color:var(--thead);margin-bottom:3px}
+.c-desc{font-size:11px;color:var(--tdim);line-height:1.5}
 
-/* ── Main ────────────────────────────────────────────────────────────────── */
-.main { flex: 1; overflow-x: hidden; }
+/* DEF LIST */
+.dl{display:flex;flex-direction:column;gap:2px;margin:9px 0}
+.dr{display:grid;grid-template-columns:160px 1fr;border:1px solid var(--border)}
+.dt{padding:9px 11px;background:rgba(0,200,255,.05);font-size:11px;color:var(--cyan);
+  font-weight:600;border-right:1px solid var(--border);display:flex;align-items:center}
+.dd{padding:9px 13px;font-size:12px;color:var(--text)}
 
-/* ── Hero ────────────────────────────────────────────────────────────────── */
-.hero {
-  background: linear-gradient(135deg, #0a0e13 0%, #0d1e2e 50%, #0a1520 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 48px 48px 40px;
-  position: relative; overflow: hidden;
-}
-.hero::after {
-  content: '⚡';
-  position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
-  font-size: 120px; opacity: .04; pointer-events: none;
-}
-.hero-tag {
-  font-family: var(--mono); font-size: 11px; color: var(--accent);
-  letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;
-}
-.hero h1 {
-  font-family: var(--sans); font-size: 38px; font-weight: 700;
-  color: var(--text-head); line-height: 1.1; margin-bottom: 12px;
-}
-.hero h1 span { color: var(--accent); }
-.hero-sub { font-size: 14px; color: var(--text-dim); max-width: 500px; }
+/* TABLE */
+.tw{overflow-x:auto;margin:11px 0}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border)}
+thead tr{background:rgba(0,200,255,.07)}
+th{padding:9px 13px;text-align:left;font-size:10px;color:var(--cyan);letter-spacing:2px;
+  text-transform:uppercase;border-bottom:1px solid rgba(0,200,255,.18);font-family:var(--mono)}
+td{padding:8px 13px;border-bottom:1px solid var(--border2);font-size:12px;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .15s}
+tbody tr:hover td{background:var(--gd)}
 
-.hero-stats {
-  display: flex; gap: 32px; margin-top: 32px;
-}
-.stat { display: flex; flex-direction: column; gap: 2px; }
-.stat-val { font-family: var(--mono); font-size: 22px; color: var(--accent2); font-weight: 600; }
-.stat-lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.cc{background:var(--panel);border:1px solid var(--border);overflow:hidden}
+.ch{padding:10px 14px;font-size:12px;font-weight:600;letter-spacing:1px}
+.ch.red{background:var(--rd);color:var(--red);border-bottom:1px solid rgba(255,64,96,.2)}
+.ch.orange{background:var(--ad);color:var(--amber);border-bottom:1px solid rgba(255,183,0,.2)}
+.cb{padding:13px 14px;font-size:12px}
+.cb ul{padding-left:14px;margin-top:7px}
+.cb li{margin-bottom:5px;color:var(--text)}
 
-/* ── Content area ────────────────────────────────────────────────────────── */
-.content { padding: 40px 48px; }
+/* COST */
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:11px 0}
+.ccd{background:var(--panel);border:1px solid var(--border);padding:14px;border-top:2px solid}
+.ccd.dr2{border-top-color:var(--red)}
+.ccd.in{border-top-color:var(--amber)}
+.ccd.iv{border-top-color:var(--tdim)}
+.ci{font-size:20px;margin-bottom:7px}
+.cn{font-size:12px;color:var(--thead);font-weight:600;margin-bottom:3px;letter-spacing:1px}
+.cdesc{font-size:11px;color:var(--tdim);line-height:1.5}
 
-/* ── Section ─────────────────────────────────────────────────────────────── */
-.section { margin-bottom: 56px; }
+.tag{display:inline-block;font-size:9px;padding:2px 6px;border:1px solid rgba(0,200,255,.3);color:var(--cyan);letter-spacing:1px;margin:1px}
+.cs{background:var(--panel);border:1px dashed var(--border);padding:36px;text-align:center}
+.cs .ci2{font-size:26px;margin-bottom:9px;opacity:.3}
+.cs p{font-size:11px;color:var(--tdim)}
 
-.section-header {
-  display: flex; align-items: center; gap: 14px;
-  margin-bottom: 28px; padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-.section-num {
-  font-family: var(--mono); font-size: 11px; color: var(--accent);
-  background: rgba(0,200,255,.1); border: 1px solid rgba(0,200,255,.2);
-  padding: 3px 8px; border-radius: 3px; letter-spacing: 1px;
-}
-.section-title {
-  font-family: var(--sans); font-size: 22px; font-weight: 700;
-  color: var(--text-head);
-}
-.section-status {
-  margin-left: auto; font-family: var(--mono); font-size: 10px;
-  padding: 3px 10px; border-radius: 3px;
-}
-.status-done  { background: rgba(0,230,118,.1);  color: var(--accent3); border: 1px solid rgba(0,230,118,.2); }
-.status-lock  { background: rgba(96,112,128,.1); color: var(--text-dim); border: 1px solid rgba(96,112,128,.2); }
+/* EXERCISES */
+.exb{display:flex;flex-direction:column;gap:12px}
+.ec{background:var(--panel);border:1px solid var(--border);overflow:hidden}
+.ech{display:flex;align-items:center;gap:9px;padding:11px 16px;cursor:pointer;user-select:none;
+  background:rgba(0,0,0,.18);border-bottom:1px solid var(--border2);transition:background .15s}
+.ech:hover{background:var(--gd)}
+.en{font-size:9px;color:var(--amber);letter-spacing:2px;border:1px solid rgba(255,183,0,.3);padding:2px 6px}
+.et{font-size:13px;color:var(--thead);flex:1}
+.etag{font-size:9px;color:var(--purple);border:1px solid rgba(168,85,247,.3);padding:2px 6px}
+.earr{font-size:10px;color:var(--tdim);transition:transform .25s}
+.ec.open .earr{transform:rotate(90deg)}
+.eb{display:none;padding:16px}
+.ec.open .eb{display:block}
+.eq{font-size:13px;color:var(--text);margin-bottom:14px;padding:11px 14px;
+  background:rgba(0,200,255,.04);border-left:2px solid var(--cyan);line-height:1.8}
+.rb{background:none;border:1px solid var(--green);color:var(--green);padding:6px 16px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;transition:background .15s}
+.rb:hover{background:var(--gd)}
+.ab{display:none;margin-top:10px;background:rgba(0,255,157,.04);
+  border:1px solid rgba(0,255,157,.14);padding:12px 15px;font-size:12px}
+.ab.visible{display:block}
+.al{font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:7px}
 
-/* ── Subsection ──────────────────────────────────────────────────────────── */
-.sub { margin-bottom: 28px; }
-.sub-title {
-  font-family: var(--sans); font-size: 16px; font-weight: 600;
-  color: var(--accent2); margin-bottom: 12px;
-  display: flex; align-items: center; gap: 8px;
-}
-.sub-title::before { content: '▶'; font-size: 10px; opacity: .7; }
+/* QUIZ */
+.qc2{display:flex;gap:9px;margin-bottom:18px;flex-wrap:wrap}
+.qb{background:none;border:1px solid var(--border);color:var(--tdim);padding:6px 14px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:all .15s}
+.qb:hover,.qb.sel{border-color:var(--green);color:var(--green);background:var(--gd)}
+.qq{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--amber);padding:18px;margin-bottom:14px}
+.qt{font-size:14px;color:var(--thead);margin-bottom:14px;line-height:1.7}
+.qopts{display:flex;flex-direction:column;gap:7px}
+.qo{background:var(--bg);border:1px solid var(--border);padding:9px 13px;cursor:pointer;
+  font-size:12px;color:var(--text);transition:all .15s;display:flex;align-items:center;gap:9px}
+.qo:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cd)}
+.qo.correct{border-color:var(--green);color:var(--green);background:var(--gd)}
+.qo.wrong{border-color:var(--red);color:var(--red);background:var(--rd)}
+.qok{font-family:var(--title);font-size:10px;opacity:.45}
+.qfb{margin-top:10px;padding:9px 13px;font-size:12px;display:none}
+.qfb.ok{border-left:3px solid var(--green);background:var(--gd);color:var(--green);display:block}
+.qfb.err{border-left:3px solid var(--red);background:var(--rd);color:var(--red);display:block}
+.qnxt{margin-top:10px;background:none;border:1px solid var(--cyan);color:var(--cyan);padding:6px 16px;
+  cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;display:none}
+.qnxt.show{display:inline-block}
+.qscore{font-family:var(--title);font-size:26px;color:var(--green);text-shadow:0 0 18px rgba(0,255,157,.55);animation:glowPulse 2s ease infinite}
 
-/* ── Cards ───────────────────────────────────────────────────────────────── */
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; margin-bottom: 16px; }
+/* FLASHCARDS */
+.fcf{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.fcft{background:none;border:1px solid var(--border);color:var(--tdim);padding:5px 12px;cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:all .15s}
+.fcft:hover,.fcft.active{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.08)}
+.fcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.fcc{perspective:1000px;height:155px;cursor:pointer}
+.fci{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.fcc.flipped .fci{transform:rotateY(180deg)}
+.fcf2,.fcb{position:absolute;inset:0;backface-visibility:hidden;padding:16px;
+  border:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;justify-content:center}
+.fcb{transform:rotateY(180deg)}
+.fcat{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.fcat.ce{color:var(--cyan)} .fcat.cs2{color:var(--amber)} .fcat.ca{color:var(--red)}
+.fcc[data-cat="elec"] .fcf2{border-top:2px solid var(--cyan)}
+.fcc[data-cat="seg"]  .fcf2{border-top:2px solid var(--amber)}
+.fcc[data-cat="acc"]  .fcf2{border-top:2px solid var(--red)}
+.fterm{font-family:var(--title);font-size:13px;color:var(--thead);line-height:1.3}
+.fdef{font-size:11px;color:var(--text);line-height:1.6}
+.fhint{font-size:9px;color:var(--tdim);margin-top:7px;letter-spacing:1px}
 
-.card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px; padding: 16px 18px;
-  transition: border-color .2s, transform .2s;
-}
-.card:hover { border-color: rgba(0,200,255,.3); transform: translateY(-2px); }
-.card-label {
-  font-family: var(--mono); font-size: 10px; color: var(--accent);
-  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
-}
-.card-value { font-family: var(--sans); font-size: 18px; font-weight: 700; color: var(--text-head); }
-.card-desc  { font-size: 12px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+/* GLOSARIO */
+.gs{display:flex;margin-bottom:14px}
+.gs input{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--text);
+  font-family:var(--mono);font-size:12px;padding:8px 12px;outline:none;transition:border-color .2s}
+.gs input:focus{border-color:var(--cyan)}
 
-/* ── Definition pairs ────────────────────────────────────────────────────── */
-.def-list { display: flex; flex-direction: column; gap: 2px; }
-.def-row {
-  display: grid; grid-template-columns: 180px 1fr;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 4px; overflow: hidden;
-}
-.def-term {
-  padding: 10px 14px; background: rgba(0,200,255,.06);
-  font-family: var(--sans); font-weight: 600; font-size: 13px;
-  color: var(--accent); border-right: 1px solid var(--border);
-  display: flex; align-items: center;
-}
-.def-body { padding: 10px 14px; font-size: 13px; color: var(--text); }
+/* NOTES */
+.ntb{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.nst{font-size:10px;color:var(--tdim);margin-left:auto;letter-spacing:1px}
+.nta{width:100%;min-height:380px;background:var(--panel);border:1px solid var(--border);
+  color:var(--text);font-family:var(--code);font-size:13px;padding:16px;outline:none;
+  resize:vertical;line-height:1.7;transition:border-color .2s}
+.nta:focus{border-color:var(--green)}
+.nb{background:none;border:1px solid;padding:6px 14px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:background .15s}
+.nb.g{border-color:var(--green);color:var(--green)} .nb.g:hover{background:var(--gd)}
+.nb.r{border-color:var(--red);color:var(--red)}     .nb.r:hover{background:var(--rd)}
 
-/* ── Formula box ─────────────────────────────────────────────────────────── */
-.formula-box {
-  background: var(--surface2);
-  border: 1px solid rgba(0,200,255,.3);
-  border-left: 4px solid var(--accent);
-  border-radius: 6px; padding: 20px 24px;
-  margin: 16px 0; text-align: center;
-}
-.formula {
-  font-family: var(--mono); font-size: 28px;
-  color: var(--accent); letter-spacing: 4px;
-}
-.formula-vars { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
+/* FAB */
+.fabs{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:7px;z-index:150}
+.fab{width:42px;height:42px;background:var(--panel);border:1px solid;display:flex;
+  align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .15s}
+.fab.g{border-color:var(--green);color:var(--green)} .fab.g:hover{background:var(--gd);box-shadow:0 0 10px rgba(0,255,157,.25)}
+.fab.c{border-color:var(--cyan);color:var(--cyan)}   .fab.c:hover{background:var(--cd);box-shadow:0 0 10px rgba(0,200,255,.25)}
 
-/* ── Info box ────────────────────────────────────────────────────────────── */
-.info-box {
-  background: rgba(0,200,255,.05);
-  border: 1px solid rgba(0,200,255,.15);
-  border-left: 4px solid var(--accent);
-  border-radius: 6px; padding: 14px 18px;
-  font-size: 13px; margin: 12px 0;
-}
-.warn-box {
-  background: rgba(240,165,0,.05);
-  border: 1px solid rgba(240,165,0,.2);
-  border-left: 4px solid var(--accent2);
-  border-radius: 6px; padding: 14px 18px;
-  font-size: 13px; margin: 12px 0;
-}
-.danger-box {
-  background: rgba(255,68,68,.05);
-  border: 1px solid rgba(255,68,68,.2);
-  border-left: 4px solid var(--danger);
-  border-radius: 6px; padding: 14px 18px;
-  font-size: 13px; margin: 12px 0;
-}
+/* FLASHCARDS - font más legible */
+.fterm{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--thead);line-height:1.4}
+.fdef{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:300;color:var(--text);line-height:1.7}
+.fhint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--tdim);margin-top:8px;letter-spacing:1px}
+.fcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 
-/* ── Table ───────────────────────────────────────────────────────────────── */
-.tbl-wrap { overflow-x: auto; margin: 12px 0; }
-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 13px; background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
-}
-thead tr { background: rgba(0,200,255,.1); }
-th {
-  padding: 10px 14px; text-align: left;
-  font-family: var(--sans); font-weight: 600; font-size: 12px;
-  color: var(--accent); letter-spacing: 1px; text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-td {
-  padding: 9px 14px; border-bottom: 1px solid rgba(30,58,74,.5);
-  color: var(--text);
-}
-tr:last-child td { border-bottom: none; }
-tr:nth-child(even) td { background: rgba(0,0,0,.15); }
-td strong { color: var(--text-head); }
+mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
 
-/* ── Two-col compare ─────────────────────────────────────────────────────── */
-.compare {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;
-}
-.compare-card {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 6px; overflow: hidden;
-}
-.compare-head {
-  padding: 12px 16px;
-  font-family: var(--sans); font-weight: 700; font-size: 14px;
-}
-.compare-head.red  { background: rgba(255,68,68,.12);  color: #ff6b6b; }
-.compare-head.orange { background: rgba(255,152,0,.12); color: #ffb74d; }
-.compare-body { padding: 14px 16px; font-size: 13px; }
-.compare-body ul { padding-left: 16px; margin-top: 8px; }
-.compare-body li { margin-bottom: 6px; color: var(--text); }
-
-/* ── Cost cards ──────────────────────────────────────────────────────────── */
-.cost-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 12px 0; }
-.cost-card {
-  border-radius: 6px; padding: 16px;
-  background: var(--surface2); border: 1px solid var(--border);
-}
-.cost-card .cost-icon { font-size: 24px; margin-bottom: 8px; }
-.cost-card .cost-name { font-family: var(--sans); font-weight: 700; font-size: 14px; color: var(--text-head); margin-bottom: 4px; }
-.cost-card .cost-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
-.cost-card.direct  { border-top: 3px solid var(--danger); }
-.cost-card.indirect{ border-top: 3px solid var(--warning); }
-.cost-card.invisible{ border-top: 3px solid var(--text-dim); }
-
-/* ── Ejercicios ──────────────────────────────────────────────────────────── */
-.exercise {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px; margin-bottom: 20px; overflow: hidden;
-}
-.exercise-head {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 18px; background: rgba(0,0,0,.2);
-  border-bottom: 1px solid var(--border); cursor: pointer;
-  user-select: none;
-}
-.ex-num {
-  font-family: var(--mono); font-size: 11px;
-  color: var(--accent2); background: rgba(240,165,0,.1);
-  border: 1px solid rgba(240,165,0,.2);
-  padding: 2px 8px; border-radius: 3px;
-}
-.ex-title { font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--text-head); flex: 1; }
-.ex-toggle { font-size: 10px; color: var(--text-dim); transition: transform .3s; }
-.exercise-body { padding: 18px; display: none; }
-.exercise.open .exercise-body { display: block; }
-.exercise.open .ex-toggle { transform: rotate(90deg); }
-
-.ex-question {
-  font-size: 14px; color: var(--text); margin-bottom: 16px;
-  padding: 12px 14px;
-  background: rgba(0,200,255,.04); border-left: 3px solid var(--accent);
-  border-radius: 0 4px 4px 0;
-}
-
-.answer-reveal {
-  margin-top: 12px;
-}
-.reveal-btn {
-  background: none; border: 1px solid var(--accent);
-  color: var(--accent); padding: 8px 20px; border-radius: 4px;
-  cursor: pointer; font-family: var(--mono); font-size: 12px;
-  letter-spacing: 1px; transition: all .2s;
-}
-.reveal-btn:hover { background: rgba(0,200,255,.1); }
-.answer-box {
-  display: none; margin-top: 12px;
-  background: rgba(0,230,118,.05);
-  border: 1px solid rgba(0,230,118,.2);
-  border-radius: 6px; padding: 14px 16px;
-  font-size: 13px;
-}
-.answer-box.visible { display: block; }
-.answer-box .answer-label {
-  font-family: var(--mono); font-size: 10px; color: var(--accent3);
-  letter-spacing: 2px; margin-bottom: 8px;
-}
-
-/* ── Coming soon ─────────────────────────────────────────────────────────── */
-.coming-soon {
-  background: var(--surface2); border: 1px dashed var(--border);
-  border-radius: 8px; padding: 40px; text-align: center;
-}
-.coming-soon .cs-icon { font-size: 32px; margin-bottom: 12px; opacity: .4; }
-.coming-soon p { color: var(--text-dim); font-size: 13px; }
-
-/* ── Tags ────────────────────────────────────────────────────────────────── */
-.tag {
-  display: inline-block; font-family: var(--mono); font-size: 10px;
-  padding: 2px 8px; border-radius: 3px; margin-right: 4px;
-  background: rgba(0,200,255,.1); color: var(--accent); border: 1px solid rgba(0,200,255,.2);
-}
-
-/* ── Scrollbar ───────────────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-/* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .hero { padding: 28px 20px; }
-  .content { padding: 24px 20px; }
-  .compare, .cost-grid { grid-template-columns: 1fr; }
-  .hero-stats { flex-wrap: wrap; gap: 20px; }
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:var(--th);height:calc(100vh - var(--th));z-index:100}
+  .main{margin-left:0}
+  .hero,.content{padding:22px 16px}
+  .cmp,.cg{grid-template-columns:1fr}
+  .fcg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
 }
 </style>
 </head>
 <body>
-<div class="layout">
 
-<!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="school">INACAP · Chillán</div>
-    <div class="subject">Seguridad y Riesgos Industriales</div>
-    <div class="career">Tec. Superior en Automatización y Robótica</div>
+<div class="topbar">
+  <button class="tb-ham" id="tb-ham" onclick="toggleSidebar()">☰</button>
+  <span class="tb-brand">SRI</span>
+  <span class="tb-sub">Seguridad y Riesgos Industriales</span>
+  <div class="tb-sep"></div>
+  <div class="tb-search">
+    <span style="color:var(--tdim);font-size:12px">⌕</span>
+    <input type="text" placeholder="Buscar en teoría..." id="topSI" oninput="liveSearch(this.value)">
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <!-- score box -->
+  <div class="sb-score">
+    <div class="sb-score-lbl">PUNTAJE ACUMULADO</div>
+    <div class="sb-score-val" id="sb-score-val">0 <span>pts</span></div>
   </div>
 
-  <nav class="sidebar-nav">
-    <div class="nav-group-label">Unidades</div>
-    <div class="nav-item active" onclick="goTo('u1')">
-      <span class="icon">⚡</span> Unidad 1 — Fund. Eléctricos
-      <span class="badge">Visto</span>
+  <nav class="sb-nav">
+    <div class="sb-item active" onclick="showPage('home',this)">
+      <span class="sb-ico">⌂</span> HOME.SYS
     </div>
-    <div class="nav-item" onclick="goTo('u2')">
-      <span class="icon">⚠️</span> Unidad 2 — Accidentabilidad
-      <span class="badge">Visto</span>
+    <div class="sb-item" onclick="showPage('fc',this)">
+      <span class="sb-ico">▣</span> FLASHCARDS.EXE
     </div>
-    <div class="nav-item" onclick="goTo('u3')">
-      <span class="icon">🔒</span> Unidad 3
-      <span class="badge locked">Próx.</span>
-    </div>
-    <div class="nav-item" onclick="goTo('u4')">
-      <span class="icon">🔒</span> Unidad 4
-      <span class="badge locked">Próx.</span>
+    <div class="sb-item" onclick="showPage('gl',this)">
+      <span class="sb-ico">◎</span> GLOSARIO.LOG
     </div>
 
-    <div class="nav-group-label" style="margin-top:8px">Práctica</div>
-    <div class="nav-item" onclick="goTo('ejercicios')">
-      <span class="icon">✏️</span> Ejercicios
-      <span class="badge">7</span>
+    <div class="sb-gl">// UNIDADES</div>
+
+    <div class="sb-unit open" id="uu1">
+      <div class="sb-uh" onclick="toggleUnit('u1')">
+        <span class="sb-ico-unit">⚡</span>
+        <span>U1 · Conceptos Eléctricos</span>
+        <span class="arr">-</span>
+      </div>
+      <div class="sb-subs">
+        <div class="sb-si active" onclick="showPage('u1r',this)">› &nbsp;Resúmenes</div>
+        <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
+        <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
+      </div>
     </div>
-    <div class="nav-item" onclick="goTo('resumen')">
-      <span class="icon">📋</span> Tabla Resumen
+
+    <div class="sb-unit" id="uu2">
+      <div class="sb-uh sb-uh-locked" onclick="toggleUnit('u2')">
+        <span class="sb-ico-unit" style="opacity:.35">◈</span>
+        <span style="opacity:.4">U2 · Accidentabilidad</span>
+        <span class="sb-lock">🔒</span>
+      </div>
+      <div class="sb-subs">
+        <div class="sb-si" onclick="showPage('u2r',this)">› &nbsp;Resúmenes</div>
+        <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
+        <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
+      </div>
+    </div>
+
+    <div class="sb-unit" id="uu3">
+      <div class="sb-uh sb-uh-locked">
+        <span class="sb-ico-unit" style="opacity:.25">◈</span>
+        <span style="opacity:.3">U3 · Por agregar</span>
+        <span class="sb-lock">🔒</span>
+      </div>
+    </div>
+
+    <div class="sb-gl">// PRÁCTICA</div>
+    <div class="sb-item" onclick="showPage('ej',this)">
+      <span class="sb-ico">◉</span> MODO_MIXTO.EXE
     </div>
   </nav>
-
-  <div class="sidebar-footer">
-    Semestre 2025 · Actualizado con apuntes clase 1
-  </div>
+  <div class="sb-foot">Semestre 2025 · 1 clase completada</div>
 </aside>
 
-<!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
 <main class="main">
 
-  <!-- Hero -->
+<!-- HOME -->
+<div class="page active" id="page-home">
   <div class="hero">
-    <div class="hero-tag">// Cuaderno Digital de Estudio</div>
-    <h1>Seguridad y <span>Riesgos Industriales</span></h1>
-    <p class="hero-sub">Materia, apuntes y ejercicios del semestre. Todo en un solo lugar.</p>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-val">2</span><span class="stat-lbl">Unidades vistas</span></div>
-      <div class="stat"><span class="stat-val">7</span><span class="stat-lbl">Ejercicios</span></div>
-      <div class="stat"><span class="stat-val">19</span><span class="stat-lbl">Conceptos clave</span></div>
+    <div class="hero-tag">// Cuaderno Digital de Estudio <span>_</span></div>
+    <h1>Seguridad y <em>Riesgos</em><br>Industriales</h1>
+    <p class="hero-sub">Materia, apuntes, ejercicios y flashcards del semestre. Todo en un solo lugar.</p>
+    <div class="hero-search">
+      <input type="text" id="heroSI" placeholder="Buscar concepto, definición, fórmula..." oninput="liveSearch(this.value)">
+      <button class="hero-search-btn" onclick="liveSearch(document.getElementById('heroSI').value)">BUSCAR</button>
     </div>
   </div>
-
   <div class="content">
-
-  <!-- ════════════════════════════════════════════════════════
-       UNIDAD 1 — CONCEPTOS ELÉCTRICOS BÁSICOS
-  ═════════════════════════════════════════════════════════ -->
-  <div class="section" id="u1">
-    <div class="section-header">
-      <span class="section-num">U-01</span>
-      <span class="section-title">Conceptos Eléctricos Básicos y Fundamentos de Prevención</span>
-      <span class="section-status status-done">✓ COMPLETADO</span>
+    <div id="search-results" style="display:none">
+      <div class="sec-hdr"><span class="sec-tag">BÚSQUEDA</span><span class="sec-title">Resultados</span></div>
+      <div id="srl"></div>
     </div>
-
-    <!-- 1.1 Electricidad -->
-    <div class="sub">
-      <div class="sub-title">1.1 ¿Qué es la Electricidad?</div>
-      <p style="font-size:14px; color:var(--text); margin-bottom:12px;">
-        La energía eléctrica es la forma de energía <strong>más provechosa</strong> que existe.
-        Se define como el <strong>flujo de electrones</strong> que pasan de átomo en átomo
-        a lo largo de un circuito eléctrico.
-      </p>
-      <div class="info-box">
-        💡 <strong>Dato importante:</strong> La electricidad no se "crea" en un circuito —
-        los electrones que ya están presentes en el conductor son los que se ponen en movimiento
-        cuando se aplica una diferencia de potencial (voltaje).
-      </div>
-    </div>
-
-    <!-- 1.2 Magnitudes -->
-    <div class="sub">
-      <div class="sub-title">1.2 Magnitudes Eléctricas Fundamentales</div>
+    <div id="home-ov">
+      <div class="sec-hdr"><span class="sec-tag">ÍNDICE</span><span class="sec-title">Contenido del Semestre</span></div>
       <div class="cards">
-        <div class="card">
-          <div class="card-label">Voltaje</div>
-          <div class="card-value">V — Volt</div>
-          <div class="card-desc">Diferencia de potencial entre dos puntos del circuito. "La presión" que empuja los electrones.</div>
-        </div>
-        <div class="card">
-          <div class="card-label">Corriente</div>
-          <div class="card-value">I — Ampere</div>
-          <div class="card-desc">Cantidad de carga eléctrica que fluye por segundo. "El caudal" de electrones.</div>
-        </div>
-        <div class="card">
-          <div class="card-label">Resistencia</div>
-          <div class="card-value">R — Ohm (Ω)</div>
-          <div class="card-desc">Oposición que opone un material al paso de la corriente. Depende del material y la temperatura.</div>
-        </div>
-        <div class="card">
-          <div class="card-label">Potencia</div>
-          <div class="card-value">P — Watt</div>
-          <div class="card-desc">Energía eléctrica entregada o consumida por unidad de tiempo. P = V × I</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 1.3 Ley de Ohm -->
-    <div class="sub">
-      <div class="sub-title">1.3 Ley de Ohm</div>
-      <p style="font-size:13px; color:var(--text-dim); margin-bottom:8px;">
-        La intensidad de corriente que circula es directamente proporcional al voltaje
-        e inversamente proporcional a la resistencia:
-      </p>
-      <div class="formula-box">
-        <div class="formula">I = V / R</div>
-        <div class="formula-vars">
-          I = Intensidad (A) &nbsp;·&nbsp; V = Voltaje (V) &nbsp;·&nbsp; R = Resistencia (Ω)
-        </div>
-      </div>
-      <div class="warn-box">
-        ⚠️ <strong>Relevancia en seguridad:</strong> El cuerpo humano tiene una resistencia
-        variable (aprox. 1000 Ω piel seca / 100 Ω piel húmeda). Con 220V, la corriente
-        que atraviesa el cuerpo puede ser letal. <strong>Es la corriente (I) la que mata, no el voltaje.</strong>
-      </div>
-    </div>
-
-    <!-- 1.4 Dispositivos de protección -->
-    <div class="sub">
-      <div class="sub-title">1.4 Dispositivos de Protección Eléctrica</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Dispositivo</th>
-              <th>También llamado</th>
-              <th>Protege contra</th>
-              <th>¿Cómo funciona?</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Diferencial</strong></td>
-              <td>Interruptor diferencial</td>
-              <td>Contacto eléctrico en <strong>personas</strong></td>
-              <td>Compara la corriente de fase (entrada) con la de neutro (salida). Si hay diferencia, corta el circuito instantáneamente.</td>
-            </tr>
-            <tr>
-              <td><strong>Disyuntor (Magnetotérmico)</strong></td>
-              <td>Automático / breaker</td>
-              <td>Cortocircuitos y sobrecargas en la <strong>instalación</strong></td>
-              <td>Combina protección magnética (cortocircuito instantáneo) y térmica (sobrecarga por calor acumulado).</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="info-box">
-        💡 <strong>Regla de oro:</strong> El <strong>diferencial</strong> protege personas.
-        El <strong>disyuntor</strong> protege la instalación. Son complementarios: ambos deben
-        estar presentes en una instalación segura.
+        <div class="card" style="cursor:pointer" onclick="showPage('u1r',null)"><div class="c-lbl">Unidad 1</div><div class="c-val">Conceptos Eléctricos</div><div class="c-desc">Electricidad, magnitudes, Ley de Ohm, dispositivos de protección.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('u2r',null)"><div class="c-lbl">Unidad 2</div><div class="c-val">Accidentabilidad</div><div class="c-desc">Riesgo, peligro, accidente vs incidente, costos, factores y causas.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('ej',null)"><div class="c-lbl">Práctica</div><div class="c-val">Ejercicios</div><div class="c-desc">7 ejercicios con solución + banco de preguntas interactivo.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('fc',null)"><div class="c-lbl">Repaso</div><div class="c-val">Flashcards</div><div class="c-desc">16 tarjetas con flip 3D, filtradas por categoría.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('gl',null)"><div class="c-lbl">Referencia</div><div class="c-val">Glosario</div><div class="c-desc">Todos los términos con definición y búsqueda en tiempo real.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('no',null)"><div class="c-lbl">Personal</div><div class="c-val">Notas</div><div class="c-desc">Editor guardado automáticamente en tu navegador.</div></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ════════════════════════════════════════════════════════
-       UNIDAD 2 — RIESGO, PELIGRO Y ACCIDENTABILIDAD
-  ═════════════════════════════════════════════════════════ -->
-  <div class="section" id="u2">
-    <div class="section-header">
-      <span class="section-num">U-02</span>
-      <span class="section-title">Riesgo, Peligro y Accidentabilidad</span>
-      <span class="section-status status-done">✓ COMPLETADO</span>
-    </div>
+<!-- U1 RESÚMENES -->
+<div class="page" id="page-u1r">
+  <div class="hero" style="padding:26px 46px 22px">
+    <div class="hero-tag">// Unidad 1</div>
+    <h1 style="font-size:22px">Conceptos <em>Eléctricos</em> Básicos</h1>
+  </div>
+  <div class="content">
+    <div class="unit-section">
+      <div class="sec-hdr">
+        <span class="sec-tag">U-01</span>
+        <span class="sec-title">Fundamentos de Prevención de Riesgos Eléctricos</span>
+        <span class="sec-status s-done">✓ COMPLETADO</span>
+      </div>
 
-    <!-- 2.1 Riesgo vs Peligro -->
-    <div class="sub">
-      <div class="sub-title">2.1 Riesgo vs. Peligro</div>
-      <div class="def-list">
-        <div class="def-row">
-          <div class="def-term">⚠️ RIESGO</div>
-          <div class="def-body">Probabilidad de que <strong>ocurra un evento indeseado</strong>. No necesariamente implica daño.</div>
-        </div>
-        <div class="def-row">
-          <div class="def-term">🚨 PELIGRO</div>
-          <div class="def-body">Probabilidad de que ocurra un evento no deseado <strong>esperando daños concretos</strong>. El peligro implica consecuencias reales.</div>
+      <div class="ts searchable">
+        <h2>1.1 · ¿Qué es la Electricidad?</h2>
+        <p>La energía eléctrica es la forma de energía <strong style="color:var(--thead)">más provechosa</strong> que existe. Se define como el <strong style="color:var(--green)">flujo de electrones</strong> que pasan de átomo en átomo a lo largo de un circuito eléctrico.</p>
+        <div class="box ok"><div class="box-lbl">[OK] dato importante</div>La electricidad no se "crea" en el circuito — los electrones del conductor se ponen en movimiento cuando se aplica una diferencia de potencial (voltaje).</div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.2 · Magnitudes Eléctricas Fundamentales</h2>
+        <div class="cards">
+          <div class="card"><div class="c-lbl">Voltaje</div><div class="c-val">V — Volt</div><div class="c-desc">Diferencia de potencial entre dos puntos. "La presión" que empuja los electrones.</div></div>
+          <div class="card"><div class="c-lbl">Corriente</div><div class="c-val">I — Ampere</div><div class="c-desc">Cantidad de carga eléctrica que fluye por segundo. "El caudal" de electrones.</div></div>
+          <div class="card"><div class="c-lbl">Resistencia</div><div class="c-val">R — Ohm (Ω)</div><div class="c-desc">Oposición de un material al paso de la corriente. Depende del material y temperatura.</div></div>
+          <div class="card"><div class="c-lbl">Potencia</div><div class="c-val">P — Watt</div><div class="c-desc">Energía entregada o consumida por unidad de tiempo. P = V × I</div></div>
         </div>
       </div>
-      <div class="warn-box" style="margin-top:12px">
-        📌 <strong>Diferencia clave:</strong> Todo peligro es un riesgo, pero no todo riesgo es un peligro.
-        El peligro tiene daño esperado; el riesgo solo tiene probabilidad de evento indeseado.
-      </div>
-    </div>
 
-    <!-- 2.2 Accidente vs Incidente -->
-    <div class="sub">
-      <div class="sub-title">2.2 Accidente vs. Incidente</div>
-      <div class="compare">
-        <div class="compare-card">
-          <div class="compare-head red">💥 ACCIDENTE</div>
-          <div class="compare-body">
-            <p>Evento que produce <strong>daño real</strong>: físico a personas y/o daño material a la propiedad.</p>
-            <ul>
-              <li>Produce lesión o daño</li>
-              <li>Requiere reporte obligatorio</li>
-              <li>Genera costos directos, indirectos e invisibles</li>
-            </ul>
-            <div style="margin-top:10px; font-size:12px; color:var(--text-dim)">
-              <em>Ejemplo: Trabajador toca cable sin aislamiento → quemaduras.</em>
-            </div>
-          </div>
-        </div>
-        <div class="compare-card">
-          <div class="compare-head orange">⚡ INCIDENTE</div>
-          <div class="compare-body">
-            <p>Genera un <strong>"casi-accidente"</strong>. No produce daño, pero podría haberlo producido.</p>
-            <ul>
-              <li>No produce daño inmediato</li>
-              <li>Debe registrarse y corregirse</li>
-              <li>Señal de alerta para prevenir accidentes</li>
-            </ul>
-            <div style="margin-top:10px; font-size:12px; color:var(--text-dim)">
-              <em>Ejemplo: Cable pelado queda expuesto, nadie lo toca ese día.</em>
-            </div>
-          </div>
-        </div>
+      <div class="ts searchable">
+        <h2>1.3 · Ley de Ohm</h2>
+        <p>La intensidad de corriente que circula es directamente proporcional al voltaje e inversamente proporcional a la resistencia:</p>
+        <div class="fw"><div class="formula">I = V / R</div><div class="fvars">I = Intensidad (A) &nbsp;·&nbsp; V = Voltaje (V) &nbsp;·&nbsp; R = Resistencia (Ω)</div></div>
+        <div class="box wn"><div class="box-lbl">[WARN] relevancia en seguridad</div>El cuerpo humano tiene una resistencia variable (~1000 Ω piel seca / ~100 Ω piel húmeda). Con 220V: I = 220/1000 = <strong>220 mA</strong> — muy superior al umbral letal (~100 mA). <strong style="color:var(--red)">Es la corriente (I) la que mata, no el voltaje.</strong></div>
       </div>
-    </div>
 
-    <!-- 2.3 Consecuencias -->
-    <div class="sub">
-      <div class="sub-title">2.3 Consecuencias del Accidente</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Consecuencia</th><th>Descripción</th></tr></thead>
-          <tbody>
-            <tr><td>🤕 Lesiones personales</td><td>Daño físico al trabajador: quemaduras, fracturas, muerte, etc.</td></tr>
-            <tr><td>🏭 Daño material</td><td>Daño a equipos, infraestructura o propiedad de la empresa.</td></tr>
-            <tr><td>⏱ Pérdida de tiempo</td><td>Interrupción de la producción, tiempo en trámites, investigación del accidente.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 2.4 Costos -->
-    <div class="sub">
-      <div class="sub-title">2.4 Tipos de Costos del Accidente</div>
-      <div class="cost-grid">
-        <div class="cost-card direct">
-          <div class="cost-icon">💰</div>
-          <div class="cost-name">Costo Directo</div>
-          <div class="cost-desc">Todo lo relacionado directamente con el trabajador: atención médica, indemnizaciones, licencias médicas.</div>
+      <div class="ts searchable">
+        <h2>1.4 · Dispositivos de Protección Eléctrica</h2>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Dispositivo</th><th>También llamado</th><th>Protege contra</th><th>¿Cómo funciona?</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:var(--cyan)">Diferencial</strong></td><td>Interruptor diferencial</td><td>Contacto eléctrico en <strong>personas</strong></td><td>Compara corriente de fase (entrada) y neutro (salida). Si hay diferencia → corta.</td></tr>
+              <tr><td><strong style="color:var(--amber)">Disyuntor (Magnetotérmico)</strong></td><td>Automático / breaker</td><td>Cortocircuitos y sobrecargas en la <strong>instalación</strong></td><td>Protección magnética (cortocircuito) + térmica (sobrecarga).</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="cost-card indirect">
-          <div class="cost-icon">🏢</div>
-          <div class="cost-name">Costo Indirecto</div>
-          <div class="cost-desc">Daños a la empresa: equipos dañados, paralización de producción, multas, contratación de reemplazos.</div>
-        </div>
-        <div class="cost-card invisible">
-          <div class="cost-icon">🧠</div>
-          <div class="cost-name">Costo Invisible</div>
-          <div class="cost-desc">Costo psicosocial interno: deterioro del clima laboral, estrés, desmotivación, daño a la reputación.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2.5 Factores -->
-    <div class="sub">
-      <div class="sub-title">2.5 Factores de los Accidentes</div>
-      <div class="def-list">
-        <div class="def-row">
-          <div class="def-term">Fuente</div>
-          <div class="def-body">Actividad que se desempeña en el momento del accidente.</div>
-        </div>
-        <div class="def-row">
-          <div class="def-term">Agente</div>
-          <div class="def-body">Elemento físico que causa el daño (cable, máquina, herramienta, etc.).</div>
-        </div>
-        <div class="def-row">
-          <div class="def-term">Tipo / Forma</div>
-          <div class="def-body">
-            Cómo se produce el contacto:
-            <span class="tag">Material → Hombre</span>
-            <span class="tag">Hombre → Material</span>
-            <span class="tag">Mov. relativo indeterminado</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2.6 Causas -->
-    <div class="sub">
-      <div class="sub-title">2.6 Causas de los Accidentes</div>
-      <div class="compare">
-        <div class="compare-card">
-          <div class="compare-head red">🧍 ACCIÓN INSEGURA (trabajador)</div>
-          <div class="compare-body">
-            <p>Recae sobre la persona. Cualquier comportamiento del trabajador que puede provocar un accidente.</p>
-            <ul>
-              <li>Falta de conocimiento o habilidad</li>
-              <li>Actitudes indebidas</li>
-              <li>Incapacidad física o mental</li>
-            </ul>
-          </div>
-        </div>
-        <div class="compare-card">
-          <div class="compare-head orange">🏗️ CONDICIÓN INSEGURA (entorno)</div>
-          <div class="compare-body">
-            <p>Corresponde al entorno físico. Condiciones del ambiente que representan un riesgo latente.</p>
-            <ul>
-              <li>Cables sin aislamiento</li>
-              <li>Paneles eléctricos sin protección</li>
-              <li>Iluminación deficiente en el área</li>
-            </ul>
-          </div>
-        </div>
+        <div class="box inf"><div class="box-lbl">[INFO] regla de oro</div>El <strong style="color:var(--cyan)">diferencial</strong> protege <strong>personas</strong>. El <strong style="color:var(--amber)">disyuntor</strong> protege la <strong>instalación</strong>. Son complementarios: ambos deben estar presentes.</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ════════════════════════════════════════════════════════
-       UNIDADES FUTURAS
-  ═════════════════════════════════════════════════════════ -->
-  <div class="section" id="u3">
-    <div class="section-header">
-      <span class="section-num">U-03</span>
-      <span class="section-title">Unidad 3 — (Por agregar)</span>
-      <span class="section-status status-lock">🔒 PENDIENTE</span>
-    </div>
-    <div class="coming-soon">
-      <div class="cs-icon">📂</div>
-      <p>Esta unidad se completará cuando traigas los apuntes de clase.</p>
+<!-- U2 RESÚMENES -->
+<div class="page" id="page-u2r">
+  <div class="hero" style="padding:26px 46px 22px">
+    <div class="hero-tag">// Unidad 2</div>
+    <h1 style="font-size:22px">Unidad 2 — <em>Por agregar</em></h1>
+  </div>
+  <div class="content">
+    <div class="unit-section">
+      <div class="sec-hdr">
+        <span class="sec-tag">U-02</span>
+        <span class="sec-title">Contenido pendiente</span>
+        <span class="sec-status s-lock">🔒 BLOQUEADO</span>
+      </div>
+      <div class="cs"><div class="ci2">📂</div><p>Esta unidad se completará cuando traigas los apuntes de clase.</p></div>
     </div>
   </div>
+</div>
 
-  <div class="section" id="u4">
-    <div class="section-header">
-      <span class="section-num">U-04</span>
-      <span class="section-title">Unidad 4 — (Por agregar)</span>
-      <span class="section-status status-lock">🔒 PENDIENTE</span>
+<!-- U3 / U4 -->
+<div class="page" id="page-u3r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-03</span><span class="sec-title">Unidad 3 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
+<div class="page" id="page-u4r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-04</span><span class="sec-title">Unidad 4 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
+
+<!-- EJERCICIOS -->
+<div class="page" id="page-ej">
+  <div class="hero" style="padding:26px 46px 22px"><div class="hero-tag">// Práctica</div><h1 style="font-size:22px">Banco de <em>Ejercicios</em></h1></div>
+  <div class="content">
+    <div class="sec-hdr"><span class="sec-tag">EJ</span><span class="sec-title">Ejercicios con Solución</span></div>
+    <div class="exb">
+
+      <div class="ec open"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-01</span><span class="et">Cálculo de corriente con Ley de Ohm</span><span class="etag">LEY DE OHM</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Un circuito tiene un voltaje de <strong>220 V</strong> y una resistencia de <strong>440 Ω</strong>. ¿Cuánta corriente circula?</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// SOLUCIÓN</div><p>Aplicando la Ley de Ohm: <strong>I = V / R</strong></p><p style="margin-top:8px;font-family:var(--title);font-size:16px;color:var(--green)">I = 220 / 440 = <strong>0.5 A</strong></p></div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-02</span><span class="et">Corriente en cuerpo humano</span><span class="etag">SEGURIDAD</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Una persona toca un conductor a <strong>220 V</strong>. Su resistencia corporal es <strong>1000 Ω</strong> (piel seca). ¿Qué corriente atraviesa su cuerpo? ¿Es peligrosa?</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// SOLUCIÓN</div><p><strong>I = 220 / 1000 = 0.22 A = 220 mA</strong></p><p style="margin-top:7px;color:var(--red)">⚠ <strong>Sí, es extremadamente peligrosa.</strong> 10 mA = contracciones musculares. 100 mA = posiblemente fatal. 220 mA supera ampliamente el umbral letal.</p></div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-03</span><span class="et">Identificar: ¿Accidente o Incidente?</span><span class="etag">ACCIDENTABILIDAD</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Clasifica cada situación:<br><br>a) Un electricista recibe una descarga y queda con quemaduras en la mano.<br>b) Un operador nota un cable pelado en el piso y lo reporta sin haberlo tocado.<br>c) Cae un tablero eléctrico pero nadie estaba en el área.<br>d) Un trabajador resbala cerca de un panel pero no cae ni se lesiona.</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--red)">ACCIDENTE</span> — Hay daño físico real (quemaduras).</p>
+        <p style="margin-top:5px"><strong>b)</strong> <span style="color:var(--amber)">INCIDENTE</span> — "Casi-accidente", se evitó el contacto.</p>
+        <p style="margin-top:5px"><strong>c)</strong> <span style="color:var(--amber)">INCIDENTE</span> — No hay lesión personal.</p>
+        <p style="margin-top:5px"><strong>d)</strong> <span style="color:var(--amber)">INCIDENTE</span> — No hubo lesión, pero existió el riesgo real.</p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-04</span><span class="et">¿Qué dispositivo protege en cada caso?</span><span class="etag">PROTECCIÓN</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Indica qué dispositivo actúa (Diferencial o Disyuntor):<br><br>a) Un operador toca un conductor activo y la corriente busca tierra a través de su cuerpo.<br>b) Se conectan demasiados equipos al mismo circuito y sube la corriente.<br>c) Dos conductores se tocan directamente por un fallo de aislamiento.</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--cyan)">DIFERENCIAL</span> — Detecta diferencia entre fase y neutro (fuga a tierra).</p>
+        <p style="margin-top:5px"><strong>b)</strong> <span style="color:var(--amber)">DISYUNTOR</span> — Protección térmica ante sobrecarga.</p>
+        <p style="margin-top:5px"><strong>c)</strong> <span style="color:var(--amber)">DISYUNTOR</span> — Protección magnética ante cortocircuito.</p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-05</span><span class="et">Tipos de costos del accidente</span><span class="etag">COSTOS</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Un técnico sufre una descarga. Clasifica:<br><br>a) 3 días de licencia médica pagada.<br>b) La línea de producción se detiene 2 horas.<br>c) Los compañeros quedan nerviosos, baja el rendimiento.<br>d) Se contrata un técnico de reemplazo.<br>e) El técnico recibe atención de urgencias.</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--red)">DIRECTO</span><p style="margin-top:5px"><strong>b)</strong> <span style="color:var(--amber)">INDIRECTO</span></p>
+        <p style="margin-top:5px"><strong>c)</strong> <span style="color:var(--tdim)">INVISIBLE</span> — Costo psicosocial.</p>
+        <p style="margin-top:5px"><strong>d)</strong> <span style="color:var(--amber)">INDIRECTO</span><p style="margin-top:5px"><strong>e)</strong> <span style="color:var(--red)">DIRECTO</span></p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-06</span><span class="et">Calcular voltaje desconocido</span><span class="etag">LEY DE OHM</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Por un conductor circula una corriente de <strong>3 A</strong> y su resistencia es <strong>150 Ω</strong>. ¿Cuál es el voltaje?</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// SOLUCIÓN</div><p>Despejando: <strong>V = I × R</strong></p><p style="margin-top:7px;font-family:var(--title);font-size:16px;color:var(--green)">V = 3 × 150 = <strong>450 V</strong></p></div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-07</span><span class="et">Acción insegura vs. Condición insegura</span><span class="etag">CAUSAS</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Clasifica:<br><br>a) Un técnico trabaja en un panel sin desenergilizarlo.<br>b) El piso del taller está mojado y hay cables expuestos.<br>c) Un operario trabaja sin EPP porque "le molestan".<br>d) Un tablero tiene la tapa rota hace dos semanas.</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--red)">ACCIÓN INSEGURA</span> — Decisión del trabajador.</p>
+        <p style="margin-top:5px"><strong>b)</strong> <span style="color:var(--amber)">CONDICIÓN INSEGURA</span> — Estado peligroso del entorno.</p>
+        <p style="margin-top:5px"><strong>c)</strong> <span style="color:var(--red)">ACCIÓN INSEGURA</span> — Actitud indebida.</p>
+        <p style="margin-top:5px"><strong>d)</strong> <span style="color:var(--amber)">CONDICIÓN INSEGURA</span> — Falla física del entorno.</p>
+      </div></div></div>
     </div>
-    <div class="coming-soon">
-      <div class="cs-icon">📂</div>
-      <p>Esta unidad se completará cuando traigas los apuntes de clase.</p>
+
+    <div style="margin-top:38px">
+      <div class="sec-hdr"><span class="sec-tag">QUIZ</span><span class="sec-title">Preguntas Interactivas Aleatorias</span></div>
+      <div class="qc2">
+        <button class="qb sel" onclick="startQuiz('all',this)">TODAS LAS PREGUNTAS</button>
+        <button class="qb" onclick="startQuiz('u1',this)">SOLO U1</button>
+      </div>
+      <div id="quiz-c"></div>
     </div>
   </div>
+</div>
 
-  <!-- ════════════════════════════════════════════════════════
-       EJERCICIOS PRÁCTICOS
-  ═════════════════════════════════════════════════════════ -->
-  <div class="section" id="ejercicios">
-    <div class="section-header">
-      <span class="section-num">EJ</span>
-      <span class="section-title">Ejercicios Prácticos</span>
+<!-- FLASHCARDS -->
+<div class="page" id="page-fc">
+  <div class="hero" style="padding:26px 46px 22px"><div class="hero-tag">// Repaso Rápido</div><h1 style="font-size:22px"><em>Flashcards</em> — Click para girar</h1></div>
+  <div class="content">
+    <div class="fcf">
+      <button class="fcft active" onclick="filterCards('all',this)">TODAS</button>
+      <button class="fcft" onclick="filterCards('elec',this)">⚡ ELÉCTRICO</button>
+      <button class="fcft" style="margin-left:auto;border-color:var(--amber);color:var(--amber)" onclick="shuffleCards()">⇄ BARAJAR</button>
     </div>
-
-    <!-- EJ 01 -->
-    <div class="exercise open" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-01</span>
-        <span class="ex-title">Cálculo de corriente con Ley de Ohm</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Un circuito tiene un voltaje de <strong>220 V</strong> y una resistencia de <strong>440 Ω</strong>.
-          ¿Cuánta corriente circula por el circuito?
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// SOLUCIÓN</div>
-            <p>Aplicando la Ley de Ohm: <strong>I = V / R</strong></p>
-            <p style="margin-top:8px; font-family:var(--mono); font-size:15px; color:var(--accent)">
-              I = 220 V / 440 Ω = <strong>0.5 A</strong>
-            </p>
-            <p style="margin-top:8px; font-size:12px; color:var(--text-dim)">
-              Circulan 0.5 Amperes por el circuito.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 02 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-02</span>
-        <span class="ex-title">Corriente en cuerpo humano</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Una persona toca un conductor a <strong>220 V</strong>. Su resistencia corporal en ese momento
-          es de <strong>1000 Ω</strong> (piel seca). ¿Qué corriente atraviesa su cuerpo?
-          ¿Es peligrosa esa corriente?
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// SOLUCIÓN</div>
-            <p><strong>I = V / R = 220 / 1000 = 0.22 A = 220 mA</strong></p>
-            <p style="margin-top:8px; color:var(--danger)">
-              ⚠️ <strong>Sí, es extremadamente peligrosa.</strong> Una corriente de apenas 10 mA
-              puede causar contracciones musculares severas. A 100 mA puede ser fatal (fibrilación ventricular).
-              Los 220 mA calculados son muy superiores al umbral letal.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 03 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-03</span>
-        <span class="ex-title">Identificar: ¿Accidente o Incidente?</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Clasifica cada situación como <strong>Accidente</strong> o <strong>Incidente</strong>:<br><br>
-          a) Un electricista recibe una descarga y queda con quemaduras en la mano.<br>
-          b) Un operador nota que hay un cable pelado en el piso y lo reporta sin haberlo tocado.<br>
-          c) Cae un tablero eléctrico pero nadie estaba en el área en ese momento.<br>
-          d) Un trabajador resbala cerca de un panel eléctrico pero no cae ni se lesiona.
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// RESPUESTAS</div>
-            <p><strong>a)</strong> <span style="color:var(--danger)">ACCIDENTE</span> — Hay daño físico real (quemaduras).</p>
-            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">INCIDENTE</span> — "Casi-accidente", se evitó el contacto.</p>
-            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--warning)">INCIDENTE</span> — Hay daño material pero no personal; depende del contexto podría ser accidente con daño a la propiedad.</p>
-            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">INCIDENTE</span> — No hubo lesión, pero existió el riesgo real.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 04 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-04</span>
-        <span class="ex-title">¿Qué dispositivo protege en cada caso?</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Indica qué dispositivo (Diferencial o Disyuntor) actúa en cada situación:<br><br>
-          a) Un operador toca accidentalmente un conductor activo y la corriente busca tierra a través de su cuerpo.<br>
-          b) Se conectan demasiados equipos al mismo circuito y aumenta la corriente por encima de lo permitido.<br>
-          c) Dos conductores se tocan directamente por un fallo de aislamiento.
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// RESPUESTAS</div>
-            <p><strong>a)</strong> <span style="color:var(--accent)">DIFERENCIAL</span> — Detecta que la corriente de retorno (neutro) es menor que la de entrada (fase), lo que indica fuga a tierra a través del cuerpo.</p>
-            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--accent2)">DISYUNTOR</span> — Protección térmica; detecta sobrecarga y corta el circuito antes de que el cableado se dañe.</p>
-            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--accent2)">DISYUNTOR</span> — Protección magnética; reacciona instantáneamente ante el cortocircuito.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 05 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-05</span>
-        <span class="ex-title">Tipos de costos del accidente</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Un técnico sufre una descarga eléctrica en su trabajo. Clasifica los siguientes efectos
-          como Costo Directo, Indirecto o Invisible:<br><br>
-          a) El técnico necesita 3 días de licencia médica pagada por la empresa.<br>
-          b) La línea de producción se detiene 2 horas mientras se investiga el accidente.<br>
-          c) Los compañeros quedan nerviosos y baja el rendimiento del equipo por una semana.<br>
-          d) Se debe contratar un técnico de reemplazo temporalmente.<br>
-          e) El técnico recibe atención de urgencias en la mutual.
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// RESPUESTAS</div>
-            <p><strong>a)</strong> <span style="color:var(--danger)">DIRECTO</span> — Licencia pagada, relacionada directamente con el trabajador accidentado.</p>
-            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">INDIRECTO</span> — Pérdida de producción, daño económico a la empresa.</p>
-            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--text-dim)">INVISIBLE</span> — Costo psicosocial: bajo rendimiento, estrés, miedo.</p>
-            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">INDIRECTO</span> — Costo de reemplazo, daño operacional a la empresa.</p>
-            <p style="margin-top:6px"><strong>e)</strong> <span style="color:var(--danger)">DIRECTO</span> — Atención médica directamente relacionada con el accidentado.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 06 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-06</span>
-        <span class="ex-title">Calcular voltaje desconocido</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Por un conductor circula una corriente de <strong>3 A</strong>
-          y su resistencia es de <strong>150 Ω</strong>. ¿Cuál es el voltaje aplicado?
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// SOLUCIÓN</div>
-            <p>Despejando V de la Ley de Ohm: <strong>V = I × R</strong></p>
-            <p style="margin-top:8px; font-family:var(--mono); font-size:15px; color:var(--accent)">
-              V = 3 A × 150 Ω = <strong>450 V</strong>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EJ 07 -->
-    <div class="exercise" onclick="toggleEx(this)">
-      <div class="exercise-head">
-        <span class="ex-num">EJ-07</span>
-        <span class="ex-title">Acción insegura vs. Condición insegura</span>
-        <span class="ex-toggle">▶</span>
-      </div>
-      <div class="exercise-body" onclick="event.stopPropagation()">
-        <div class="ex-question">
-          Clasifica cada situación como <strong>Acción Insegura</strong> o <strong>Condición Insegura</strong>:<br><br>
-          a) Un técnico trabaja en un panel eléctrico sin desenergilizarlo primero.<br>
-          b) El piso del taller está mojado y hay cables expuestos.<br>
-          c) Un operario trabaja sin sus EPP (guantes dieléctricos) porque "le molestan".<br>
-          d) Un tablero eléctrico tiene la tapa rota hace dos semanas.
-        </div>
-        <div class="answer-reveal">
-          <button class="reveal-btn" onclick="revealAnswer(this)">[ MOSTRAR RESPUESTA ]</button>
-          <div class="answer-box">
-            <div class="answer-label">// RESPUESTAS</div>
-            <p><strong>a)</strong> <span style="color:var(--danger)">ACCIÓN INSEGURA</span> — Decisión del trabajador de no seguir el procedimiento.</p>
-            <p style="margin-top:6px"><strong>b)</strong> <span style="color:var(--warning)">CONDICIÓN INSEGURA</span> — Estado peligroso del entorno físico.</p>
-            <p style="margin-top:6px"><strong>c)</strong> <span style="color:var(--danger)">ACCIÓN INSEGURA</span> — Actitud indebida del trabajador.</p>
-            <p style="margin-top:6px"><strong>d)</strong> <span style="color:var(--warning)">CONDICIÓN INSEGURA</span> — Falla física del entorno no corregida.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="fcg" id="fcg"></div>
   </div>
+</div>
 
-  <!-- ════════════════════════════════════════════════════════
-       TABLA RESUMEN
-  ═════════════════════════════════════════════════════════ -->
-  <div class="section" id="resumen">
-    <div class="section-header">
-      <span class="section-num">RS</span>
-      <span class="section-title">Tabla Resumen — Todos los Conceptos</span>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>Concepto</th><th>Definición rápida</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Electricidad</strong></td><td>Flujo de electrones átomo a átomo a lo largo de un circuito.</td></tr>
-          <tr><td><strong>Voltaje (V)</strong></td><td>Diferencia de potencial. Unidad: Volt.</td></tr>
-          <tr><td><strong>Corriente (I)</strong></td><td>Flujo de carga eléctrica por segundo. Unidad: Ampere.</td></tr>
-          <tr><td><strong>Resistencia (R)</strong></td><td>Oposición al paso de corriente. Unidad: Ohm (Ω).</td></tr>
-          <tr><td><strong>Potencia (P)</strong></td><td>Energía consumida por unidad de tiempo. Unidad: Watt.</td></tr>
-          <tr><td><strong>Ley de Ohm</strong></td><td>I = V / R (la corriente depende del voltaje y la resistencia).</td></tr>
-          <tr><td><strong>Diferencial</strong></td><td>Protege a las PERSONAS contra contacto eléctrico indirecto.</td></tr>
-          <tr><td><strong>Disyuntor</strong></td><td>Protege la INSTALACIÓN contra sobrecargas y cortocircuitos.</td></tr>
-          <tr><td><strong>Riesgo</strong></td><td>Probabilidad de que ocurra un evento indeseado.</td></tr>
-          <tr><td><strong>Peligro</strong></td><td>Probabilidad de evento indeseado con daños esperados.</td></tr>
-          <tr><td><strong>Accidente</strong></td><td>Evento con daño real: físico y/o material.</td></tr>
-          <tr><td><strong>Incidente</strong></td><td>"Casi-accidente". No produce daño pero podría producirlo.</td></tr>
-          <tr><td><strong>Costo directo</strong></td><td>Costos relacionados directamente con el trabajador accidentado.</td></tr>
-          <tr><td><strong>Costo indirecto</strong></td><td>Daños económicos a la empresa por el accidente.</td></tr>
-          <tr><td><strong>Costo invisible</strong></td><td>Costo psicosocial interno (clima, estrés, reputación).</td></tr>
-          <tr><td><strong>Fuente</strong></td><td>Actividad que se realiza en el momento del accidente.</td></tr>
-          <tr><td><strong>Agente</strong></td><td>Elemento físico que causa el daño.</td></tr>
-          <tr><td><strong>Acción insegura</strong></td><td>Comportamiento del trabajador que puede causar un accidente.</td></tr>
-          <tr><td><strong>Condición insegura</strong></td><td>Estado del entorno que representa un riesgo latente.</td></tr>
-        </tbody>
-      </table>
-    </div>
+<!-- GLOSARIO -->
+<div class="page" id="page-gl">
+  <div class="hero" style="padding:26px 46px 22px"><div class="hero-tag">// Referencia</div><h1 style="font-size:22px">Glosario de <em>Términos</em></h1></div>
+  <div class="content">
+    <div class="gs"><input type="text" id="gi" placeholder="Filtrar término o definición..." oninput="filterGlos(this.value)"></div>
+    <div class="tw"><table><thead><tr><th>Término</th><th>Definición</th><th>Unidad</th></tr></thead><tbody id="gb"></tbody></table></div>
   </div>
+</div>
 
-  </div><!-- /content -->
+<!-- NOTAS -->
+<div class="page" id="page-no">
+  <div class="hero" style="padding:26px 46px 22px"><div class="hero-tag">// Personal</div><h1 style="font-size:22px">Mis <em>Notas</em></h1></div>
+  <div class="content">
+    <div class="ntb">
+      <button class="nb g" onclick="saveNotes()">[ GUARDAR ]</button>
+      <button class="nb r" onclick="clearNotes()">[ LIMPIAR ]</button>
+      <span class="nst" id="nst">Guardado automáticamente</span>
+    </div>
+    <textarea class="nta" id="nta" placeholder="Escribe aquí tus apuntes personales, dudas, recordatorios...&#10;&#10;Se guardan automáticamente en tu navegador." oninput="autoSave()"></textarea>
+    <p style="margin-top:9px;font-size:10px;color:var(--tdim);letter-spacing:1px">Las notas se guardan en localStorage. No se pierden al cerrar la página.</p>
+  </div>
+</div>
+
 </main>
-</div><!-- /layout -->
+</div>
+
+<div class="fabs">
+  <div class="fab g" title="Subir" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+  <div class="fab c" title="Notas" onclick="showPage('no',null)">✎</div>
+</div>
 
 <script>
-function goTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const GLOS=[
+  {t:'Electricidad',d:'Flujo de electrones átomo a átomo a lo largo de un circuito eléctrico.',u:'U1'},
+  {t:'Voltaje (V)',d:'Diferencia de potencial entre dos puntos del circuito. Unidad: Volt.',u:'U1'},
+  {t:'Corriente (I)',d:'Cantidad de carga eléctrica que fluye por segundo. Unidad: Ampere.',u:'U1'},
+  {t:'Resistencia (R)',d:'Oposición de un material al paso de la corriente. Unidad: Ohm (Ω).',u:'U1'},
+  {t:'Potencia (P)',d:'Energía consumida o entregada por unidad de tiempo. Unidad: Watt.',u:'U1'},
+  {t:'Ley de Ohm',d:'I = V / R. La corriente depende del voltaje y la resistencia.',u:'U1'},
+  {t:'Diferencial',d:'Dispositivo que protege a las PERSONAS contra contacto eléctrico indirecto.',u:'U1'},
+  {t:'Disyuntor',d:'Dispositivo que protege la INSTALACIÓN contra sobrecargas y cortocircuitos.',u:'U1'},
+];
+
+const FC=[
+  {cat:'elec',term:'Electricidad',def:'Flujo de electrones de átomo en átomo a lo largo de un circuito.'},
+  {cat:'elec',term:'Voltaje',def:'Diferencia de potencial. Unidad: Volt (V). "La presión" del circuito.'},
+  {cat:'elec',term:'Corriente',def:'Flujo de carga por segundo. Unidad: Ampere (A). "El caudal" del circuito.'},
+  {cat:'elec',term:'Resistencia',def:'Oposición al paso de corriente. Unidad: Ohm (Ω).'},
+  {cat:'elec',term:'Potencia',def:'Energía por unidad de tiempo. P = V × I. Unidad: Watt (W).'},
+  {cat:'elec',term:'Ley de Ohm',def:'I = V / R. La corriente es proporcional al voltaje e inversamente proporcional a la resistencia.'},
+  {cat:'elec',term:'Diferencial',def:'Protege PERSONAS. Detecta diferencia entre corriente de fase y neutro.'},
+  {cat:'elec',term:'Disyuntor',def:'Protege la INSTALACIÓN. Actúa ante sobrecargas (térmico) y cortocircuitos (magnético).'},
+];
+
+const QS=[
+  {u:'u1',q:'¿Cuál es la fórmula de la Ley de Ohm para la corriente?',opts:['I = V × R','I = V / R','I = R / V','V = I / R'],ans:1,exp:'La Ley de Ohm establece que I = V / R.'},
+  {u:'u1',q:'Un circuito tiene 110V y 55Ω. ¿Cuál es la corriente?',opts:['0.5 A','2 A','55 A','110 A'],ans:1,exp:'I = 110 / 55 = 2 A.'},
+  {u:'u1',q:'¿Qué dispositivo protege a las PERSONAS de contacto eléctrico?',opts:['Disyuntor','Fusible','Diferencial','Relé'],ans:2,exp:'El diferencial detecta la diferencia entre corriente de fase y neutro.'},
+  {u:'u1',q:'¿Qué dispositivo protege la INSTALACIÓN contra sobrecargas?',opts:['Diferencial','Disyuntor magnetotérmico','Interruptor simple','Contactor'],ans:1,exp:'El disyuntor magnetotérmico combina protección térmica y magnética.'},
+  {u:'u1',q:'¿Cuál es la unidad de medida de la resistencia eléctrica?',opts:['Ampere','Volt','Watt','Ohm (Ω)'],ans:3,exp:'La resistencia se mide en Ohm (Ω).'},
+  {u:'u1',q:'Un circuito tiene 220V y 880Ω de resistencia. ¿Cuál es la corriente?',opts:['0.1 A','0.25 A','4 A','880 A'],ans:1,exp:'I = 220 / 880 = 0.25 A.'},
+  {u:'u1',q:'¿Qué ocurre con la corriente si se duplica la resistencia (mismo voltaje)?',opts:['Se duplica','Se mantiene igual','Se reduce a la mitad','Se cuadruplica'],ans:2,exp:'I = V/R. Si R×2, entonces I = V/(2R) = I/2.'},
+  {u:'u1',q:'¿Cuál es la unidad de la potencia eléctrica?',opts:['Volt','Ampere','Ohm','Watt'],ans:3,exp:'La potencia se mide en Watts (W). P = V × I.'},
+  {u:'u1',q:'El diferencial detecta una diferencia entre la corriente de fase y neutro. ¿Qué indica eso?',opts:['Sobrecarga en el circuito','Cortocircuito entre conductores','Fuga de corriente (posible contacto con persona)','Voltaje demasiado alto'],ans:2,exp:'Una diferencia entre fase y neutro indica que la corriente está tomando otro camino, posiblemente a través de una persona.'},
+  {u:'u1',q:'¿Por qué es peligroso trabajar con piel húmeda cerca de instalaciones eléctricas?',opts:['Aumenta el voltaje','Reduce la resistencia corporal, aumentando la corriente','Aumenta la resistencia, disminuyendo el peligro','No tiene ningún efecto'],ans:1,exp:'La piel húmeda reduce la resistencia (~100Ω vs ~1000Ω seca), lo que aumenta la corriente que atraviesa el cuerpo.'},
+];
+
+// NAV
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  window.scrollTo(0,0);
+  document.querySelectorAll('.sb-item,.sb-si').forEach(i=>i.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(id==='fc')buildFC();
+  if(id==='gl')buildGlos();
+  if(id==='no')loadNotes();
+  if(id==='ej'){
+    // init quiz only if not yet started
+    if(!qState.qs.length) startQuiz('all');
+  }
+}
+// NAV
+let sidebarOpen = true;
+function toggleSidebar(){
+  sidebarOpen = !sidebarOpen;
+  const sb = document.getElementById('sidebar');
+  if(!sb) return;
+  if(sidebarOpen) sb.classList.remove('collapsed');
+  else sb.classList.add('collapsed');
+}
+function toggleUnit(id){
+  const el = document.getElementById('uu'+id);
+  if(el) el.classList.toggle('open');
 }
 
-function toggleEx(el) {
-  el.classList.toggle('open');
-}
-function revealAnswer(btn) {
-  const box = btn.nextElementSibling;
-  box.classList.toggle('visible');
-  btn.textContent = box.classList.contains('visible')
-    ? '[ OCULTAR RESPUESTA ]'
-    : '[ MOSTRAR RESPUESTA ]';
+// EXERCISES
+function toggleEx(c){c.classList.toggle('open')}
+function revealAns(btn){
+  const b=btn.nextElementSibling;
+  b.classList.toggle('visible');
+  btn.textContent=b.classList.contains('visible')?'[ OCULTAR SOLUCIÓN ]':'[ MOSTRAR SOLUCIÓN ]';
 }
 
-// Highlight active nav on scroll
-const sections = document.querySelectorAll('.section');
-const navItems = document.querySelectorAll('.nav-item');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+// QUIZ
+let qState={qs:[],idx:0,score:0,answered:false};
+function startQuiz(f,btn){
+  // safely remove 'sel' only if buttons exist in DOM
+  const btns=document.querySelectorAll('.qb');
+  if(btns.length){
+    btns.forEach(b=>b.classList.remove('sel'));
+    if(btn) btn.classList.add('sel');
+    else if(btns[0]) btns[0].classList.add('sel');
+  }
+  const pool=f==='all'?QS:QS.filter(q=>q.u===f);
+  qState={qs:shuffle([...pool]),idx:0,score:0,answered:false};
+  renderQ();
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function renderQ(){
+  const c=document.getElementById('quiz-c');if(!c)return;
+  const{qs,idx,score}=qState;
+  if(idx>=qs.length){
+    c.innerHTML=`<div style="text-align:center;padding:36px;background:var(--panel);border:1px solid var(--border)">
+      <div style="font-size:10px;color:var(--tdim);letter-spacing:2px;margin-bottom:10px">RESULTADO FINAL</div>
+      <div class="qscore">${score} / ${qs.length}</div>
+      <div style="margin-top:7px;font-size:12px;color:var(--tdim)">${Math.round(score/qs.length*100)}% correcto</div>
+      <button class="qb" style="margin-top:18px" onclick="startQuiz('all',document.querySelector('.qb.sel'))">[ REINICIAR ]</button>
+    </div>`;return;
+  }
+  const q=qs[idx];
+  c.innerHTML=`<div class="qq">
+    <div style="font-size:9px;color:var(--tdim);letter-spacing:2px;margin-bottom:9px">PREGUNTA ${idx+1}/${qs.length} &nbsp;·&nbsp; <span style="color:var(--purple)">${q.u.toUpperCase()}</span></div>
+    <div class="qt">${q.q}</div>
+    <div class="qopts">${q.opts.map((o,i)=>`<div class="qo" onclick="ansQ(${i})"><span class="qok">${String.fromCharCode(65+i)}</span>${o}</div>`).join('')}</div>
+    <div class="qfb" id="qfb"></div>
+    <button class="qnxt" id="qnxt" onclick="nextQ()">[ SIGUIENTE → ]</button>
+  </div>`;
+}
+function ansQ(i){
+  if(qState.answered)return;
+  qState.answered=true;
+  const q=qState.qs[qState.idx];
+  document.querySelectorAll('.qo').forEach((o,j)=>{
+    if(j===q.ans)o.classList.add('correct');
+    else if(j===i&&i!==q.ans)o.classList.add('wrong');
+    o.style.pointerEvents='none';
   });
-  navItems.forEach(n => {
-    n.classList.remove('active');
-    if (n.getAttribute('onclick') === "goTo('" + current + "')") n.classList.add('active');
+  const fb=document.getElementById('qfb'),nxt=document.getElementById('qnxt');
+  if(i===q.ans){
+    qState.score++;
+    updateScore(10); // +10 pts per correct answer
+    fb.className='qfb ok';fb.textContent='[OK] Correcto — '+q.exp;
+  }
+  else{fb.className='qfb err';fb.textContent='[ERR] Incorrecto — '+q.exp;}
+  nxt.classList.add('show');
+}
+function nextQ(){qState.idx++;qState.answered=false;renderQ();}
+
+// SCORE
+let totalScore = parseInt(localStorage.getItem('sri_score')||'0');
+function updateScore(pts){
+  totalScore+=pts;
+  localStorage.setItem('sri_score',totalScore);
+  const el=document.getElementById('sb-score-val');
+  if(el)el.innerHTML=totalScore+' <span>pts</span>';
+}
+function loadScore(){
+  totalScore=parseInt(localStorage.getItem('sri_score')||'0');
+  const el=document.getElementById('sb-score-val');
+  if(el)el.innerHTML=totalScore+' <span>pts</span>';
+}
+
+// FLASHCARDS
+let fcBuilt=false;
+function buildFC(){
+  if(fcBuilt)return;fcBuilt=true;
+  renderFC(FC);
+}
+function renderFC(data){
+  const cl={elec:'⚡ Eléctrico',seg:'⚠ Seguridad',acc:'💥 Accidentabilidad'};
+  document.getElementById('fcg').innerHTML=data.map(f=>`
+    <div class="fcc" data-cat="${f.cat}" onclick="this.classList.toggle('flipped')">
+      <div class="fci">
+        <div class="fcf2"><div class="fcat c${f.cat[0]}">${cl[f.cat]}</div><div class="fterm">${f.term}</div><div class="fhint">[ click para ver definición ]</div></div>
+        <div class="fcb"><div class="fcat c${f.cat[0]}">${cl[f.cat]}</div><div class="fdef">${f.def}</div></div>
+      </div>
+    </div>`).join('');
+}
+function filterCards(cat,btn){
+  document.querySelectorAll('.fcft').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.fcc').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none'});
+}
+function shuffleCards(){
+  const grid=document.getElementById('fcg');
+  const cards=[...grid.children];
+  // reset all flipped states
+  cards.forEach(c=>c.classList.remove('flipped'));
+  shuffle(cards);
+  cards.forEach(c=>grid.appendChild(c));
+  // flash effect
+  grid.style.opacity='0';
+  setTimeout(()=>{grid.style.transition='opacity .3s';grid.style.opacity='1';},50);
+}
+
+// GLOSARIO
+let glBuilt=false;
+function buildGlos(){if(glBuilt)return;glBuilt=true;renderGlos(GLOS)}
+function renderGlos(data){
+  document.getElementById('gb').innerHTML=data.map(g=>`<tr><td><strong style="color:var(--cyan)">${g.t}</strong></td><td>${g.d}</td><td><span class="tag">${g.u}</span></td></tr>`).join('');
+}
+function filterGlos(q){
+  renderGlos(GLOS.filter(g=>g.t.toLowerCase().includes(q.toLowerCase())||g.d.toLowerCase().includes(q.toLowerCase())));
+}
+
+// NOTES
+let saveT;
+function loadNotes(){const s=localStorage.getItem('sri_n');if(s)document.getElementById('nta').value=s;}
+function autoSave(){
+  clearTimeout(saveT);document.getElementById('nst').textContent='Guardando...';
+  saveT=setTimeout(()=>{localStorage.setItem('sri_n',document.getElementById('nta').value);document.getElementById('nst').textContent='✓ Guardado automáticamente';},800);
+}
+function saveNotes(){localStorage.setItem('sri_n',document.getElementById('nta').value);document.getElementById('nst').textContent='✓ Guardado';}
+function clearNotes(){if(confirm('¿Limpiar todas las notas?')){document.getElementById('nta').value='';localStorage.removeItem('sri_n');document.getElementById('nst').textContent='Notas eliminadas';}}
+
+// SEARCH
+function liveSearch(q){
+  const h=document.getElementById('heroSI'),t=document.getElementById('topSI');
+  if(h)h.value=q;if(t)t.value=q;
+  const res=document.getElementById('search-results'),list=document.getElementById('srl'),ov=document.getElementById('home-ov');
+  if(!q.trim()){res.style.display='none';if(ov)ov.style.display='';return;}
+  showPage('home',null);res.style.display='block';if(ov)ov.style.display='none';
+  const secs=document.querySelectorAll('.searchable');
+  const hits=[];
+  secs.forEach(s=>{if(s.textContent.toLowerCase().includes(q.toLowerCase()))hits.push(s.cloneNode(true))});
+  if(!hits.length){list.innerHTML=`<div class="box wn"><div class="box-lbl">[WARN] sin resultados</div>No se encontró "${q}" en el contenido.</div>`;return;}
+  list.innerHTML='';
+  hits.forEach(h=>{hlNode(h,q);list.appendChild(h)});
+}
+function hlNode(node,q){
+  if(node.nodeType===3){
+    const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    const html=node.textContent.replace(re,'<mark>$1</mark>');
+    if(html!==node.textContent){const sp=document.createElement('span');sp.innerHTML=html;node.parentNode.replaceChild(sp,node);}
+  }else[...node.childNodes].forEach(c=>hlNode(c,q));
+}
+
+// INIT — esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function(){
+  loadScore();
+
+  // cerrar sidebar al click fuera
+  document.addEventListener('click', function(e){
+    if(!sidebarOpen) return;
+    const sb  = document.getElementById('sidebar');
+    const ham = document.getElementById('tb-ham');
+    if(!sb || !ham) return;
+    if(!sb.contains(e.target) && !ham.contains(e.target)){
+      sidebarOpen = false;
+      sb.classList.add('collapsed');
+    }
   });
 });
 </script>
