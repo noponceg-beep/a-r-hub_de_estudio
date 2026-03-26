@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TERMINAL ACADÉMICO v7.5 — INACAP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>TERMINAL-Automatización&Robótica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:    #020408;
-            --panel: #080d14;
+            --bg:      #020408;
+            --panel:   #080d14;
             --border:  #162033;
             --border2: #1e3050;
             --accent:  #3b82f6;
@@ -16,47 +17,71 @@
             --warn:    #f59e0b;
             --text:    #c9d8ec;
             --muted:   #4a6080;
-            --glow-g:  rgba(0,255,157,0.15);
+            --glow-g:  rgba(0,255,157,0.12);
+            --red:     #ff4d4d;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        body {
+        html, body {
+            height: 100%;
             background: var(--bg);
             color: var(--text);
             font-family: 'Fira Code', monospace;
-            height: 100vh;
             overflow: hidden;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
             background-image: repeating-linear-gradient(
                 0deg, transparent, transparent 3px,
-                rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+                rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
             );
         }
 
-        /* ══ TOPBAR ══ */
+        /* ══════════════════════════
+           TOPBAR
+        ══════════════════════════ */
         .topbar {
             display: flex;
             align-items: center;
-            padding: 0 20px 0 0;
-            height: 50px;
+            height: 48px;
             background: var(--panel);
             border-bottom: 1px solid var(--border2);
             flex-shrink: 0;
             position: relative;
-            z-index: 100;
+            z-index: 200;
             overflow: hidden;
+            padding-right: 12px;
         }
 
         .topbar::after {
             content: '';
             position: absolute;
-            bottom: -1px; left: 0; right: 0;
-            height: 1px;
+            bottom: -1px; left: 0; right: 0; height: 1px;
             background: linear-gradient(90deg, transparent, var(--neon2), transparent);
-            opacity: .5;
+            opacity: .4;
         }
+
+        /* Botón hamburguesa */
+        .menu-btn {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            border-right: 1px solid var(--border2);
+            color: var(--neon);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .menu-btn:active { background: rgba(0,255,157,0.07); }
 
         /* TICKER */
         .ticker-wrap {
@@ -65,26 +90,26 @@
             overflow: hidden;
             display: flex;
             align-items: center;
-            mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 90%, transparent 100%);
-            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 90%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 88%, transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 88%, transparent 100%);
         }
 
         .ticker-track {
             display: flex;
             white-space: nowrap;
-            animation: ticker 22s linear infinite;
+            animation: ticker 20s linear infinite;
         }
 
         .ticker-track span {
             font-family: 'Share Tech Mono';
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
         }
 
-        .t-sep  { color: var(--border2); padding: 0 28px; }
-        .t-neon { color: var(--neon);  text-shadow: 0 0 10px var(--neon); }
-        .t-blue { color: var(--neon2); text-shadow: 0 0 10px var(--neon2); }
-        .t-warn { color: var(--warn);  text-shadow: 0 0 10px var(--warn); }
+        .t-sep  { color: var(--border2); padding: 0 20px; }
+        .t-neon { color: var(--neon);  text-shadow: 0 0 8px var(--neon); }
+        .t-blue { color: var(--neon2); text-shadow: 0 0 8px var(--neon2); }
+        .t-warn { color: var(--warn);  text-shadow: 0 0 8px var(--warn); }
         .t-dim  { color: var(--muted); }
 
         @keyframes ticker {
@@ -94,33 +119,76 @@
 
         #clock {
             font-family: 'Share Tech Mono';
-            font-size: 20px;
+            font-size: 15px;
             color: var(--neon);
-            text-shadow: 0 0 8px var(--neon);
-            letter-spacing: 2px;
+            text-shadow: 0 0 6px var(--neon);
+            letter-spacing: 1px;
             flex-shrink: 0;
-            padding-left: 16px;
             border-left: 1px solid var(--border2);
-            margin-left: 6px;
+            padding-left: 10px;
         }
 
-        /* ══ LAYOUT ══ */
-        .workspace { display: flex; flex: 1; overflow: hidden; }
+        /* ══════════════════════════
+           DRAWER LATERAL (sidebar)
+        ══════════════════════════ */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 300;
+            backdrop-filter: blur(2px);
+        }
 
-        /* ══ SIDEBAR ══ */
-        .sidebar {
+        .drawer-overlay.open { display: block; }
+
+        .drawer {
+            position: fixed;
+            top: 0; left: 0;
             width: 280px;
+            height: 100%;
             background: var(--panel);
             border-right: 1px solid var(--border2);
+            z-index: 400;
             display: flex;
             flex-direction: column;
             padding: 16px;
             gap: 16px;
-            flex-shrink: 0;
             overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.28s cubic-bezier(.4,0,.2,1);
         }
 
-        .sidebar-section { display: flex; flex-direction: column; gap: 8px; }
+        .drawer.open { transform: translateX(0); }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border2);
+        }
+
+        .drawer-title {
+            font-family: 'Share Tech Mono';
+            font-size: 12px;
+            color: var(--neon);
+            text-shadow: 0 0 8px var(--neon);
+            letter-spacing: 2px;
+        }
+
+        .drawer-close {
+            background: none;
+            border: 1px solid var(--border2);
+            color: var(--muted);
+            width: 28px; height: 28px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .drawer-close:active { border-color: var(--red); color: var(--red); }
 
         .s-label {
             font-size: 9px;
@@ -130,7 +198,7 @@
             padding-bottom: 6px;
         }
 
-        /* BOTONES HERRAMIENTA */
+        /* TOOL BUTTONS */
         .tool-btn {
             display: flex;
             align-items: center;
@@ -138,9 +206,9 @@
             background: rgba(0,0,0,0.4);
             border: 1px solid var(--border2);
             color: var(--neon2);
-            padding: 10px 14px;
+            padding: 12px 14px;
             font-family: 'Fira Code';
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
             letter-spacing: 1px;
@@ -148,24 +216,23 @@
             text-align: left;
         }
 
-        .tool-btn:not(:disabled):hover {
+        .tool-btn:not(:disabled):active {
             border-color: var(--neon2);
-            background: rgba(0,207,255,0.07);
-            box-shadow: 0 0 14px rgba(0,207,255,0.1);
+            background: rgba(0,207,255,0.1);
         }
 
-        .tool-btn .t-icon { font-size: 15px; }
+        .tool-btn .t-icon { font-size: 16px; }
         .tool-btn .t-name { flex: 1; }
         .tool-btn .t-tag {
             font-size: 8px;
             color: var(--muted);
             border: 1px solid var(--border);
-            padding: 1px 5px;
+            padding: 2px 5px;
             letter-spacing: 2px;
         }
 
-        /* BARRAS DE PROGRESO */
-        .progress-item { margin-bottom: 8px; }
+        /* BARRAS */
+        .progress-item { margin-bottom: 10px; }
         .pi-head { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
         .pi-head .name { color: var(--text); }
         .pi-head .pct  { color: var(--neon2); }
@@ -173,64 +240,76 @@
         .bar-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent), var(--neon2));
-            box-shadow: 0 0 6px var(--neon2);
+            box-shadow: 0 0 5px var(--neon2);
             width: 0;
             transition: width 1.2s cubic-bezier(.4,0,.2,1);
         }
 
-        /* NOTAS — compactas, se expanden */
-        .notes-section { display: flex; flex-direction: column; gap: 8px; }
-
+        /* NOTAS */
         #quickNotes {
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 9px 12px;
+            padding: 10px 12px;
             font-family: 'Fira Code';
-            font-size: 11px;
+            font-size: 12px;
             resize: none;
             outline: none;
             line-height: 1.6;
             min-height: 34px;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
+            width: 100%;
             transition: border-color 0.2s;
         }
 
         #quickNotes:focus { border-color: var(--accent); }
         #quickNotes::placeholder { color: var(--muted); }
 
-        /* ══ MAIN ══ */
-        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* ══════════════════════════
+           MAIN CONTENT
+        ══════════════════════════ */
+        .main {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
         /* HOME VIEW */
         #homeView {
             flex: 1;
-            padding: 30px 40px;
             overflow-y: auto;
+            padding: 20px 16px;
             display: flex;
             flex-direction: column;
-            gap: 26px;
+            gap: 20px;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .home-header { display: flex; flex-direction: column; gap: 6px; }
+        .home-header { display: flex; flex-direction: column; gap: 5px; }
 
         .prompt-line {
             font-family: 'Share Tech Mono';
-            font-size: 11px;
+            font-size: 10px;
             color: var(--muted);
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
         }
 
         .home-title {
             font-family: 'Share Tech Mono';
-            font-size: 28px;
+            font-size: 22px;
             color: var(--neon);
-            text-shadow: 0 0 20px var(--neon);
-            letter-spacing: 4px;
+            text-shadow: 0 0 16px var(--neon);
+            letter-spacing: 3px;
         }
 
-        .home-sub { font-size: 10px; color: var(--accent); letter-spacing: 3px; }
+        .home-sub {
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            line-height: 1.5;
+        }
 
         /* SEARCH */
         .search-wrap { position: relative; }
@@ -238,10 +317,11 @@
         .search-wrap::before {
             content: '>';
             position: absolute;
-            left: 16px; top: 50%;
+            left: 14px; top: 50%;
             transform: translateY(-50%);
             color: var(--neon);
-            font-size: 16px;
+            font-size: 15px;
+            pointer-events: none;
         }
 
         #finder {
@@ -249,34 +329,41 @@
             background: rgba(0,255,157,0.03);
             border: 1px solid var(--border2);
             border-left: 3px solid var(--neon);
-            padding: 13px 16px 13px 36px;
+            padding: 13px 14px 13px 34px;
             color: var(--text);
-            font-size: 13px;
+            font-size: 14px;
             font-family: 'Fira Code';
             outline: none;
-            transition: all 0.2s;
             letter-spacing: 1px;
-        }
-
-        #finder:focus {
-            border-color: var(--neon);
-            background: rgba(0,255,157,0.05);
         }
 
         #finder::placeholder { color: var(--muted); }
 
-        /* GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        /* GRID — 1 columna en móvil */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 540px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
 
         .card {
             background: var(--panel);
             border: 1px solid var(--border2);
-            padding: 22px 20px 18px;
+            padding: 18px 16px 14px;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             position: relative;
             overflow: hidden;
-            animation: fadeSlideIn 0.4s ease both;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: fadeSlideIn 0.35s ease both;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .card::before {
@@ -285,91 +372,134 @@
             top: 0; left: 0; width: 3px; height: 100%;
             background: var(--neon);
             opacity: 0; transition: opacity 0.2s;
-            box-shadow: 0 0 10px var(--neon);
         }
 
-        .card::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, var(--glow-g) 0%, transparent 60%);
-            opacity: 0; transition: opacity 0.25s;
+        .card:active {
+            border-color: var(--neon);
+            background: #0c1420;
+            transform: scale(0.98);
         }
 
-        .card:hover { border-color: var(--neon); transform: translateY(-2px); background: #0c1420; }
-        .card:hover::before { opacity: 1; }
-        .card:hover::after  { opacity: 1; }
+        .card:active::before { opacity: 1; }
 
-        .card-icon { font-size: 26px; margin-bottom: 10px; display: block; position: relative; z-index: 1; }
-        .card h3   { color: var(--neon2); font-size: 12px; letter-spacing: 1px; margin-bottom: 7px; position: relative; z-index: 1; }
-        .card p    { color: var(--muted); font-size: 11px; line-height: 1.6; position: relative; z-index: 1; }
+        .card-icon-wrap {
+            width: 44px; height: 44px;
+            background: rgba(0,255,157,0.05);
+            border: 1px solid var(--border2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .card-body { flex: 1; min-width: 0; }
+        .card h3   { color: var(--neon2); font-size: 12px; letter-spacing: .5px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card p    { color: var(--muted); font-size: 10px; line-height: 1.5; }
 
         .card-tag {
-            position: absolute; top: 12px; right: 12px;
             font-size: 8px; color: var(--muted);
             border: 1px solid var(--border); padding: 2px 6px; letter-spacing: 2px;
+            flex-shrink: 0;
         }
 
-        .card:nth-child(1){animation-delay:.05s}
-        .card:nth-child(2){animation-delay:.10s}
-        .card:nth-child(3){animation-delay:.15s}
-        .card:nth-child(4){animation-delay:.20s}
-        .card:nth-child(5){animation-delay:.25s}
+        .card:nth-child(1){animation-delay:.04s}
+        .card:nth-child(2){animation-delay:.08s}
+        .card:nth-child(3){animation-delay:.12s}
+        .card:nth-child(4){animation-delay:.16s}
+        .card:nth-child(5){animation-delay:.20s}
 
         /* MODULE VIEW */
-        #moduleView { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        #moduleView {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         #moduleView.active { display: flex; }
 
         .module-topbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            height: 44px;
-            background: rgba(0,0,0,0.6);
+            height: 46px;
+            background: rgba(0,0,0,0.7);
             border-bottom: 1px solid var(--border2);
             flex-shrink: 0;
+            padding: 0 12px;
+            gap: 10px;
         }
 
-        .module-path { font-family: 'Share Tech Mono'; font-size: 12px; color: var(--neon2); letter-spacing: 1px; }
-        .module-path span { color: var(--muted); }
-
-        .btn-close {
-            display: flex; align-items: center; gap: 8px;
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             background: rgba(255,60,60,0.07);
-            border: 1px solid rgba(255,60,60,0.3);
-            color: #ff6b6b;
-            padding: 6px 18px;
-            font-family: 'Fira Code'; font-size: 11px;
-            cursor: pointer; letter-spacing: 2px; transition: all 0.2s;
+            border: 1px solid rgba(255,77,77,0.35);
+            color: var(--red);
+            padding: 7px 14px;
+            font-family: 'Fira Code';
+            font-size: 11px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
-        .btn-close:hover { background: rgba(255,60,60,0.18); border-color: #ff6b6b; }
-        .btn-close::before { content: '✕'; font-size: 12px; }
+        .btn-back:active { background: rgba(255,60,60,0.18); }
 
-        #moduleFrame { flex: 1; border: none; background: #fff; }
+        .module-name-bar {
+            flex: 1;
+            font-family: 'Share Tech Mono';
+            font-size: 11px;
+            color: var(--neon2);
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .module-name-bar span { color: var(--muted); }
+
+        #moduleFrame { flex: 1; border: none; background: #fff; width: 100%; }
 
         /* BOTTOMBAR */
         .bottombar {
             height: 26px;
             background: var(--panel);
             border-top: 1px solid var(--border);
-            display: flex; align-items: center;
-            padding: 0 20px; gap: 22px; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 16px;
+            flex-shrink: 0;
         }
 
-        .bb-item { font-size: 9px; color: var(--muted); letter-spacing: 2px; display: flex; align-items: center; gap: 6px; }
+        .bb-item {
+            font-size: 8px;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-        .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 6px var(--neon); animation: pulse 2s infinite; }
-        .dot.blue   { background: var(--neon2); box-shadow: 0 0 6px var(--neon2); }
-        .dot.yellow { background: var(--warn);  box-shadow: 0 0 6px var(--warn); animation-delay: .5s; }
+        .dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--neon);
+            box-shadow: 0 0 5px var(--neon);
+            animation: pulse 2s infinite;
+        }
 
-        @keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:.3} }
-        @keyframes fadeSlideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .dot.blue   { background: var(--neon2); box-shadow: 0 0 5px var(--neon2); }
+        .dot.yellow { background: var(--warn);  box-shadow: 0 0 5px var(--warn); animation-delay:.5s; }
+
+        @keyframes pulse      { 0%,100%{opacity:1} 50%{opacity:.3} }
+        @keyframes fadeSlideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes blink       { 0%,100%{opacity:1} 50%{opacity:0} }
 
         .cursor { display: inline-block; animation: blink 1s infinite; }
 
-        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border2); }
     </style>
@@ -378,9 +508,10 @@
 
     <!-- ══ TOPBAR ══ -->
     <header class="topbar">
+        <button class="menu-btn" id="menuBtn" onclick="toggleDrawer()" aria-label="Menú">☰</button>
         <div class="ticker-wrap">
             <div class="ticker-track">
-                <span class="t-neon">⚡ SOMOS EL MEJOR PAÍS DE CHILE</span>
+                <span class="t-neon">Somos el peor país de $hile :(</span>
                 <span class="t-sep">◆</span>
                 <span class="t-blue">AUTOMATIZACIÓN Y ROBÓTICA 2026</span>
                 <span class="t-sep">◆</span>
@@ -388,8 +519,7 @@
                 <span class="t-sep">◆</span>
                 <span class="t-warn">DixRuptive</span>
                 <span class="t-sep">◆◆◆</span>
-                <!-- duplicado para loop continuo -->
-                <span class="t-neon">⚡ SOMOS EL MEJOR PAÍS DE CHILE</span>
+                <span class="t-neon">Somos el peor país de $hile :(</span>
                 <span class="t-sep">◆</span>
                 <span class="t-blue">AUTOMATIZACIÓN Y ROBÓTICA 2026</span>
                 <span class="t-sep">◆</span>
@@ -402,121 +532,131 @@
         <div id="clock">00:00:00</div>
     </header>
 
-    <!-- ══ WORKSPACE ══ -->
-    <div class="workspace">
+    <!-- ══ DRAWER OVERLAY ══ -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+    <!-- ══ DRAWER ══ -->
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <span class="drawer-title">// SISTEMA</span>
+            <button class="drawer-close" onclick="closeDrawer()">✕</button>
+        </div>
 
-            <div class="sidebar-section">
-                <div class="s-label">// HERRAMIENTAS_DEL_SISTEMA</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="s-label">// HERRAMIENTAS_DEL_SISTEMA</div>
 
-                <button class="tool-btn" onclick="openModule('cuaderno_mantenimiento.html', 'CALC_RESISTENCIA')">
-                    <span class="t-icon">🔢</span>
-                    <span class="t-name">CALC_RESISTENCIA</span>
-                    <span class="t-tag">EXE</span>
-                </button>
+            <button class="tool-btn" onclick="openModuleFromDrawer('cuaderno_mantenimiento.html', 'CALC_RESISTENCIA')">
+                <span class="t-icon">🔢</span>
+                <span class="t-name">CALC_RESISTENCIA</span>
+                <span class="t-tag">EXE</span>
+            </button>
 
-                <button class="tool-btn" disabled style="opacity:.4; cursor:not-allowed;">
-                    <span class="t-icon">📊</span>
-                    <span class="t-name">CALC_POTENCIA</span>
-                    <span class="t-tag" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">PRONTO</span>
-                </button>
+            <button class="tool-btn" disabled style="opacity:.4;cursor:not-allowed;">
+                <span class="t-icon">📊</span>
+                <span class="t-name">CALC_POTENCIA</span>
+                <span class="t-tag" style="color:var(--red);border-color:rgba(255,77,77,.3)">PRONTO</span>
+            </button>
 
-                <button class="tool-btn" disabled style="opacity:.4; cursor:not-allowed;">
-                    <span class="t-icon">🔌</span>
-                    <span class="t-name">LEY_DE_OHM</span>
-                    <span class="t-tag" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);">PRONTO</span>
-                </button>
-            </div>
+            <button class="tool-btn" disabled style="opacity:.4;cursor:not-allowed;">
+                <span class="t-icon">🔌</span>
+                <span class="t-name">LEY_DE_OHM</span>
+                <span class="t-tag" style="color:var(--red);border-color:rgba(255,77,77,.3)">PRONTO</span>
+            </button>
+        </div>
 
-            <div class="sidebar-section">
-                <div class="s-label">// CARGADOS_AL_SISTEMA</div>
-                <div id="progressBars"></div>
-            </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="s-label">// CARGADOS_AL_SISTEMA</div>
+            <div id="progressBars"></div>
+        </div>
 
-            <div class="notes-section">
-                <div class="s-label">// NOTAS_DE_SESIÓN</div>
-                <textarea id="quickNotes" placeholder="> apuntes rápidos..." oninput="autoGrow(this); saveNotes()" rows="1"></textarea>
-            </div>
-
-        </aside>
-
-        <!-- MAIN -->
-        <main class="main">
-
-            <!-- HOME VIEW -->
-            <div id="homeView">
-                <div class="home-header">
-                    <span class="prompt-line">root@inacap-chillan:~$ ./launch_hub.sh</span>
-                    <div class="home-title">ROOT_SYSTEM <span class="cursor">█</span></div>
-                    <span class="home-sub">SISTEMA ACADÉMICO INTEGRADO · ELECTRICIDAD Y AUTOMATIZACIÓN</span>
-                </div>
-
-                <div class="search-wrap">
-                    <input type="text" id="finder" placeholder="filtrar asignaturas..." onkeyup="filter()">
-                </div>
-
-                <div class="grid" id="cardGrid">
-
-                    <div class="card" onclick="openModule('cuaderno_electricidad_u1.html', 'ELECTRICIDAD_APLICADA')">
-                        <span class="card-icon">⚡</span>
-                        <div class="card-tag">SYS</div>
-                        <h3>ELECTRICIDAD_APLICADA.SYS</h3>
-                        <p>Circuitos CC, Ley de Ohm y análisis de mallas industriales.</p>
-                    </div>
-
-                    <div class="card" onclick="openModule('automatizacion_inacap.html', 'AUTOMATIZACION_SISTEMAS')">
-                        <span class="card-icon">🦾</span>
-                        <div class="card-tag">SYS</div>
-                        <h3>AUTOMATIZACION_SISTEMAS.SYS</h3>
-                        <p>Control de procesos, sensores y lógica de actuadores.</p>
-                    </div>
-
-                    <div class="card" onclick="openModule('ejercicios_porcentajes.html', 'ALGEBRA_CIUDADANA')">
-                        <span class="card-icon">📐</span>
-                        <div class="card-tag">LOG</div>
-                        <h3>ALGEBRA_CIUDADANA.LOG</h3>
-                        <p>Cálculo de variaciones, porcentajes y lógica matemática.</p>
-                    </div>
-
-                    <div class="card" onclick="openModule('Riesgos_Electricos_INACAP.html', 'SEGURIDAD_INDUSTRIAL')">
-                        <span class="card-icon">🛡️</span>
-                        <div class="card-tag">SEC</div>
-                        <h3>SEGURIDAD_INDUSTRIAL.SEC</h3>
-                        <p>Protocolos NFPA 70E y prevención de riesgos eléctricos.</p>
-                    </div>
-
-                    <div class="card" onclick="openModule('cuaderno_mantenimiento.html', 'MANTENIMIENTO_ACTIVOS')">
-                        <span class="card-icon">⚙️</span>
-                        <div class="card-tag">DRV</div>
-                        <h3>MANTENIMIENTO_ACTIVOS.DRV</h3>
-                        <p>Planificación preventiva y gestión de fallos en equipos.</p>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- MODULE VIEW -->
-            <div id="moduleView">
-                <div class="module-topbar">
-                    <div class="module-path">
-                        <span>root@inacap:~/módulos/</span><span id="moduleName">...</span>
-                    </div>
-                    <button class="btn-close" onclick="closeModule()">CERRAR MÓDULO</button>
-                </div>
-                <iframe id="moduleFrame" src=""></iframe>
-            </div>
-
-        </main>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="s-label">// NOTAS_DE_SESIÓN</div>
+            <textarea id="quickNotes" placeholder="> apuntes rápidos..." oninput="autoGrow(this); saveNotes()" rows="1"></textarea>
+        </div>
     </div>
+
+    <!-- ══ MAIN ══ -->
+    <main class="main">
+
+        <!-- HOME VIEW -->
+        <div id="homeView">
+            <div class="home-header">
+                <span class="prompt-line">root@inacap-chillan:~$ ./launch_hub.sh</span>
+                <div class="home-title">ROOT_SYSTEM <span class="cursor">█</span></div>
+                <span class="home-sub">SISTEMA ACADÉMICO · ELECTRICIDAD Y AUTOMATIZACIÓN</span>
+            </div>
+
+            <div class="search-wrap">
+                <input type="text" id="finder" placeholder="filtrar asignaturas..." onkeyup="filter()" autocomplete="off">
+            </div>
+
+            <div class="grid" id="cardGrid">
+
+                <div class="card" onclick="openModule('cuaderno_electricidad_u1.html', 'ELECTRICIDAD_APLICADA')">
+                    <div class="card-icon-wrap">⚡</div>
+                    <div class="card-body">
+                        <h3>ELECTRICIDAD_APLICADA.SYS</h3>
+                        <p>Circuitos CC, Ley de Ohm y análisis de mallas.</p>
+                    </div>
+                    <div class="card-tag">SYS</div>
+                </div>
+
+                <div class="card" onclick="openModule('automatizacion_inacap.html', 'AUTOMATIZACION_SISTEMAS')">
+                    <div class="card-icon-wrap">🦾</div>
+                    <div class="card-body">
+                        <h3>AUTOMATIZACION_SISTEMAS.SYS</h3>
+                        <p>Control de procesos, sensores y actuadores.</p>
+                    </div>
+                    <div class="card-tag">SYS</div>
+                </div>
+
+                <div class="card" onclick="openModule('ejercicios_porcentajes.html', 'ALGEBRA_CIUDADANA')">
+                    <div class="card-icon-wrap">📐</div>
+                    <div class="card-body">
+                        <h3>ALGEBRA_CIUDADANA.LOG</h3>
+                        <p>Porcentajes, variaciones y lógica matemática.</p>
+                    </div>
+                    <div class="card-tag">LOG</div>
+                </div>
+
+                <div class="card" onclick="openModule('Riesgos_Electricos_INACAP.html', 'SEGURIDAD_INDUSTRIAL')">
+                    <div class="card-icon-wrap">🛡️</div>
+                    <div class="card-body">
+                        <h3>SEGURIDAD_INDUSTRIAL.SEC</h3>
+                        <p>NFPA 70E y prevención de riesgos eléctricos.</p>
+                    </div>
+                    <div class="card-tag">SEC</div>
+                </div>
+
+                <div class="card" onclick="openModule('cuaderno_mantenimiento.html', 'MANTENIMIENTO_ACTIVOS')">
+                    <div class="card-icon-wrap">⚙️</div>
+                    <div class="card-body">
+                        <h3>MANTENIMIENTO_ACTIVOS.DRV</h3>
+                        <p>Planificación preventiva y gestión de fallos.</p>
+                    </div>
+                    <div class="card-tag">DRV</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODULE VIEW -->
+        <div id="moduleView">
+            <div class="module-topbar">
+                <button class="btn-back" onclick="closeModule()">← VOLVER</button>
+                <div class="module-name-bar"><span>~/</span><span id="moduleName">...</span></div>
+            </div>
+            <iframe id="moduleFrame" src=""></iframe>
+        </div>
+
+    </main>
 
     <!-- ══ BOTTOMBAR ══ -->
     <footer class="bottombar">
-        <div class="bb-item"><span class="dot"></span> SISTEMA ACTIVO</div>
-        <div class="bb-item"><span class="dot blue"></span> RED SEGURA</div>
-        <div class="bb-item"><span class="dot yellow"></span> SESIÓN LOCAL</div>
-        <div class="bb-item" style="margin-left:auto; color: var(--muted)">btopg · CHILLÁN · 2026</div>
+        <div class="bb-item"><span class="dot"></span> ACTIVO</div>
+        <div class="bb-item"><span class="dot blue"></span> SEGURO</div>
+        <div class="bb-item"><span class="dot yellow"></span> LOCAL</div>
+        <div class="bb-item" style="margin-left:auto;">btopg · 2026</div>
     </footer>
 
     <script>
@@ -527,6 +667,45 @@
         tick();
         setInterval(tick, 1000);
 
+        // ── DRAWER ──
+        function toggleDrawer() {
+            const d = document.getElementById('drawer');
+            const o = document.getElementById('drawerOverlay');
+            const open = d.classList.contains('open');
+            open ? closeDrawer() : openDrawer();
+        }
+
+        function openDrawer() {
+            document.getElementById('drawer').classList.add('open');
+            document.getElementById('drawerOverlay').classList.add('open');
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawer').classList.remove('open');
+            document.getElementById('drawerOverlay').classList.remove('open');
+        }
+
+        // ── MÓDULOS ──
+        function openModule(src, name) {
+            closeDrawer();
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('moduleView').classList.add('active');
+            document.getElementById('moduleName').innerText = name;
+            document.getElementById('moduleFrame').src = src;
+        }
+
+        // Abrir módulo desde drawer
+        function openModuleFromDrawer(src, name) {
+            closeDrawer();
+            setTimeout(() => openModule(src, name), 180);
+        }
+
+        function closeModule() {
+            document.getElementById('moduleView').classList.remove('active');
+            document.getElementById('moduleFrame').src = '';
+            document.getElementById('homeView').style.display = 'flex';
+        }
+
         // ── BUSCADOR ──
         function filter() {
             const val = document.getElementById('finder').value.toLowerCase();
@@ -535,10 +714,10 @@
             });
         }
 
-        // ── NOTAS: autogrow ──
+        // ── NOTAS ──
         function autoGrow(el) {
             el.style.minHeight = '34px';
-            el.style.minHeight = Math.min(el.scrollHeight, 200) + 'px';
+            el.style.minHeight = Math.min(el.scrollHeight, 180) + 'px';
         }
 
         function saveNotes() {
@@ -550,21 +729,7 @@
         noteEl.value = savedNotes;
         if (savedNotes) autoGrow(noteEl);
 
-        // ── MÓDULOS INLINE ──
-        function openModule(src, name) {
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('moduleView').classList.add('active');
-            document.getElementById('moduleName').innerText = name;
-            document.getElementById('moduleFrame').src = src;
-        }
-
-        function closeModule() {
-            document.getElementById('moduleView').classList.remove('active');
-            document.getElementById('moduleFrame').src = '';
-            document.getElementById('homeView').style.display = 'flex';
-        }
-
-        // ── BARRAS PROGRESO ──
+        // ── BARRAS ──
         const ramos = [
             { name: 'Electricidad',   pct: 72 },
             { name: 'Automatización', pct: 55 },
@@ -587,12 +752,13 @@
                 </div>`;
         });
 
-        requestAnimationFrame(() => {
+        // Animar cuando se abre el drawer
+        document.getElementById('menuBtn').addEventListener('click', () => {
             setTimeout(() => {
                 document.querySelectorAll('.bar-fill').forEach(b => {
                     b.style.width = b.dataset.pct + '%';
                 });
-            }, 300);
+            }, 150);
         });
     </script>
 </body>
