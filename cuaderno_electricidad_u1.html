@@ -677,6 +677,9 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
     <div class="nav-item" onclick="navTo('flashcards')" id="nav-flashcards">
       <span class="nav-icon">▣</span> FLASHCARDS.EXE
     </div>
+    <div class="nav-item" onclick="navTo('glosario')" id="nav-glosario-top">
+      <span class="nav-icon">◑</span> GLOSARIO.LOG
+    </div>
 
     <div class="nav-divider">// UNIDADES</div>
 
@@ -690,7 +693,6 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
       <div class="nav-sub-list">
         <div class="nav-sub-item active" id="nav-u1"         onclick="navTo('u1')">Resúmenes</div>
         <div class="nav-sub-item"        id="nav-ejercicios" onclick="navTo('ejercicios')">Ejercicios</div>
-        <div class="nav-sub-item"        id="nav-glosario"   onclick="navTo('glosario')">Glosario</div>
         <div class="nav-sub-item"        id="nav-notas"      onclick="navTo('notas')">Notas</div>
       </div>
     </div>
@@ -783,7 +785,10 @@ tbody tr:hover td { background:rgba(0,255,157,0.03); color:var(--text); }
     </div>
     <div class="fc-toolbar">
       <div class="fc-filters" id="fc-filters"></div>
-      <div class="fc-counter">Mostrando <span id="fc-shown">0</span> tarjetas</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="fc-filter-btn" id="fc-shuffle-btn" onclick="shuffleFlashcards()" title="Barajar tarjetas">⇄ BARAJAR</button>
+        <div class="fc-counter">Mostrando <span id="fc-shown">0</span> tarjetas</div>
+      </div>
     </div>
     <div class="fc-grid" id="fc-grid"></div>
   </div>
@@ -1089,6 +1094,9 @@ const pageNames = {
   flashcards:'FLASHCARDS.EXE', mixed:'MODO_MIXTO.EXE'
 };
 
+// alias: nav-glosario-top actúa como nav item del glosario
+const navAliases = { glosario: 'nav-glosario-top' };
+
 /* ── Sidebar collapsible subjects ── */
 function toggleSubject(id) {
   const subj = document.getElementById(id);
@@ -1112,7 +1120,8 @@ function showPage(id, fromSearch = false) {
   const pageEl = document.getElementById('page-' + id);
   if (pageEl) pageEl.classList.add('active');
 
-  const nav = document.getElementById('nav-' + id);
+  const navId = navAliases[id] || ('nav-' + id);
+  const nav = document.getElementById(navId);
   if (nav) nav.classList.add('active');
 
   if (!fromSearch) window.scrollTo({ top:0, behavior:'smooth' });
@@ -1130,7 +1139,6 @@ function showPage(id, fromSearch = false) {
     back.classList.add('show'); sep.style.display='inline'; crumb.textContent = pageNames[id] || id;
   }
 
-  // mark parent subject as has-active
   document.querySelectorAll('.nav-subject').forEach(s => s.classList.remove('has-active'));
   if (nav) {
     const subj = nav.closest('.nav-subject');
@@ -1627,16 +1635,18 @@ const FLASHCARDS = [
 ];
 
 let _fcFilter = 'Todos';
+let _fcShuffled = false;
 
-function renderFlashcards(filter) {
-  _fcFilter = filter;
+function renderFlashcards(filter, cards_override) {
+  if (filter !== undefined) _fcFilter = filter;
   const grid    = document.getElementById('fc-grid');
   const counter = document.getElementById('fc-shown');
-  const cards   = filter === 'Todos' ? FLASHCARDS : FLASHCARDS.filter(c => c.tema === filter);
+  let cards = _fcFilter === 'Todos' ? [...FLASHCARDS] : FLASHCARDS.filter(c => c.tema === _fcFilter);
+  if (cards_override) cards = cards_override;
 
   // Update filter buttons
-  document.querySelectorAll('.fc-filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.filter === filter);
+  document.querySelectorAll('.fc-filter-btn:not(#fc-shuffle-btn)').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === _fcFilter);
   });
 
   counter.textContent = cards.length;
@@ -1680,6 +1690,25 @@ function renderFlashcards(filter) {
     el.addEventListener('click', () => el.classList.toggle('flipped'));
     grid.appendChild(el);
   });
+}
+
+function shuffleFlashcards() {
+  _fcShuffled = true;
+  let cards = _fcFilter === 'Todos' ? [...FLASHCARDS] : FLASHCARDS.filter(c => c.tema === _fcFilter);
+  cards = shuffle(cards);
+
+  // Visual feedback on button
+  const btn = document.getElementById('fc-shuffle-btn');
+  btn.textContent = '⇄ BARAJANDO...';
+  btn.style.borderColor = 'var(--teal)';
+  btn.style.color = 'var(--teal)';
+  setTimeout(() => {
+    btn.textContent = '⇄ BARAJAR';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }, 600);
+
+  renderFlashcards(undefined, cards);
 }
 
 function initFlashcards() {
