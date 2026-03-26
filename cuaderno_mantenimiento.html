@@ -2,1444 +2,768 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Automatización Industrial // Apuntes</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuaderno · Fundamentos de Mantenimiento · INACAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:          #080c10;
-  --bg2:         #0d1117;
-  --bg3:         #111822;
-  --border:      #1a2535;
-  --border2:     #1f2d40;
-  --text:        #8fa8c0;
-  --text-dim:    #3a5068;
-  --text-bright: #c8ddef;
-  --green:       #00ff9d;
-  --cyan:        #00c8ff;
-  --amber:       #ffb700;
-  --red:         #ff4060;
-  --purple:      #a855f7;
-  --sidebar-w:   260px;
-  --topbar-h:    52px;
+  --bg:#080c10; --bg2:#0d1117; --panel:#0d1117; --panel2:#111820;
+  --border:#1a2535; --border2:#1e2d3d;
+  --green:#00ff9d; --cyan:#00c8ff; --amber:#ffb700; --red:#ff4060; --purple:#a855f7;
+  --text:#c8d8e8; --dim:#3a5070; --dim2:#253545;
+  --mono:'Share Tech Mono',monospace; --mono2:'JetBrains Mono',monospace; --display:'Orbitron',sans-serif;
 }
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 8px var(--green)}50%{text-shadow:0 0 24px var(--green),0 0 40px var(--green)}}
+@keyframes cursorBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes borderBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:var(--mono);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);pointer-events:none;z-index:9999;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,157,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,157,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
-html { height: 100%; }
-body {
-  font-family: 'JetBrains Mono', monospace;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.06) 2px, rgba(0,0,0,.06) 4px);
-  pointer-events: none;
-  z-index: 9999;
-}
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;overflow-y:auto;transition:transform 0.3s;}
+.sb-logo{padding:1.2rem 1rem 1rem;border-bottom:1px solid var(--border);position:relative;}
+.sb-logo::after{content:'';position:absolute;bottom:0;left:0;width:60%;height:1px;background:linear-gradient(90deg,var(--green),transparent);}
+.sb-tag{font-size:0.58rem;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:0.4rem;}
+.sb-title{font-family:var(--display);font-size:0.78rem;font-weight:700;color:#fff;line-height:1.35;}
+.sb-title em{font-style:normal;color:var(--green);}
+.sb-sig{margin-top:0.5rem;font-size:0.68rem;color:var(--green);letter-spacing:1px;animation:borderBlink 2s infinite;}
+.sb-group{border-bottom:1px solid var(--border);}
+.sb-group-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;font-size:0.6rem;letter-spacing:3px;color:var(--dim);text-transform:uppercase;cursor:pointer;user-select:none;transition:color 0.2s;}
+.sb-group-hdr:hover{color:var(--cyan);}
+.sb-arrow{transition:transform 0.25s;font-size:0.8rem;}
+.sb-group.open .sb-arrow{transform:rotate(90deg);}
+.sb-group-body{display:none;padding:0.2rem 0 0.4rem;}
+.sb-group.open .sb-group-body{display:block;}
+.sb-item{display:flex;align-items:center;gap:0.6rem;padding:0.38rem 1rem 0.38rem 1.4rem;font-size:0.75rem;color:var(--dim);cursor:pointer;text-decoration:none;border-left:2px solid transparent;transition:all 0.15s;}
+.sb-item:hover{color:var(--text);background:rgba(0,255,157,0.03);}
+.sb-item.active{color:var(--green);border-left-color:var(--green);background:rgba(0,255,157,0.05);}
+.sb-dot{width:4px;height:4px;border-radius:50%;background:var(--dim2);flex-shrink:0;}
+.sb-item.active .sb-dot{background:var(--green);}
+.sb-badge{margin-left:auto;font-size:0.52rem;padding:0.1rem 0.35rem;border:1px solid;animation:borderBlink 3s infinite;}
+.sb-badge.g{color:var(--green);border-color:var(--green);background:rgba(0,255,157,0.08);}
+.sb-badge.a{color:var(--amber);border-color:var(--amber);background:rgba(255,183,0,0.08);}
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+/* MAIN */
+#main{margin-left:260px;min-height:100vh;position:relative;z-index:1;}
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--green),transparent 40%);}
+#menu-toggle{display:none;background:none;border:1px solid var(--border2);color:var(--text);padding:0.3rem 0.6rem;cursor:pointer;font-family:var(--mono);font-size:0.9rem;letter-spacing:1px;text-transform:uppercase;}
+.tp-path{font-size:0.7rem;color:var(--dim);letter-spacing:1px;}
+.tp-path span{color:var(--cyan);}
+.tp-right{display:flex;align-items:center;gap:0.8rem;}
+.tp-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+.tp-info{font-size:0.65rem;color:var(--dim);}
+.tp-sig{font-size:0.72rem;color:var(--green);letter-spacing:1px;}
 
-/* ── LAYOUT ── */
-#app { display: flex; height: 100vh; overflow: hidden; }
+/* CONTENT */
+.content{padding:1.8rem 2rem;max-width:920px;}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp 0.3s ease;}
 
-#sidebar {
-  width: var(--sidebar-w);
-  min-width: var(--sidebar-w);
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  z-index: 100;
-  transition: transform .3s ease;
-  flex-shrink: 0;
-}
+/* PAGE HEADER */
+.pg-header{margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--border);position:relative;}
+.pg-header::after{content:'';position:absolute;bottom:0;left:0;width:80px;height:1px;background:var(--green);}
+.pg-sup{font-size:0.6rem;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:0.5rem;}
+.pg-title{font-family:var(--display);font-size:clamp(1.2rem,3vw,1.8rem);font-weight:900;color:#fff;line-height:1.1;}
+.pg-title span{color:var(--green);}
+.pg-cursor::after{content:'█';font-size:0.8em;animation:cursorBlink 1s infinite;color:var(--green);margin-left:4px;}
+.pg-sub{font-size:0.78rem;color:var(--dim);margin-top:0.4rem;}
 
-.sidebar-logo {
-  padding: 16px 16px 14px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-.sidebar-logo::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, var(--green), transparent);
-}
-.logo-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 12px; font-weight: 900;
-  color: var(--text-bright); line-height: 1.35;
-  text-transform: uppercase; letter-spacing: 1px;
-}
-.logo-title span { color: var(--green); animation: cursorBlink 1.2s step-end infinite; }
-.logo-sub {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 9px; color: var(--text-dim);
-  margin-top: 4px; letter-spacing: 2px; text-transform: uppercase;
-}
-@keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+/* THEORY SECTION */
+.theory-section{border-left:3px solid var(--cyan);padding:1.2rem 1.2rem 1.2rem 1.4rem;background:rgba(0,200,255,0.03);margin-bottom:1.2rem;transition:box-shadow 0.3s,background 0.3s;}
+.theory-section:hover{background:rgba(0,200,255,0.06);box-shadow:inset 3px 0 12px rgba(0,200,255,0.1);}
+.theory-section h2{font-family:var(--display);font-size:0.75rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--cyan);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.6rem;}
+.theory-section h2::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
+.theory-section h3{font-size:0.8rem;color:var(--amber);margin:0.8rem 0 0.4rem;display:flex;align-items:center;gap:0.4rem;}
+.theory-section h3::before{content:'▸';color:var(--amber);}
+.theory-section p,.theory-section li{font-size:0.82rem;color:var(--text);line-height:1.7;}
+.theory-section ul{padding-left:1rem;}
 
-.sidebar-search { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-.sidebar-search input {
-  width: 100%; background: var(--bg); border: 1px solid var(--border2);
-  padding: 7px 10px; color: var(--text-bright);
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  outline: none; border-radius: 0; transition: border-color .2s, box-shadow .2s;
-}
-.sidebar-search input:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.15); }
-.sidebar-search input::placeholder { color: var(--text-dim); }
+/* BOXES */
+.box-ok,.box-warn,.box-info{padding:0.7rem 1rem;margin:0.6rem 0;font-size:0.8rem;line-height:1.6;border-left:3px solid;}
+.box-ok{border-color:var(--green);background:rgba(0,255,157,0.05);color:#a0ffd8;}
+.box-warn{border-color:var(--red);background:rgba(255,64,96,0.05);color:#ffb0bc;}
+.box-info{border-color:var(--cyan);background:rgba(0,200,255,0.05);color:#a0e8ff;}
+.box-ok::before{content:'[OK] ';color:var(--green);font-weight:700;}
+.box-warn::before{content:'[WARN] ';color:var(--red);font-weight:700;}
+.box-info::before{content:'[INFO] ';color:var(--cyan);font-weight:700;}
 
-.sidebar-nav { flex: 1; overflow-y: auto; padding: 6px 0 16px; }
+/* FORMULA */
+.formula-block{position:relative;background:rgba(0,255,157,0.04);border:1px solid rgba(0,255,157,0.15);padding:1rem 1.2rem 0.8rem;margin:0.8rem 0;font-family:var(--mono2);}
+.formula-block::before{content:'FÓRMULA';position:absolute;top:-9px;right:12px;font-size:0.55rem;letter-spacing:2px;background:var(--bg2);color:var(--green);padding:0 6px;border:1px solid rgba(0,255,157,0.3);}
+.formula-eq{font-size:1.05rem;color:var(--green);text-shadow:0 0 8px rgba(0,255,157,0.4);}
+.formula-desc{font-size:0.75rem;color:var(--dim);margin-top:0.3rem;}
 
-.nav-section-label {
-  font-family: 'Orbitron', monospace;
-  font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-dim); padding: 14px 16px 5px;
-  display: flex; align-items: center; gap: 8px;
-}
-.nav-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
-.nav-unit-desc {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 9px; color: var(--text-dim);
-  padding: 2px 16px 8px; letter-spacing: 1px; line-height: 1.4;
-}
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin:0.8rem 0;}
+table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+th{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);background:rgba(0,200,255,0.06);padding:0.5rem 0.8rem;border-bottom:1px solid rgba(0,200,255,0.2);text-align:left;}
+td{padding:0.5rem 0.8rem;border-bottom:1px solid var(--border);color:var(--text);}
+tr:hover td{background:rgba(0,255,157,0.03);}
+tr:last-child td{border-bottom:none;}
+.c-ok{color:var(--green);} .c-bad{color:var(--red);} .c-warn{color:var(--amber);}
 
-.nav-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 16px; cursor: pointer;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 12px; color: var(--text-dim);
-  transition: all .15s; border-left: 2px solid transparent;
-  text-transform: uppercase; letter-spacing: .5px;
-  user-select: none; -webkit-tap-highlight-color: transparent;
-}
-.nav-item:hover  { color: var(--text-bright); background: rgba(0,255,157,.03); }
-.nav-item.active { color: var(--green); border-left-color: var(--green); background: rgba(0,255,157,.05); }
-.nav-item .nav-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
-.nav-item .nav-count {
-  margin-left: auto; font-size: 9px; color: var(--text-dim);
-  border: 1px solid var(--border2); padding: 1px 6px;
-  font-family: 'Orbitron', monospace;
-}
-.nav-item.active .nav-count { border-color: var(--green); color: var(--green); }
+/* CALC */
+.calc-panel{background:var(--panel2);border:1px solid var(--border2);padding:1.4rem;margin-bottom:1.2rem;position:relative;}
+.calc-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);}
+.calc-bands{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-bottom:1rem;}
+@media(max-width:540px){.calc-bands{grid-template-columns:1fr 1fr;}}
+.band-grp label{display:block;font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:0.35rem;}
+.band-grp select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);color:var(--text);font-size:0.78rem;padding:0.4rem 0.6rem;font-family:var(--mono);cursor:pointer;transition:border-color 0.2s;}
+.band-grp select:hover,.band-grp select:focus{border-color:var(--cyan);outline:none;}
+.band-grp select option{background:#0d1117;}
+.prev-r{display:flex;align-items:center;justify-content:center;margin:0.8rem 0;}
+.r-lead{width:28px;height:3px;background:var(--dim2);}
+.r-body{height:26px;background:#c8a96e;display:flex;align-items:center;padding:0 8px;gap:5px;width:150px;justify-content:space-between;}
+.r-band{width:13px;height:100%;transition:background 0.3s;}
+.r-sp{flex:1;}
+.result-display{background:rgba(0,0,0,0.4);border:1px solid var(--border2);padding:0.8rem 1rem;display:flex;align-items:baseline;gap:0.8rem;flex-wrap:wrap;}
+.res-val{font-family:var(--mono2);font-size:1.5rem;color:var(--green);text-shadow:0 0 12px rgba(0,255,157,0.4);}
+.res-tol{font-size:0.85rem;color:var(--dim);}
+.res-range{font-size:0.7rem;color:var(--dim2);width:100%;margin-top:0.2rem;}
+.res-lbl{font-size:0.6rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
 
-.nav-group-toggle {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 16px; cursor: pointer;
-  font-family: 'Orbitron', monospace;
-  font-size: 9px; font-weight: 700; color: var(--text-dim);
-  text-transform: uppercase; letter-spacing: 2px;
-  transition: color .15s; user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  border-left: 2px solid transparent;
-}
-.nav-group-toggle:hover { color: var(--cyan); }
-.nav-group-toggle.open  { color: var(--cyan); border-left-color: var(--cyan); }
-.nav-group-toggle .arrow { margin-left: auto; font-size: 11px; transition: transform .2s; color: var(--text-dim); }
-.nav-group-toggle.open .arrow { transform: rotate(90deg); color: var(--cyan); }
+/* EXERCISES */
+.quiz-card{background:var(--panel2);border:1px solid var(--border2);padding:1.1rem;margin-bottom:0.8rem;transition:border-color 0.2s;}
+.quiz-card:hover{border-color:var(--dim);}
+.quiz-tag{font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber);padding:0.1rem 0.4rem;margin-bottom:0.6rem;display:inline-block;animation:borderBlink 3s infinite;}
+.quiz-q{font-size:0.85rem;color:var(--text);line-height:1.6;margin-bottom:0.8rem;}
+.quiz-input{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.82rem;padding:0.5rem 0.7rem;transition:border-color 0.2s;margin-bottom:0.6rem;}
+.quiz-input:focus{border-color:var(--cyan);outline:none;}
+.quiz-btn{background:none;border:1px solid;font-family:var(--mono);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;padding:0.4rem 1rem;cursor:pointer;transition:all 0.2s;}
+.quiz-btn.reveal{border-color:var(--amber);color:var(--amber);}
+.quiz-btn.reveal:hover{background:rgba(255,183,0,0.1);}
+.quiz-btn.check{border-color:var(--cyan);color:var(--cyan);}
+.quiz-btn.check:hover{background:rgba(0,200,255,0.1);}
+.quiz-feedback{display:none;margin-top:0.6rem;padding:0.6rem 0.8rem;font-size:0.8rem;line-height:1.6;border-left:3px solid;}
+.quiz-feedback.ok{border-color:var(--green);background:rgba(0,255,157,0.05);color:#a0ffd8;}
+.quiz-feedback.err{border-color:var(--red);background:rgba(255,64,96,0.05);color:#ffb0bc;}
 
-.nav-sub { overflow: hidden; max-height: 0; transition: max-height .3s ease; }
-.nav-sub.open { max-height: 400px; }
-.nav-sub .nav-item { padding-left: 32px; font-size: 11px; }
+/* FLASHCARDS */
+.fc-filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+.fc-filter-btn{background:none;border:1px solid var(--border2);color:var(--dim);font-family:var(--mono);font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;padding:0.3rem 0.7rem;cursor:pointer;transition:all 0.2s;}
+.fc-filter-btn:hover,.fc-filter-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,157,0.06);}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.fc-card{height:160px;cursor:pointer;perspective:800px;}
+.fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s;}
+.fc-card.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;padding:1rem;border:1px solid var(--border2);display:flex;flex-direction:column;justify-content:center;background:var(--panel2);}
+.fc-back{transform:rotateY(180deg);background:var(--bg2);}
+.fc-cat{font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
+.fc-term{font-size:0.88rem;color:#fff;line-height:1.4;}
+.fc-def{font-size:0.78rem;color:var(--text);line-height:1.5;}
+.fc-hint{font-size:0.6rem;color:var(--dim);margin-top:auto;}
+.fc-card[data-cat="magnitud"] .fc-front{border-top:2px solid var(--cyan);}
+.fc-card[data-cat="magnitud"] .fc-cat{color:var(--cyan);}
+.fc-card[data-cat="formula"] .fc-front{border-top:2px solid var(--green);}
+.fc-card[data-cat="formula"] .fc-cat{color:var(--green);}
+.fc-card[data-cat="concepto"] .fc-front{border-top:2px solid var(--amber);}
+.fc-card[data-cat="concepto"] .fc-cat{color:var(--amber);}
+.fc-card[data-cat="seguridad"] .fc-front{border-top:2px solid var(--red);}
+.fc-card[data-cat="seguridad"] .fc-cat{color:var(--red);}
 
-.sidebar-bottom {
-  padding: 10px 16px; border-top: 1px solid var(--border);
-  font-size: 9px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; flex-shrink: 0;
-}
-.status-dot {
-  width: 6px; height: 6px; background: var(--green); border-radius: 50%;
-  box-shadow: 0 0 6px var(--green); animation: glowPulse 2s ease-in-out infinite; flex-shrink: 0;
-}
-@keyframes glowPulse { 0%,100%{box-shadow:0 0 6px var(--green);opacity:1} 50%{box-shadow:0 0 14px var(--green);opacity:.6} }
+/* GLOSARIO */
+.glos-search{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-bottom:1px solid var(--cyan);color:var(--text);font-family:var(--mono);font-size:0.82rem;padding:0.6rem 0.8rem;margin-bottom:1rem;}
+.glos-search:focus{outline:none;border-color:var(--cyan);}
+.glos-search::placeholder{color:var(--dim);}
+.glos-row{display:flex;gap:1rem;padding:0.6rem 0;border-bottom:1px solid var(--border);transition:background 0.15s;}
+.glos-row:hover{background:rgba(0,255,157,0.02);}
+.glos-row:last-child{border-bottom:none;}
+.glos-term{font-family:var(--mono2);font-size:0.8rem;color:var(--cyan);min-width:140px;flex-shrink:0;}
+.glos-def{font-size:0.8rem;color:var(--text);line-height:1.5;}
 
-#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+/* SEARCH */
+.search-bar{display:flex;margin-bottom:1.5rem;}
+.search-input{flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border2);border-right:none;color:var(--text);font-family:var(--mono);font-size:0.82rem;padding:0.6rem 0.8rem;}
+.search-input:focus{outline:none;border-color:var(--cyan);}
+.search-input::placeholder{color:var(--dim);}
+.search-btn{background:rgba(0,200,255,0.08);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;padding:0.6rem 1rem;cursor:pointer;}
+.search-results{font-size:0.8rem;color:var(--dim);margin-bottom:1rem;}
+.search-hit{background:rgba(0,255,157,0.2);color:var(--green);}
 
-#topbar {
-  height: var(--topbar-h);
-  background: var(--bg2); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 20px; gap: 10px;
-  flex-shrink: 0; position: relative;
-}
-#topbar::after {
-  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
-  background: linear-gradient(90deg, var(--cyan), transparent 60%);
-}
+/* NOTES */
+.notes-area{width:100%;min-height:320px;background:rgba(0,0,0,0.4);border:1px solid var(--border2);border-left:3px solid var(--amber);color:var(--text);font-family:var(--mono2);font-size:0.82rem;line-height:1.7;padding:1rem;resize:vertical;}
+.notes-area:focus{outline:none;border-color:var(--amber);}
+.notes-meta{font-size:0.65rem;color:var(--dim);margin-top:0.4rem;}
+.notes-btn{background:none;border:1px solid var(--amber);color:var(--amber);font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;padding:0.4rem 1rem;cursor:pointer;margin-top:0.6rem;transition:all 0.2s;}
+.notes-btn:hover{background:rgba(255,183,0,0.1);}
 
-#hamburger {
-  display: none; background: none; border: 1px solid var(--border2);
-  cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 4px;
-  flex-shrink: 0; -webkit-tap-highlight-color: transparent;
-}
-#hamburger span { display: block; width: 18px; height: 1px; background: var(--text); }
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:0.8rem;margin-bottom:2rem;}
+.stat-box{background:var(--panel2);border:1px solid var(--border2);padding:1rem;text-align:center;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.stat-box:hover{border-color:var(--green);}
+.stat-box::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--green);transform:scaleX(0);transition:transform 0.3s;transform-origin:left;}
+.stat-box:hover::after{transform:scaleX(1);}
+.stat-val{font-family:var(--display);font-size:1.6rem;font-weight:900;color:var(--green);animation:glowPulse 3s infinite;}
+.stat-lbl{font-size:0.6rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:0.2rem;}
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.8rem;}
+.quick-card{background:var(--panel2);border:1px solid var(--border2);padding:1.1rem;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s;}
+.quick-card:hover{border-color:var(--green);transform:translateY(-2px);}
+.quick-card::before{content:'';position:absolute;top:0;right:0;width:20px;height:20px;border-top:2px solid;border-right:2px solid;opacity:0;transition:opacity 0.2s;}
+.quick-card:hover::before{opacity:1;border-color:var(--green);}
+.qc-title{font-family:var(--display);font-size:0.7rem;margin-bottom:0.5rem;}
+.qc-title.g{color:var(--green);} .qc-title.c{color:var(--cyan);} .qc-title.a{color:var(--amber);} .qc-title.p{color:var(--purple);}
+.qc-desc{font-size:0.78rem;color:var(--dim);line-height:1.5;}
+.progress-bar-wrap{background:var(--border);height:3px;margin-top:0.8rem;}
+.progress-bar{height:100%;background:var(--green);transition:width 0.5s;}
 
-.topbar-breadcrumb {
-  font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 6px; letter-spacing: 1px;
-  text-transform: uppercase; overflow: hidden;
-}
-.topbar-breadcrumb .current { color: var(--cyan); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar-breadcrumb .sep { color: var(--border2); flex-shrink: 0; }
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
+.footer span{font-size:0.62rem;color:var(--dim2);}
 
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.topbar-tag {
-  font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 2px;
-  text-transform: uppercase; padding: 3px 9px; border: 1px solid var(--border2);
-  color: var(--text-dim); white-space: nowrap;
-}
-.topbar-tag.accent {
-  border-color: var(--green); color: var(--green);
-  animation: borderBlink 2s step-end infinite;
-}
-@keyframes borderBlink {
-  0%,100%{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,157,.2)}
-  50%{border-color:rgba(0,255,157,.3);box-shadow:none}
-}
+/* FAB */
+.fab-group{position:fixed;bottom:1.5rem;right:1.5rem;display:flex;flex-direction:column;gap:0.5rem;z-index:300;}
+.fab{width:42px;height:42px;background:var(--bg2);border:1px solid var(--border2);color:var(--dim);font-family:var(--mono);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.fab:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(0,255,157,0.2);}
 
-#content {
-  flex: 1; overflow-y: auto; overflow-x: hidden;
-  padding: 24px 28px 56px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.panel { display: none; }
-.panel.active { display: block; animation: fadeUp .28s ease; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-.content-inner { max-width: 860px; margin: 0 auto; }
-
-/* ── TYPOGRAPHY ── */
-.page-title {
-  font-family: 'Orbitron', monospace;
-  font-size: clamp(15px, 4vw, 20px); font-weight: 900;
-  color: var(--text-bright); text-transform: uppercase;
-  letter-spacing: 2px; margin-bottom: 4px; line-height: 1.2;
-}
-.page-title span { color: var(--green); }
-.page-subtitle {
-  font-size: 10px; color: var(--text-dim); letter-spacing: 1.5px;
-  text-transform: uppercase; margin-bottom: 22px;
-  font-family: 'Share Tech Mono', monospace; line-height: 1.5;
-}
-
-/* ── THEORY SECTIONS ── */
-.theory-section {
-  border-left: 3px solid var(--cyan);
-  padding: 20px 20px 22px;
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
-  position: relative;
-  transition: box-shadow .2s;
-}
-.theory-section:hover {
-  box-shadow: -3px 0 16px rgba(0,200,255,.12), 0 0 24px rgba(0,200,255,.04);
-}
-.theory-section h2 {
-  font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700;
-  color: var(--cyan); text-transform: uppercase; letter-spacing: 3px;
-  margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-.theory-section h2 .num {
-  background: var(--cyan); color: var(--bg); font-size: 9px;
-  padding: 2px 8px; letter-spacing: 1px; flex-shrink: 0;
-}
-.theory-section h2::after {
-  content:''; flex:1; height:1px;
-  background: linear-gradient(90deg, var(--border2), transparent); min-width: 20px;
-}
-.theory-section h3 {
-  font-family: 'Share Tech Mono', monospace; font-size: 12px;
-  color: var(--text-bright); margin: 18px 0 8px; letter-spacing: 1px;
-}
-.theory-section h3::before { content:'▸ '; color:var(--green); }
-.theory-section p {
-  font-size: 13px; line-height: 1.8; color: var(--text); margin-bottom: 10px;
-}
-.theory-section p:last-child { margin-bottom: 0; }
-
-.hi  { color:var(--green);  font-weight:500; }
-.hi2 { color:var(--cyan);   font-weight:500; }
-.hi3 { color:var(--amber);  font-weight:500; }
-.hi4 { color:var(--red);    font-weight:500; }
-.hi5 { color:var(--purple); font-weight:500; }
-
-/* ── BOXES ── */
-.box-ok, .box-info, .box-warn, .box-def {
-  padding: 12px 16px; margin: 14px 0;
-  font-size: 12.5px; line-height: 1.7; font-family: 'JetBrains Mono', monospace;
-}
-.box-ok   { border-left:3px solid var(--green);  background:rgba(0,255,157,.05);  color:var(--text-bright); }
-.box-ok::before   { content:'[OK] ';   color:var(--green);  font-weight:700; }
-.box-info { border-left:3px solid var(--cyan);   background:rgba(0,200,255,.05);  color:var(--text-bright); }
-.box-info::before { content:'[INFO] '; color:var(--cyan);   font-weight:700; }
-.box-warn { border-left:3px solid var(--red);    background:rgba(255,64,96,.05);  color:var(--text-bright); }
-.box-warn::before { content:'[WARN] '; color:var(--red);    font-weight:700; }
-.box-def  { border-left:3px solid var(--purple); background:rgba(168,85,247,.05); color:var(--text-bright); }
-.box-def::before  { content:'[DEF] ';  color:var(--purple); font-weight:700; }
-
-/* ── TABLES ── */
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 12px 0; }
-.data-table { width:100%; border-collapse:collapse; font-size:12px; font-family:'JetBrains Mono',monospace; min-width:300px; }
-.data-table thead th {
-  background:rgba(0,200,255,.08); color:var(--cyan);
-  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
-  letter-spacing:2px; text-transform:uppercase; padding:10px 12px;
-  text-align:left; border-bottom:1px solid var(--cyan); white-space:nowrap;
-}
-.data-table tbody td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
-.data-table tbody tr:hover td { background:rgba(0,255,157,.03); color:var(--text-bright); }
-.data-table tbody tr:last-child td { border-bottom:none; }
-
-/* ── CARDS ── */
-.card {
-  background:var(--bg2); border:1px solid var(--border);
-  padding:16px 18px; margin-bottom:14px; position:relative; overflow:hidden;
-  transition:border-color .2s, box-shadow .2s;
-}
-.card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,var(--green),transparent); opacity:0; transition:opacity .2s;
-}
-.card:hover { border-color:var(--border2); box-shadow:0 4px 20px rgba(0,0,0,.3); }
-.card:hover::before { opacity:1; }
-.card::after {
-  content:'◢'; position:absolute; bottom:4px; right:6px;
-  color:var(--border2); font-size:10px; animation:cornerAnim 3s ease-in-out infinite;
-}
-@keyframes cornerAnim { 0%,100%{color:var(--border2)} 50%{color:var(--green);opacity:.5} }
-.card-title {
-  font-family:'Orbitron',monospace; font-size:10px; font-weight:700;
-  color:var(--text-bright); text-transform:uppercase; letter-spacing:2px;
-  margin-bottom:12px; display:flex; align-items:center; gap:8px;
-}
-
-/* ── GRIDS ── */
-.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-
-/* ── CHAIN ── */
-.chain { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:14px 0; }
-.chain-step {
-  border:1px solid var(--border2); padding:10px 14px;
-  font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text-bright);
-  text-align:center; flex:1; min-width:75px; transition:border-color .2s;
-}
-.chain-step:hover { border-color:var(--green); box-shadow:0 0 12px rgba(0,255,157,.1); }
-.chain-step .step-label {
-  display:block; font-size:8px; color:var(--text-dim);
-  letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; font-family:'Orbitron',monospace;
-}
-.chain-step.s1 { border-color:rgba(0,255,157,.3);  color:var(--green); }
-.chain-step.s2 { border-color:rgba(0,200,255,.3);  color:var(--cyan); }
-.chain-step.s3 { border-color:rgba(168,85,247,.3); color:var(--purple); }
-.chain-step.s4 { border-color:rgba(255,183,0,.3);  color:var(--amber); }
-.chain-arrow { color:var(--green); font-size:14px; flex-shrink:0; }
-
-/* ── TECH GRID ── */
-.tech-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0; }
-.tech-card { background:var(--bg2); border:1px solid var(--border); overflow:hidden; transition:border-color .2s; }
-.tech-card:hover { border-color:var(--border2); }
-.tech-header {
-  padding:12px 14px; font-family:'Orbitron',monospace;
-  font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid var(--border);
-}
-.tech-card.cableada .tech-header { color:var(--amber); border-bottom-color:rgba(255,183,0,.3); background:rgba(255,183,0,.04); }
-.tech-card.plc      .tech-header { color:var(--cyan);  border-bottom-color:rgba(0,200,255,.3);  background:rgba(0,200,255,.04); }
-.tech-body { padding:12px 14px; }
-.tech-body li {
-  list-style:none; font-size:12px; line-height:1.7; color:var(--text);
-  padding:4px 0; border-bottom:1px solid var(--border); display:flex; gap:8px; align-items:flex-start;
-}
-.tech-body li:last-child { border-bottom:none; }
-.tech-body li::before { content:'›'; color:var(--text-dim); flex-shrink:0; }
-
-/* ── EXERCISES ── */
-.exercise { background:var(--bg2); border:1px solid var(--border); margin-bottom:12px; overflow:hidden; }
-.exercise-header {
-  padding:13px 16px; display:flex; align-items:center; gap:10px;
-  cursor:pointer; user-select:none; border-bottom:1px solid transparent;
-  transition:background .15s; -webkit-tap-highlight-color:transparent;
-}
-.exercise-header:hover { background:var(--bg3); }
-.exercise.open .exercise-header { border-bottom-color:var(--border); }
-.exercise-num {
-  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
-  background:var(--green); color:var(--bg); padding:2px 8px; letter-spacing:1px; flex-shrink:0;
-}
-.exercise-title {
-  font-family:'Share Tech Mono',monospace; font-size:12px;
-  color:var(--text-bright); flex:1; text-transform:uppercase; letter-spacing:.5px; line-height:1.4;
-}
-.exercise-tag {
-  font-family:'Orbitron',monospace; font-size:8px; letter-spacing:1.5px;
-  padding:2px 8px; border:1px solid; text-transform:uppercase; flex-shrink:0;
-}
-.exercise-tag.tipo-analisis      { color:var(--purple); border-color:var(--purple); }
-.exercise-tag.tipo-clasificacion { color:var(--cyan);   border-color:var(--cyan); }
-.exercise-tag.tipo-definicion    { color:var(--amber);  border-color:var(--amber); }
-.exercise-chevron {
-  color:var(--text-dim); font-size:12px; transition:transform .2s;
-  font-family:'Share Tech Mono',monospace; flex-shrink:0;
-}
-.exercise.open .exercise-chevron { transform:rotate(180deg); color:var(--green); }
-.exercise-body { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .3s ease; }
-.exercise.open .exercise-body { max-height:900px; padding:16px; }
-.exercise-question {
-  font-size:13px; line-height:1.78; color:var(--text);
-  padding:12px 14px; border-left:3px solid var(--cyan);
-  background:rgba(0,200,255,.04); margin-bottom:14px;
-}
-.exercise-answer-label {
-  font-family:'Orbitron',monospace; font-size:8px; letter-spacing:2px;
-  text-transform:uppercase; color:var(--text-dim); margin-bottom:8px;
-}
-
-/* ── BUTTONS ── */
-.btn {
-  background:transparent; border:1px solid var(--green); color:var(--green);
-  padding:9px 18px; font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .15s; border-radius:0;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn:hover, .btn:active { background:var(--green); color:var(--bg); box-shadow:0 0 16px rgba(0,255,157,.3); }
-.btn-reveal {
-  background:transparent; border:1px solid var(--border2); color:var(--text-dim);
-  padding:8px 14px; font-family:'Share Tech Mono',monospace; font-size:11px;
-  cursor:pointer; transition:all .15s; margin-bottom:10px; border-radius:0;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn-reveal:hover, .btn-reveal:active { border-color:var(--green); color:var(--green); }
-.btn-secondary {
-  background:transparent; border:1px solid var(--border2); color:var(--text-dim);
-  padding:9px 18px; font-family:'Orbitron',monospace; font-size:9px;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .15s; border-radius:0;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn-secondary:hover, .btn-secondary:active { border-color:var(--cyan); color:var(--cyan); }
-.btn-shuffle {
-  background:transparent; border:1px solid var(--purple); color:var(--purple);
-  padding:7px 13px; font-family:'Orbitron',monospace; font-size:8px;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .15s; border-radius:0;
-  -webkit-tap-highlight-color:transparent; margin-left:auto;
-}
-.btn-shuffle:hover, .btn-shuffle:active { background:var(--purple); color:var(--bg); }
-
-.answer-content { display:none; }
-.answer-content.visible { display:block; }
-
-/* ── LIST ── */
-ul.styled { list-style:none; padding:0; }
-ul.styled li {
-  font-size:13px; color:var(--text); line-height:1.75;
-  padding:7px 0; border-bottom:1px solid var(--border);
-  display:flex; gap:10px; align-items:flex-start;
-}
-ul.styled li:last-child { border-bottom:none; }
-ul.styled li::before { content:'›'; color:var(--green); flex-shrink:0; font-size:14px; }
-
-/* ── TAGS ── */
-.tag {
-  display:inline-block; font-family:'Orbitron',monospace;
-  font-size:8px; letter-spacing:1.5px; padding:2px 7px; text-transform:uppercase; margin-right:4px;
-}
-.tag.blue   { border:1px solid rgba(0,200,255,.4);  color:var(--cyan);   background:rgba(0,200,255,.06); }
-.tag.green  { border:1px solid rgba(0,255,157,.4);  color:var(--green);  background:rgba(0,255,157,.06); }
-.tag.yellow { border:1px solid rgba(255,183,0,.4);  color:var(--amber);  background:rgba(255,183,0,.06); }
-.tag.purple { border:1px solid rgba(168,85,247,.4); color:var(--purple); background:rgba(168,85,247,.06); }
-
-/* ── GLOSSARY ── */
-.glosario-search {
-  width:100%; background:var(--bg2); border:1px solid var(--border2);
-  padding:10px 14px; color:var(--text-bright); font-family:'JetBrains Mono',monospace;
-  font-size:13px; outline:none; border-radius:0; transition:border-color .2s, box-shadow .2s; margin-bottom:16px;
-}
-.glosario-search:focus { border-color:var(--green); box-shadow:0 0 10px rgba(0,255,157,.1); }
-.glosario-search::placeholder { color:var(--text-dim); }
-.term-card {
-  background:var(--bg2); border:1px solid var(--border);
-  padding:14px 16px; margin-bottom:8px; display:flex; gap:16px; align-items:flex-start; transition:border-color .2s;
-}
-.term-card:hover { border-color:var(--green); }
-.term-word {
-  font-family:'Orbitron',monospace; font-size:9px; font-weight:700; color:var(--green);
-  min-width:130px; flex-shrink:0; text-transform:uppercase; letter-spacing:1px; padding-top:2px; line-height:1.5;
-}
-.term-def { font-size:12.5px; line-height:1.65; color:var(--text); }
-.term-source {
-  display:inline-block; margin-top:5px; font-family:'Share Tech Mono',monospace;
-  font-size:9px; color:var(--text-dim); border:1px solid var(--border); padding:1px 6px; letter-spacing:1px;
-}
-
-/* ── NOTES ── */
-.note-area {
-  width:100%; min-height:160px; background:var(--bg); border:1px solid var(--border2);
-  padding:14px 16px; color:var(--text); font-family:'JetBrains Mono',monospace;
-  font-size:13px; line-height:1.75; resize:vertical; outline:none; border-radius:0;
-  transition:border-color .2s, box-shadow .2s;
-}
-.note-area:focus { border-color:var(--green); box-shadow:0 0 10px rgba(0,255,157,.1); }
-.note-saved-msg {
-  font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--green);
-  letter-spacing:2px; margin-top:8px; display:none;
-}
-.note-item {
-  background:var(--bg2); border:1px solid var(--border);
-  padding:14px 16px; margin-bottom:8px; position:relative; transition:border-color .2s;
-}
-.note-item:hover { border-color:var(--border2); }
-.note-item-date {
-  font-family:'Share Tech Mono',monospace; font-size:9px;
-  color:var(--text-dim); letter-spacing:1.5px; margin-bottom:6px; text-transform:uppercase;
-}
-.note-item-text { font-size:12.5px; line-height:1.65; color:var(--text); white-space:pre-wrap; padding-right:24px; }
-.note-item-del {
-  position:absolute; top:10px; right:10px; background:none; border:none;
-  color:var(--text-dim); cursor:pointer; font-family:'Share Tech Mono',monospace;
-  font-size:13px; transition:color .15s; padding:4px;
-}
-.note-item-del:hover { color:var(--red); }
-
-/* ── FLASHCARDS ── */
-.flashcard-controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
-.fc-filter {
-  background:transparent; border:1px solid var(--border2); color:var(--text-dim);
-  padding:6px 12px; font-family:'Orbitron',monospace; font-size:8px;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .15s; border-radius:0;
-  -webkit-tap-highlight-color:transparent;
-}
-.fc-filter:hover, .fc-filter.active { border-color:var(--green); color:var(--green); }
-.flashcards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
-.flashcard-wrap { perspective:800px; height:155px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
-.flashcard {
-  width:100%; height:100%; position:relative;
-  transform-style:preserve-3d; transition:transform .45s ease;
-}
-.flashcard-wrap.flipped .flashcard { transform:rotateY(180deg); }
-.fc-front, .fc-back {
-  position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  border:1px solid var(--border); padding:14px; display:flex; flex-direction:column; justify-content:center;
-}
-.fc-back { transform:rotateY(180deg); }
-.fc-label { font-family:'Orbitron',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
-.fc-front { background:var(--bg2); }
-.fc-front .fc-label { color:var(--cyan); }
-.fc-back  { background:rgba(0,255,157,.03); border-color:rgba(0,255,157,.25); }
-.fc-back  .fc-label { color:var(--green); }
-.fc-term  { font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--text-bright); text-transform:uppercase; letter-spacing:.5px; line-height:1.35; }
-.fc-def   { font-size:11px; color:var(--text); line-height:1.6; }
-.fc-category { margin-top:8px; font-family:'Orbitron',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; }
-.fc-hint { position:absolute; bottom:6px; right:8px; font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); }
-
-/* ── QUIZ ── */
-.quiz-controls { display:flex; gap:10px; align-items:center; margin-bottom:18px; flex-wrap:wrap; }
-.quiz-score {
-  font-family:'Orbitron',monospace; font-size:11px;
-  color:var(--text-dim); margin-left:auto; letter-spacing:1px; white-space:nowrap;
-}
-.quiz-score span { color:var(--green); animation:glowPulse 2s ease-in-out infinite; }
-.quiz-card { background:var(--bg2); border:1px solid var(--border); padding:18px; position:relative; }
-.quiz-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,var(--green),transparent);
-}
-.quiz-qtag {
-  font-family:'Orbitron',monospace; font-size:8px; letter-spacing:2px;
-  text-transform:uppercase; color:var(--text-dim); margin-bottom:12px;
-  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-}
-.quiz-qtag .qtag-label { border:1px solid rgba(0,200,255,.3); padding:1px 7px; color:var(--cyan); }
-.quiz-question { font-size:13.5px; line-height:1.78; color:var(--text-bright); margin-bottom:16px; }
-.quiz-options { display:flex; flex-direction:column; gap:8px; }
-.quiz-option {
-  background:transparent; border:1px solid var(--border2);
-  padding:12px 14px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
-  color:var(--text); cursor:pointer; text-align:left; transition:all .15s; border-radius:0;
-  display:flex; align-items:flex-start; gap:10px; line-height:1.5;
-  -webkit-tap-highlight-color:transparent;
-}
-.quiz-option:hover:not(:disabled) { border-color:var(--green); color:var(--text-bright); background:rgba(0,255,157,.03); }
-.quiz-option:disabled { cursor:default; }
-.quiz-option.correct  { border-color:var(--green); background:rgba(0,255,157,.08); color:var(--green); }
-.quiz-option.incorrect{ border-color:var(--red);   background:rgba(255,64,96,.08);  color:var(--red); }
-.quiz-option .opt-letter { font-family:'Orbitron',monospace; font-size:9px; width:20px; flex-shrink:0; color:var(--text-dim); margin-top:1px; }
-.quiz-option.correct  .opt-letter { color:var(--green); }
-.quiz-option.incorrect .opt-letter{ color:var(--red); }
-.quiz-feedback {
-  margin-top:12px; padding:10px 14px; font-family:'Share Tech Mono',monospace;
-  font-size:12px; border-left:3px solid; display:none; line-height:1.6;
-}
-.quiz-feedback.show { display:block; }
-.quiz-feedback.ok  { border-color:var(--green); color:var(--green); background:rgba(0,255,157,.04); }
-.quiz-feedback.ok::before  { content:'[OK] '; }
-.quiz-feedback.err { border-color:var(--red);   color:var(--red);   background:rgba(255,64,96,.04); }
-.quiz-feedback.err::before { content:'[ERR] '; }
-.next-question-btn { margin-top:12px; display:none; }
-.next-question-btn.show { display:block; }
-
-/* ── OBJ CARDS ── */
-.obj-card {
-  background:var(--bg2); border:1px solid var(--border);
-  padding:14px 16px; display:flex; gap:12px; align-items:flex-start; transition:border-color .2s;
-}
-.obj-card:hover { border-color:var(--green); }
-.obj-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
-.obj-body h3 {
-  font-family:'Orbitron',monospace; font-size:9px; font-weight:700;
-  color:var(--text-bright); text-transform:uppercase; letter-spacing:2px; margin-bottom:5px;
-}
-.obj-body p { font-size:12px; color:var(--text); line-height:1.6; }
-
-/* ── OVERLAY ── */
-#sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:99; }
-#sidebar-overlay.visible { display:block; }
-
-/* ══════════════════════════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  body { overflow: auto; }
-  #app { flex-direction: column; height: auto; min-height: 100vh; overflow: visible; }
-
-  #sidebar {
-    position: fixed; top: 0; left: 0;
-    height: 100%; height: 100dvh;
-    width: min(280px, 85vw); min-width: unset;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 30px rgba(0,0,0,.6);
-  }
-  #sidebar.open { transform: translateX(0); }
-  #hamburger { display: flex; }
-
-  #main { width: 100%; height: auto; min-height: 100vh; overflow: visible; }
-
-  #topbar {
-    position: sticky; top: 0; z-index: 50; padding: 0 14px; gap: 8px;
-  }
-
-  #content { overflow: visible; height: auto; padding: 16px 14px 64px; }
-
-  /* grids to single column */
-  .grid-2, .grid-3, .tech-grid { grid-template-columns: 1fr !important; }
-
-  /* chain: smaller, still horizontal with wrap */
-  .chain { gap: 5px; }
-  .chain-step { min-width: 65px; font-size: 11px; padding: 8px 8px; flex: 1 1 65px; }
-  .chain-arrow { font-size: 12px; }
-
-  /* term cards stack */
-  .term-card { flex-direction: column; gap: 6px; }
-  .term-word { min-width: unset; }
-
-  /* quiz bigger tap targets */
-  .quiz-option { padding: 13px 12px; font-size: 13px; }
-  .quiz-question { font-size: 13px; }
-
-  /* flashcards: 2 col on tablet-ish phones */
-  .flashcards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .flashcard-wrap { height: 148px; }
-  .fc-term { font-size: 12px; }
-  .fc-def  { font-size: 10.5px; }
-
-  /* table smaller */
-  .data-table { font-size: 11px; }
-  .data-table thead th { font-size: 8px; padding: 8px 10px; }
-  .data-table tbody td { padding: 8px 10px; }
-
-  /* hide non-essential topbar tags */
-  .topbar-tag:not(.accent) { display: none; }
-
-  .page-title { font-size: 15px; }
-  .theory-section { padding: 16px 14px 18px; margin-bottom: 20px; }
-  .theory-section h2 { font-size: 9px; letter-spacing: 2px; }
-
-  .exercise-header { padding: 12px 12px; }
-  .exercise-title { font-size: 11px; }
-}
-
-@media (max-width: 420px) {
-  /* single col flashcards on small phones */
-  .flashcards-grid { grid-template-columns: 1fr; }
-  .flashcard-wrap { height: 145px; }
-
-  .exercise-tag { display: none; }
-  #content { padding: 12px 10px 64px; }
-  .card { padding: 13px 12px; }
-
-  .chain-step { font-size: 10px; padding: 7px 6px; }
-  .quiz-controls { gap: 8px; }
-  .quiz-score { font-size: 10px; margin-left: 0; width: 100%; text-align: right; }
-
-  /* flashcard controls wrap nicer */
-  .flashcard-controls { gap: 6px; }
-  .fc-filter { font-size: 7px; padding: 5px 9px; }
-  .btn-shuffle { margin-left: 0; }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  :root { --sidebar-w: 230px; }
-  #content { padding: 20px 22px 48px; }
-  .flashcards-grid { grid-template-columns: repeat(2, 1fr); }
+/* MOBILE */
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  .content{padding:1.2rem;}
+  #menu-toggle{display:block;}
+  .pg-title{font-size:1.2rem;}
+  .tp-info{display:none;}
 }
 </style>
 </head>
 <body>
 
-<div id="sidebar-overlay" onclick="closeSidebar()"></div>
-<div id="app">
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-tag">INACAP · 2025</div>
+    <div class="sb-title">Fundamentos de<br><em>Mantenimiento</em></div>
+    <div class="sb-sig">x btopg :}</div>
+  </div>
+  <div class="sb-group open">
+    <div class="sb-group-hdr" onclick="toggleGroup(this)"><span>General</span><span class="sb-arrow">›</span></div>
+    <div class="sb-group-body">
+      <a class="sb-item active" onclick="nav('inicio')"><span class="sb-dot"></span>Inicio</a>
+      <a class="sb-item" onclick="nav('formulas')"><span class="sb-dot"></span>Fórmulas</a>
+      <a class="sb-item" onclick="nav('glosario')"><span class="sb-dot"></span>Glosario</a>
+      <a class="sb-item" onclick="nav('flashcards')"><span class="sb-dot"></span>Flashcards</a>
+      <a class="sb-item" onclick="nav('notas')"><span class="sb-dot"></span>Notas</a>
+    </div>
+  </div>
+  <div class="sb-group open">
+    <div class="sb-group-hdr" onclick="toggleGroup(this)"><span>Unidad 1</span><span class="sb-arrow">›</span></div>
+    <div class="sb-group-body">
+      <a class="sb-item" onclick="nav('u1c1')"><span class="sb-dot"></span>Clase 1 — Prefijos &amp; Resistencias<span class="sb-badge g">✓</span></a>
+      <a class="sb-item" onclick="nav('u1calc')"><span class="sb-dot"></span>Calculadora Resistencias<span class="sb-badge a">⚡</span></a>
+      <a class="sb-item" onclick="nav('u1ej')"><span class="sb-dot"></span>Ejercicios U1</a>
+    </div>
+  </div>
+  <div class="sb-group">
+    <div class="sb-group-hdr" onclick="toggleGroup(this)"><span>Próximas clases</span><span class="sb-arrow">›</span></div>
+    <div class="sb-group-body">
+      <a class="sb-item" style="opacity:0.3;cursor:default;"><span class="sb-dot"></span>Clase 2 — Por agregar</a>
+      <a class="sb-item" style="opacity:0.3;cursor:default;"><span class="sb-dot"></span>Clase 3 — Por agregar</a>
+    </div>
+  </div>
+</nav>
 
-  <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
-  <nav id="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-title">Automatización<br>Industrial<span>_</span></div>
-      <div class="logo-sub">Automatización y Robótica</div>
+<div id="main">
+  <div class="topbar">
+    <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="tp-path">Mantenimiento / <span id="tp-path">Inicio</span></div>
+    <div class="tp-right">
+      <div class="tp-dot"></div>
+      <span class="tp-info">Sem. 2025 · Auto. y Robótica</span>
+      <span class="tp-sig">x btopg :}</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- INICIO -->
+    <div id="page-inicio" class="page active">
+      <div class="pg-header">
+        <div class="pg-sup">INACAP · Automatización y Robótica</div>
+        <div class="pg-title pg-cursor">Cuaderno Digital <span>Mantenimiento</span></div>
+        <div class="pg-sub">Fundamentos de Mantenimiento para la Automatización · Semestre 2025</div>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" id="search-input" type="text" placeholder="Buscar en todo el contenido..." oninput="doSearch(this.value)">
+        <button class="search-btn" onclick="doSearch(document.getElementById('search-input').value)">BUSCAR</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div id="search-hits"></div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">1</div><div class="stat-lbl">Unidades</div></div>
+        <div class="stat-box"><div class="stat-val">1</div><div class="stat-lbl">Clases</div></div>
+        <div class="stat-box"><div class="stat-val">5</div><div class="stat-lbl">Ejercicios</div></div>
+        <div class="stat-box"><div class="stat-val">12</div><div class="stat-lbl">Términos</div></div>
+      </div>
+      <div class="theory-section" style="margin-bottom:1.4rem;">
+        <h2>Temario — Unidad 1</h2>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Criterio</th><th>Contenido</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>1.1.1 / 1.1.2</td><td>Uso del multímetro — resistencia, continuidad, voltaje, corriente</td><td class="c-ok">✓ VISTO</td></tr>
+              <tr><td>1.1.3</td><td>Conexiones con terminales de crimpar</td><td class="c-warn">◌ PENDIENTE</td></tr>
+              <tr><td>1.1.4</td><td>Soldadura de estaño en conectores</td><td class="c-warn">◌ PENDIENTE</td></tr>
+              <tr><td>1.1.5</td><td>Montaje/desmontaje en placas PCB</td><td class="c-warn">◌ PENDIENTE</td></tr>
+              <tr><td>1.1.6</td><td>Verificación de calidad con instrumentos</td><td class="c-warn">◌ PENDIENTE</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:20%"></div></div>
+        <div style="font-size:0.65rem;color:var(--dim);margin-top:0.3rem;">PROGRESO: 1 / 5 CRITERIOS</div>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="nav('u1c1')"><div class="qc-title c">▸ CLASE 1</div><div class="qc-desc">Prefijos SI, magnitudes eléctricas y código de colores en resistencias</div></div>
+        <div class="quick-card" onclick="nav('u1calc')"><div class="qc-title g">▸ CALCULADORA</div><div class="qc-desc">Calcula el valor de cualquier resistencia por sus 4 bandas de color</div></div>
+        <div class="quick-card" onclick="nav('u1ej')"><div class="qc-title a">▸ EJERCICIOS</div><div class="qc-desc">Practica código de colores, prefijos y multímetro con respuestas</div></div>
+        <div class="quick-card" onclick="nav('flashcards')"><div class="qc-title p">▸ FLASHCARDS</div><div class="qc-desc">Repasa definiciones y fórmulas con tarjetas de volteo 3D</div></div>
+      </div>
     </div>
 
-    <div class="sidebar-search">
-      <input type="text" id="globalSearch" placeholder="// buscar en apuntes...">
+    <!-- CLASE 1 -->
+    <div id="page-u1c1" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">Unidad 1 · Clase 1 · Criterios 1.1.1 / 1.1.2</div>
+        <div class="pg-title">Prefijos SI · Magnitudes · <span>Resistencias</span></div>
+        <div class="pg-sub">Código de colores · Uso del multímetro</div>
+      </div>
+      <div class="theory-section" id="ts-prefijos">
+        <h2>01 — Prefijos del Sistema Internacional</h2>
+        <p>Los prefijos permiten expresar magnitudes muy grandes o muy pequeñas de forma compacta. Son la misma escala que al hablar de kilómetros o megabytes.</p>
+        <div class="tbl-wrap" style="margin-top:0.8rem;">
+          <table>
+            <thead><tr><th>Prefijo</th><th>Símbolo</th><th>Potencia</th><th>Factor</th><th>Ejemplo eléctrico</th></tr></thead>
+            <tbody>
+              <tr><td>Nano</td><td>n</td><td>10⁻⁹</td><td>0.000 000 001</td><td>10 nF (condensador)</td></tr>
+              <tr><td>Micro</td><td>μ</td><td>10⁻⁶</td><td>0.000 001</td><td>100 μF (condensador)</td></tr>
+              <tr><td>Mili</td><td>m</td><td>10⁻³</td><td>0.001</td><td>350 mA (corriente)</td></tr>
+              <tr style="opacity:0.5"><td>(base)</td><td>—</td><td>10⁰</td><td>1</td><td>220 V · 1 A · 100 Ω</td></tr>
+              <tr><td>Kilo</td><td>k</td><td>10³</td><td>1 000</td><td>4.7 kΩ (resistencia)</td></tr>
+              <tr><td>Mega</td><td>M</td><td>10⁶</td><td>1 000 000</td><td>1 MΩ (aislación)</td></tr>
+              <tr><td>Giga</td><td>G</td><td>10⁹</td><td>1 000 000 000</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-info">Subir un prefijo = dividir por 1000 · Bajar = multiplicar por 1000. Ej: 4700 Ω → 4.7 kΩ · 0.022 μF → 22 nF</div>
+      </div>
+      <div class="theory-section" id="ts-magnitudes">
+        <h2>02 — Magnitudes Eléctricas</h2>
+        <p>Se llaman <strong style="color:#fff">magnitudes eléctricas</strong>. Cada una tiene una unidad del Sistema Internacional que lleva el nombre de su descubridor.</p>
+        <div class="tbl-wrap" style="margin-top:0.8rem;">
+          <table>
+            <thead><tr><th>Magnitud</th><th>Símbolo</th><th>Unidad</th><th>Descubridor</th><th>Definición</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--cyan)">Voltaje</td><td style="color:var(--cyan)">V</td><td>Voltios</td><td>Alessandro Volta</td><td>Diferencia de potencial entre dos puntos</td></tr>
+              <tr><td style="color:var(--amber)">Corriente</td><td style="color:var(--amber)">A</td><td>Amperes</td><td>André-Marie Ampère</td><td>Flujo de electrones por el conductor</td></tr>
+              <tr><td style="color:var(--green)">Resistencia</td><td style="color:var(--green)">Ω</td><td>Ohm</td><td>Georg Simon Ohm</td><td>Oposición al paso de la corriente</td></tr>
+              <tr><td style="color:var(--purple)">Capacitancia</td><td style="color:var(--purple)">F</td><td>Faradio</td><td>Michael Faraday</td><td>Capacidad de almacenar carga eléctrica</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-info">Condensador = capacitor. En Chile se usa más "condensador", en electrónica internacional "capacitor". Son lo mismo.</div>
+      </div>
+      <div class="theory-section" id="ts-colores">
+        <h2>03 — Código de Colores en Resistencias</h2>
+        <p>Las resistencias usan bandas de color para indicar su valor. Las de <strong style="color:#fff">4 bandas</strong> son las más comunes: dígito 1 · dígito 2 · multiplicador · tolerancia.</p>
+        <div style="display:flex;justify-content:center;padding:1rem 0;">
+          <svg viewBox="0 0 480 90" style="width:100%;max-width:460px" xmlns="http://www.w3.org/2000/svg">
+            <line x1="0" y1="45" x2="80" y2="45" stroke="#3a5070" stroke-width="3" stroke-linecap="round"/>
+            <line x1="400" y1="45" x2="480" y2="45" stroke="#3a5070" stroke-width="3" stroke-linecap="round"/>
+            <rect x="80" y="18" width="320" height="54" rx="10" fill="#c8a96e"/>
+            <rect x="80" y="18" width="320" height="54" rx="10" fill="none" stroke="#a07a40" stroke-width="1" opacity="0.6"/>
+            <rect x="112" y="18" width="36" height="54" fill="#8B4513"/>
+            <rect x="164" y="18" width="36" height="54" fill="#111"/>
+            <rect x="216" y="18" width="36" height="54" fill="#e74c3c"/>
+            <rect x="332" y="18" width="36" height="54" fill="#FFD700"/>
+            <text x="130" y="84" text-anchor="middle" font-family="'Share Tech Mono'" font-size="9" fill="#3a5070">Dígito 1</text>
+            <text x="182" y="84" text-anchor="middle" font-family="'Share Tech Mono'" font-size="9" fill="#3a5070">Dígito 2</text>
+            <text x="234" y="84" text-anchor="middle" font-family="'Share Tech Mono'" font-size="9" fill="#3a5070">Mult.</text>
+            <text x="350" y="84" text-anchor="middle" font-family="'Share Tech Mono'" font-size="9" fill="#3a5070">±Tol</text>
+            <text x="240" y="10" text-anchor="middle" font-family="'Share Tech Mono'" font-size="9" fill="#3a5070">Café · Negro · Rojo · Oro = 1 kΩ ±5%</text>
+          </svg>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Color</th><th>Dígito</th><th>Multiplicador</th><th>Tolerancia</th></tr></thead>
+            <tbody>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#111;border:1px solid #555;vertical-align:middle;margin-right:6px"></span>Negro</td><td>0</td><td>× 1</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#8B4513;vertical-align:middle;margin-right:6px"></span>Café</td><td>1</td><td>× 10</td><td>±1%</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e74c3c;vertical-align:middle;margin-right:6px"></span>Rojo</td><td>2</td><td>× 100</td><td>±2%</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e67e22;vertical-align:middle;margin-right:6px"></span>Naranja</td><td>3</td><td>× 1 k</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f1c40f;vertical-align:middle;margin-right:6px"></span>Amarillo</td><td>4</td><td>× 10 k</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#27ae60;vertical-align:middle;margin-right:6px"></span>Verde</td><td>5</td><td>× 100 k</td><td>±0.5%</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2980b9;vertical-align:middle;margin-right:6px"></span>Azul</td><td>6</td><td>× 1 M</td><td>±0.25%</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#8e44ad;vertical-align:middle;margin-right:6px"></span>Violeta</td><td>7</td><td>× 10 M</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#95a5a6;vertical-align:middle;margin-right:6px"></span>Gris</td><td>8</td><td>—</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ecf0f1;border:1px solid #555;vertical-align:middle;margin-right:6px"></span>Blanco</td><td>9</td><td>—</td><td>—</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:6px"></span>Oro</td><td>—</td><td>× 0.1</td><td>±5%</td></tr>
+              <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#C0C0C0;vertical-align:middle;margin-right:6px"></span>Plata</td><td>—</td><td>× 0.01</td><td>±10%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-ok">Mnemónico (0→9): Ne Ca Ro Na Am Ve Az Vi Gr Bl — Negro · Café · Rojo · Naranja · Amarillo · Verde · Azul · Violeta · Gris · Blanco</div>
+      </div>
+      <div class="theory-section" id="ts-multimetro">
+        <h2>04 — Uso del Multímetro</h2>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>¿Qué mides?</th><th>Selector</th><th>Puntas</th><th>Conexión</th><th>Circuito</th></tr></thead>
+            <tbody>
+              <tr><td>Voltaje AC</td><td>V~</td><td>VΩ + COM</td><td>Paralelo</td><td class="c-ok">Energizado</td></tr>
+              <tr><td>Voltaje DC</td><td>V=</td><td>VΩ + COM</td><td>Paralelo</td><td class="c-ok">Energizado</td></tr>
+              <tr><td>Corriente AC</td><td>A~</td><td>mA/10A + COM</td><td>Serie</td><td class="c-warn">Cuidado</td></tr>
+              <tr><td>Corriente DC</td><td>A=</td><td>mA/10A + COM</td><td>Serie</td><td class="c-warn">Cuidado</td></tr>
+              <tr><td>Resistencia</td><td>Ω</td><td>VΩ + COM</td><td>Directo</td><td class="c-bad">Desenergizado</td></tr>
+              <tr><td>Continuidad</td><td>)))))</td><td>VΩ + COM</td><td>Directo</td><td class="c-bad">Desenergizado</td></tr>
+              <tr><td>Aislación</td><td>MΩ</td><td>VΩ + COM</td><td>Directo</td><td class="c-bad">Desenergizado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box-warn">NUNCA midas resistencia o continuidad con el circuito energizado. Dañará el equipo y puede provocar lesiones graves.</div>
+        <h3>Interpretación de resultados</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Medición</th><th>Pantalla</th><th>Interpretación</th></tr></thead>
+            <tbody>
+              <tr><td>Continuidad</td><td class="c-ok">0–10 Ω + pitido</td><td class="c-ok">✓ Conductor en buen estado</td></tr>
+              <tr><td>Continuidad</td><td class="c-bad">OL / 1</td><td class="c-bad">✗ Circuito abierto (cable cortado)</td></tr>
+              <tr><td>Aislación cable</td><td class="c-ok">&gt; 1 MΩ</td><td class="c-ok">✓ Buen aislamiento</td></tr>
+              <tr><td>Aislación cable</td><td class="c-bad">&lt; 100 kΩ</td><td class="c-bad">✗ Aislamiento dañado</td></tr>
+              <tr><td>Voltaje red AC</td><td class="c-ok">~220 V (Chile)</td><td class="c-ok">✓ Tensión de red normal</td></tr>
+              <tr><td>Resistencia</td><td class="c-warn">OL</td><td class="c-warn">⚠ Circuito abierto o rango bajo</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div class="sidebar-nav">
-      <div class="nav-section-label">Principal</div>
-      <div class="nav-item active" onclick="navigate('overview', this)">
-        <span class="nav-icon">⌂</span>
-        Inicio
+    <!-- CALCULADORA -->
+    <div id="page-u1calc" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">Unidad 1 · Herramienta</div>
+        <div class="pg-title">Calculadora <span>Resistencias</span></div>
+        <div class="pg-sub">Código de colores — 4 bandas</div>
       </div>
-
-      <div class="nav-section-label">Unidad 1</div>
-      <div class="nav-unit-desc">Fundamentos de Automatización Industrial</div>
-
-      <div class="nav-group-toggle open" onclick="toggleNavGroup(this)">
-        ◈ Clase 1 — Conceptos Base
-        <span class="arrow">›</span>
+      <div class="calc-panel">
+        <div style="font-size:0.62rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:1rem;">Selecciona los colores de cada banda</div>
+        <div class="prev-r">
+          <div class="r-lead"></div>
+          <div class="r-body">
+            <div class="r-band" id="pv1" style="background:#8B4513"></div>
+            <div class="r-band" id="pv2" style="background:#111"></div>
+            <div class="r-band" id="pv3" style="background:#e74c3c"></div>
+            <div class="r-sp"></div>
+            <div class="r-band" id="pv4" style="background:#FFD700"></div>
+          </div>
+          <div class="r-lead"></div>
+        </div>
+        <div class="calc-bands">
+          <div class="band-grp"><label>Banda 1 — Dígito</label>
+            <select id="s1" onchange="calcR()">
+              <option value="1" data-c="#8B4513">Café</option><option value="2" data-c="#e74c3c">Rojo</option>
+              <option value="3" data-c="#e67e22">Naranja</option><option value="4" data-c="#f1c40f">Amarillo</option>
+              <option value="5" data-c="#27ae60">Verde</option><option value="6" data-c="#2980b9">Azul</option>
+              <option value="7" data-c="#8e44ad">Violeta</option><option value="8" data-c="#95a5a6">Gris</option>
+              <option value="9" data-c="#ecf0f1">Blanco</option>
+            </select></div>
+          <div class="band-grp"><label>Banda 2 — Dígito</label>
+            <select id="s2" onchange="calcR()">
+              <option value="0" data-c="#111">Negro</option><option value="1" data-c="#8B4513">Café</option>
+              <option value="2" data-c="#e74c3c">Rojo</option><option value="3" data-c="#e67e22">Naranja</option>
+              <option value="4" data-c="#f1c40f">Amarillo</option><option value="5" data-c="#27ae60">Verde</option>
+              <option value="6" data-c="#2980b9">Azul</option><option value="7" data-c="#8e44ad">Violeta</option>
+              <option value="8" data-c="#95a5a6">Gris</option><option value="9" data-c="#ecf0f1">Blanco</option>
+            </select></div>
+          <div class="band-grp"><label>Banda 3 — Multiplicador</label>
+            <select id="s3" onchange="calcR()">
+              <option value="1" data-c="#111">Negro × 1</option><option value="10" data-c="#8B4513">Café × 10</option>
+              <option value="100" data-c="#e74c3c" selected>Rojo × 100</option><option value="1000" data-c="#e67e22">Naranja × 1k</option>
+              <option value="10000" data-c="#f1c40f">Amarillo × 10k</option><option value="100000" data-c="#27ae60">Verde × 100k</option>
+              <option value="1000000" data-c="#2980b9">Azul × 1M</option><option value="0.1" data-c="#FFD700">Oro × 0.1</option>
+              <option value="0.01" data-c="#C0C0C0">Plata × 0.01</option>
+            </select></div>
+          <div class="band-grp"><label>Banda 4 — Tolerancia</label>
+            <select id="s4" onchange="calcR()">
+              <option value="5" data-tol="±5%" data-c="#FFD700">Oro ±5%</option>
+              <option value="10" data-tol="±10%" data-c="#C0C0C0">Plata ±10%</option>
+              <option value="1" data-tol="±1%" data-c="#8B4513">Café ±1%</option>
+              <option value="2" data-tol="±2%" data-c="#e74c3c">Rojo ±2%</option>
+            </select></div>
+        </div>
+        <div class="result-display">
+          <span class="res-lbl">Valor</span>
+          <span class="res-val" id="rval">1 kΩ</span>
+          <span class="res-tol" id="rtol">±5%</span>
+          <span class="res-range" id="rrange">Rango: 950 Ω — 1.05 kΩ</span>
+        </div>
       </div>
-      <div class="nav-sub open">
-        <div class="nav-item" onclick="navigate('resumen', this)">
-          <span class="nav-icon">≡</span>
-          Resúmenes
-        </div>
-        <div class="nav-item" onclick="navigate('ejercicios', this)">
-          <span class="nav-icon">⚡</span>
-          Ejercicios
-          <span class="nav-count">3</span>
-        </div>
-        <div class="nav-item" onclick="navigate('quiz', this)">
-          <span class="nav-icon">◎</span>
-          Quiz
-        </div>
-        <div class="nav-item" onclick="navigate('flashcards', this)">
-          <span class="nav-icon">▣</span>
-          Flashcards
-          <span class="nav-count">8</span>
-        </div>
-        <div class="nav-item" onclick="navigate('glosario', this)">
-          <span class="nav-icon">✦</span>
-          Glosario
-          <span class="nav-count">8</span>
-        </div>
-      </div>
-
-      <div class="nav-section-label" style="margin-top:6px">Personal</div>
-      <div class="nav-item" onclick="navigate('notas', this)">
-        <span class="nav-icon">✎</span>
-        Notas
+      <div class="theory-section">
+        <h2>Cómo leer una resistencia física</h2>
+        <p>1. La banda de tolerancia (oro/plata) va al lado derecho — úsala para orientar la resistencia.<br>
+        2. Lee de izquierda a derecha: dígito 1 · dígito 2 · multiplicador.<br>
+        3. El resultado = (d1 × 10 + d2) × multiplicador.<br>
+        4. La tolerancia indica cuánto puede variar el valor real del nominal.</p>
+        <div class="box-info">Usa la calculadora para verificar tus lecturas antes de entregar un ejercicio.</div>
       </div>
     </div>
 
-    <div class="sidebar-bottom">
-      <div class="status-dot"></div>
-      SEMESTRE ACTIVO · U1
+    <!-- EJERCICIOS -->
+    <div id="page-u1ej" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">Unidad 1 · Práctica</div>
+        <div class="pg-title">Ejercicios <span>U1</span></div>
+        <div class="pg-sub">Código de colores · Prefijos · Multímetro</div>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-tag">CÓDIGO DE COLORES</div>
+        <div class="quiz-q"><strong>EJ-01 ·</strong> Una resistencia tiene bandas <strong>Amarillo · Violeta · Rojo · Oro</strong>. ¿Cuál es su valor nominal y su rango de tolerancia?</div>
+        <button class="quiz-btn reveal" onclick="toggleResp(this)">▶ VER RESPUESTA</button>
+        <div class="quiz-feedback ok">Amarillo = 4 · Violeta = 7 · Rojo = ×100 · Oro = ±5%<br>Valor = (4×10 + 7) × 100 = 47 × 100 = <strong>4 700 Ω = 4.7 kΩ</strong><br>Rango: 4 700 × 0.95 = 4 465 Ω mín. · 4 700 × 1.05 = 4 935 Ω máx.</div>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-tag">CÓDIGO DE COLORES</div>
+        <div class="quiz-q"><strong>EJ-02 ·</strong> Identifica el valor y tolerancia de una resistencia con bandas <strong>Naranja · Naranja · Naranja · Café</strong>.</div>
+        <button class="quiz-btn reveal" onclick="toggleResp(this)">▶ VER RESPUESTA</button>
+        <div class="quiz-feedback ok">Naranja = 3 · Naranja = 3 · Naranja = ×1 000 · Café = ±1%<br>Valor = (3×10 + 3) × 1 000 = 33 × 1 000 = <strong>33 000 Ω = 33 kΩ</strong><br>Rango: 33 000 × 0.99 = 32 670 Ω mín. · 33 000 × 1.01 = 33 330 Ω máx.</div>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-tag">PREFIJOS SI</div>
+        <div class="quiz-q"><strong>EJ-03 ·</strong> Convierte los siguientes valores:<br>a) 47 000 Ω → _____ kΩ<br>b) 0.0022 μF → _____ nF<br>c) 500 mA → _____ A</div>
+        <button class="quiz-btn reveal" onclick="toggleResp(this)">▶ VER RESPUESTA</button>
+        <div class="quiz-feedback ok">a) 47 000 ÷ 1 000 = <strong>47 kΩ</strong><br>b) 0.0022 × 1 000 = <strong>2.2 nF</strong><br>c) 500 ÷ 1 000 = <strong>0.5 A</strong></div>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-tag">INTERACTIVO · MULTÍMETRO</div>
+        <div class="quiz-q"><strong>EJ-04 ·</strong> ¿En qué posición del selector debes poner el multímetro para medir voltaje de la red eléctrica de Chile (220 V)?</div>
+        <input class="quiz-input" id="q4-input" type="text" placeholder="Escribe tu respuesta aquí...">
+        <button class="quiz-btn check" onclick="checkQ4()">VERIFICAR</button>
+        <div class="quiz-feedback" id="q4-feedback"></div>
+      </div>
+      <div class="quiz-card">
+        <div class="quiz-tag">INTERACTIVO · SEGURIDAD</div>
+        <div class="quiz-q"><strong>EJ-05 ·</strong> Antes de medir la resistencia de un componente, ¿qué debes hacer con el circuito?</div>
+        <input class="quiz-input" id="q5-input" type="text" placeholder="Escribe tu respuesta aquí...">
+        <button class="quiz-btn check" onclick="checkQ5()">VERIFICAR</button>
+        <div class="quiz-feedback" id="q5-feedback"></div>
+      </div>
     </div>
-  </nav>
 
-  <!-- ══ MAIN ══════════════════════════════════════════════════ -->
-  <div id="main">
-    <div id="topbar">
-      <button id="hamburger" onclick="toggleSidebar()" aria-label="Menú">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="topbar-breadcrumb">
-        <span>U1</span>
-        <span class="sep">//</span>
-        <span class="current" id="breadcrumb-current">INICIO</span>
+    <!-- FÓRMULAS -->
+    <div id="page-formulas" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">General · Referencia</div>
+        <div class="pg-title">Tabla de <span>Fórmulas</span></div>
+        <div class="pg-sub">Semestre completo · Se actualiza con cada unidad</div>
       </div>
-      <div class="topbar-right">
-        <span class="topbar-tag accent">C1 ONLINE</span>
+      <div class="theory-section">
+        <h2>Unidad 1 — Electricidad Básica</h2>
+        <div class="formula-block"><div class="formula-eq">V = I × R</div><div class="formula-desc">Ley de Ohm — V=Voltios · I=Amperes · R=Ohm</div></div>
+        <div class="formula-block"><div class="formula-eq">I = V / R</div><div class="formula-desc">Corriente — despejando I de la Ley de Ohm</div></div>
+        <div class="formula-block"><div class="formula-eq">R = V / I</div><div class="formula-desc">Resistencia — despejando R de la Ley de Ohm</div></div>
+        <div class="formula-block"><div class="formula-eq">P = V × I</div><div class="formula-desc">Potencia eléctrica — P=Watts · V=Voltios · I=Amperes</div></div>
+        <div class="formula-block"><div class="formula-eq">R = (d1×10 + d2) × mult</div><div class="formula-desc">Valor de resistencia por código de 4 bandas de color</div></div>
+        <div class="formula-block"><div class="formula-eq">R_min = R × (1 − tol/100)</div><div class="formula-desc">Valor mínimo real considerando tolerancia</div></div>
+        <div class="formula-block"><div class="formula-eq">R_max = R × (1 + tol/100)</div><div class="formula-desc">Valor máximo real considerando tolerancia</div></div>
+      </div>
+      <div class="box-info">Las fórmulas de las siguientes unidades se irán agregando a medida que avancen las clases.</div>
+    </div>
+
+    <!-- GLOSARIO -->
+    <div id="page-glosario" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">General · Referencia</div>
+        <div class="pg-title">Glosario de <span>Términos</span></div>
+        <div class="pg-sub">Semestre completo · Filtra en tiempo real</div>
+      </div>
+      <input class="glos-search" id="glos-search" type="text" placeholder="Filtrar términos..." oninput="filterGlosario(this.value)">
+      <div id="glosario-list">
+        <div class="glos-row" data-term="multimetro dmm digital"><span class="glos-term">Multímetro / DMM</span><span class="glos-def">Instrumento de medición que permite medir voltaje, corriente y resistencia en un mismo dispositivo. DMM = Digital Multimeter.</span></div>
+        <div class="glos-row" data-term="voltaje voltios potencial"><span class="glos-term">Voltaje (V)</span><span class="glos-def">Diferencia de potencial eléctrico entre dos puntos de un circuito. Se mide en Voltios (V) en paralelo al componente.</span></div>
+        <div class="glos-row" data-term="corriente amperes electrones"><span class="glos-term">Corriente (A)</span><span class="glos-def">Flujo de electrones a través de un conductor. Se mide en Amperes (A) en serie, interrumpiendo el circuito.</span></div>
+        <div class="glos-row" data-term="resistencia ohm oposicion"><span class="glos-term">Resistencia (Ω)</span><span class="glos-def">Oposición al paso de la corriente eléctrica. Se mide en Ohm (Ω). Siempre con circuito desenergizado.</span></div>
+        <div class="glos-row" data-term="capacitancia faradio condensador capacitor"><span class="glos-term">Capacitancia (F)</span><span class="glos-def">Capacidad de un condensador/capacitor para almacenar carga eléctrica. Se mide en Faradios (F), generalmente en μF o nF.</span></div>
+        <div class="glos-row" data-term="continuidad pitido circuito"><span class="glos-term">Continuidad</span><span class="glos-def">Prueba que verifica si existe un camino conductor entre dos puntos. El multímetro emite un pitido si hay continuidad (circuito cerrado).</span></div>
+        <div class="glos-row" data-term="aislacion aislamiento cable"><span class="glos-term">Aislación</span><span class="glos-def">Medición de la resistencia del aislamiento de un cable. Un valor mayor a 1 MΩ indica buen aislamiento.</span></div>
+        <div class="glos-row" data-term="ac dc alterna continua red"><span class="glos-term">AC / DC</span><span class="glos-def">AC = Corriente Alterna · DC = Corriente Continua. La red doméstica en Chile es AC 220V.</span></div>
+        <div class="glos-row" data-term="prefijo si sistema internacional kilo mega"><span class="glos-term">Prefijo SI</span><span class="glos-def">Modificador que multiplica o divide una unidad base por una potencia de 10. Ej: kilo (×1000), mili (×0.001).</span></div>
+        <div class="glos-row" data-term="pcb placa circuito impreso printed"><span class="glos-term">PCB</span><span class="glos-def">Printed Circuit Board — Placa de Circuito Impreso. Sustrato físico donde se montan los componentes electrónicos.</span></div>
+        <div class="glos-row" data-term="crimpar crimpado terminal mecanico"><span class="glos-term">Crimpar</span><span class="glos-def">Técnica de unión mecánica que comprime un terminal metálico sobre un cable para crear una conexión eléctrica sin soldar.</span></div>
+        <div class="glos-row" data-term="tolerancia porcentaje variacion nominal"><span class="glos-term">Tolerancia</span><span class="glos-def">Margen de variación permitido en el valor real de un componente respecto a su valor nominal. Expresada en porcentaje (±5%, ±10%, etc.).</span></div>
       </div>
     </div>
 
-    <div id="content">
-
-      <!-- ════════════════════════════════════════
-           OVERVIEW
-      ════════════════════════════════════════ -->
-      <div class="panel active" id="panel-overview">
-        <div class="content-inner">
-          <div class="page-title">// <span>SYS</span>INIT</div>
-          <div class="page-subtitle">Automatización Industrial · Apuntes de clase</div>
-
-          <div class="card">
-            <div class="card-title">// Búsqueda</div>
-            <input type="text" id="homeSearch"
-              placeholder="// buscar en teoría, glosario, ejercicios..."
-              style="width:100%;background:var(--bg);border:1px solid var(--border2);padding:10px 14px;color:var(--text-bright);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;border-radius:0;transition:border-color .2s,box-shadow .2s;"
-              onfocus="this.style.borderColor='var(--green)';this.style.boxShadow='0 0 10px rgba(0,255,157,.1)'"
-              onblur="this.style.borderColor='var(--border2)';this.style.boxShadow='none'"
-              oninput="homeSearchFn(this.value)">
-            <div id="search-results" style="margin-top:10px;display:none"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">// Registro de clases</div>
-            <div class="table-wrap"><table class="data-table">
-              <thead><tr><th>Clase</th><th>Unidad</th><th>Tema</th><th>Estado</th></tr></thead>
-              <tbody>
-                <tr>
-                  <td style="font-family:'Orbitron',monospace;color:var(--green);white-space:nowrap">C1</td>
-                  <td><span class="tag blue">U1</span></td>
-                  <td>Fundamentos de la Automatización Industrial</td>
-                  <td><span class="tag green">✓ LISTO</span></td>
-                </tr>
-                <tr>
-                  <td style="font-family:'Orbitron',monospace;color:var(--text-dim)">C2</td>
-                  <td style="color:var(--text-dim)">—</td>
-                  <td style="color:var(--text-dim)">Por agregar...</td>
-                  <td><span class="tag" style="border:1px solid var(--border2);color:var(--text-dim)">PENDIENTE</span></td>
-                </tr>
-              </tbody>
-            </table></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">// Instrucciones</div>
-            <ul class="styled">
-              <li>Sidebar para navegar entre secciones (☰ en móvil)</li>
-              <li><strong>Ejercicios</strong> con respuestas ocultables para repasar</li>
-              <li><strong>Quiz</strong> genera preguntas aleatorias con feedback instantáneo</li>
-              <li><strong>Flashcards</strong> con flip 3D al tocar y botón para barajar</li>
-              <li><strong>Glosario</strong> con buscador en tiempo real</li>
-              <li><strong>Notas</strong> se guardan en tu dispositivo automáticamente</li>
-            </ul>
-          </div>
-        </div>
+    <!-- FLASHCARDS -->
+    <div id="page-flashcards" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">General · Repaso</div>
+        <div class="pg-title">Flash<span>cards</span></div>
+        <div class="pg-sub">Click en la tarjeta para voltear · Filtra por categoría</div>
       </div>
-
-      <!-- ════════════════════════════════════════
-           RESUMEN
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-resumen">
-        <div class="content-inner">
-          <div class="page-title">// <span>CLASE</span> 01</div>
-          <div class="page-subtitle">Unidad 1 · Fundamentos de la Automatización Industrial</div>
-
-          <div class="theory-section" data-search-content="automatización industrial tecnología controlar proceso sistema productivo mínima participación humana informática electrónica electricidad mecánica">
-            <h2><span class="num">01</span> Automatización Industrial</h2>
-            <p>Tecnología que busca <span class="hi">controlar un proceso o sistema productivo</span> con la <span class="hi2">mínima participación humana</span>. Es una disciplina multidisciplinaria que combina conocimientos de distintas áreas.</p>
-            <div class="table-wrap"><table class="data-table">
-              <thead><tr><th>Disciplina</th><th>Aporte a la Automatización</th></tr></thead>
-              <tbody>
-                <tr><td>💻 Informática</td><td>Programación, procesamiento de datos, control digital</td></tr>
-                <tr><td>⚡ Electrónica</td><td>Sensores, circuitos de control y señales eléctricas</td></tr>
-                <tr><td>🔌 Electricidad</td><td>Alimentación, motores y actuadores eléctricos</td></tr>
-                <tr><td>⚙️ Mecánica</td><td>Estructuras, transmisiones y sistemas de movimiento</td></tr>
-              </tbody>
-            </table></div>
-          </div>
-
-          <div class="theory-section" data-search-content="control automático componentes medición transmisión control fuerza comunicación cadena medir transmitir controlar actuar sensor actuador">
-            <h2><span class="num">02</span> Control Automático</h2>
-            <p>Conjunto de <span class="hi">componentes</span> (medición, transmisión, control, fuerza y comunicación) que trabajan en conjunto según los requerimientos del sistema productivo para lograr el control de un proceso.</p>
-            <h3>Cadena de Control</h3>
-            <div class="chain">
-              <div class="chain-step s1"><span class="step-label">paso 1</span>📡 Medir</div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s2"><span class="step-label">paso 2</span>📶 Transmitir</div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s3"><span class="step-label">paso 3</span>🧠 Controlar</div>
-              <div class="chain-arrow">→</div>
-              <div class="chain-step s4"><span class="step-label">paso 4</span>⚡ Actuar</div>
-            </div>
-          </div>
-
-          <div class="theory-section" data-search-content="sistema combinación componentes objetivo entrada proceso salida inputs outputs definición">
-            <h2><span class="num">03</span> Definición de Sistema</h2>
-            <div class="box-def">Combinación de todos los <strong>componentes</strong> que actúan en conjunto para lograr un <strong>objetivo determinado</strong>.</div>
-            <div class="grid-3" style="margin-top:16px">
-              <div class="card" style="border-color:rgba(0,255,157,.2);text-align:center;margin-bottom:0">
-                <div style="font-size:20px;margin-bottom:6px">📥</div>
-                <div class="card-title" style="justify-content:center;color:var(--green);font-size:9px">Entrada</div>
-                <p style="font-size:11.5px;color:var(--text-dim)">Variables o datos que ingresan (inputs)</p>
-              </div>
-              <div class="card" style="border-color:rgba(0,200,255,.2);text-align:center;margin-bottom:0">
-                <div style="font-size:20px;margin-bottom:6px">⚙️</div>
-                <div class="card-title" style="justify-content:center;color:var(--cyan);font-size:9px">Proceso</div>
-                <p style="font-size:11.5px;color:var(--text-dim)">Transformación de las entradas</p>
-              </div>
-              <div class="card" style="border-color:rgba(255,183,0,.2);text-align:center;margin-bottom:0">
-                <div style="font-size:20px;margin-bottom:6px">📤</div>
-                <div class="card-title" style="justify-content:center;color:var(--amber);font-size:9px">Salida</div>
-                <p style="font-size:11.5px;color:var(--text-dim)">Resultado del proceso (outputs)</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="theory-section" data-search-content="objetivos automatización económico seguridad calidad productividad conectividad costos trabajadores uniformidad producción mercado información tiempo real">
-            <h2><span class="num">04</span> Objetivos de la Automatización</h2>
-            <div class="grid-2" style="margin-top:12px">
-              <div class="obj-card">
-                <div class="obj-icon">💰</div>
-                <div class="obj-body"><h3>Económico</h3><p>Disminuir costos humanos, energéticos, materiales y operativos del proceso.</p></div>
-              </div>
-              <div class="obj-card">
-                <div class="obj-icon">🛡️</div>
-                <div class="obj-body"><h3>Seguridad</h3><p>Evitar que el trabajador realice tareas repetitivas y/o peligrosas para su integridad.</p></div>
-              </div>
-              <div class="obj-card">
-                <div class="obj-icon">✅</div>
-                <div class="obj-body"><h3>Calidad</h3><p>Mejorar y mantener la calidad del producto con uniformidad constante en la producción.</p></div>
-              </div>
-              <div class="obj-card">
-                <div class="obj-icon">📈</div>
-                <div class="obj-body"><h3>Productividad</h3><p>Aumentar la producción y flexibilidad del sistema para adaptarse al mercado.</p></div>
-              </div>
-              <div class="obj-card" style="grid-column:1/-1">
-                <div class="obj-icon">🌐</div>
-                <div class="obj-body"><h3>Conectividad</h3><p>Obtener información en tiempo real del proceso productivo para tomar mejores decisiones.</p></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="theory-section" data-search-content="lógica cableada programable PLC relés contactores temporizadores Siemens Allen-Bradley OMRON Schneider modificar reprogramar flexibilidad diagnóstico tecnologías control">
-            <h2><span class="num">05</span> Tecnologías de Control</h2>
-            <div class="tech-grid">
-              <div class="tech-card cableada">
-                <div class="tech-header">⚡ Lógica Cableada</div>
-                <div class="tech-body"><ul>
-                  <li>Control basado en <strong>conexiones físicas directas</strong> entre componentes electrónicos.</li>
-                  <li>Difícil de modificar: cualquier cambio implica <strong>recablear físicamente</strong>.</li>
-                  <li>Mayor robustez en ambientes industriales sencillos.</li>
-                  <li>Componentes: relés, contactores, temporizadores, interruptores.</li>
-                </ul></div>
-              </div>
-              <div class="tech-card plc">
-                <div class="tech-header">💻 Lógica Programable (PLC)</div>
-                <div class="tech-body"><ul>
-                  <li>Control basado en <strong>programación</strong>: flexible y reprogramable.</li>
-                  <li>Requiere un <strong>PLC</strong> (Programmable Logic Controller).</li>
-                  <li>Cambios de funcionamiento solo requieren modificar el programa.</li>
-                  <li>Ejemplos: Siemens S7, Allen-Bradley, OMRON, Schneider.</li>
-                </ul></div>
-              </div>
-            </div>
-            <h3>Comparación rápida</h3>
-            <div class="table-wrap"><table class="data-table">
-              <thead><tr><th>Característica</th><th>Lógica Cableada</th><th>PLC</th></tr></thead>
-              <tbody>
-                <tr><td>Modificación</td><td>Recablear</td><td>Solo reprogramar</td></tr>
-                <tr><td>Costo inicial</td><td>Bajo</td><td>Mayor inversión</td></tr>
-                <tr><td>Flexibilidad</td><td>Baja</td><td>Alta</td></tr>
-                <tr><td>Diagnóstico</td><td>Difícil</td><td>Fácil (software)</td></tr>
-                <tr><td>Aplicación</td><td>Sistemas simples</td><td>Sistemas complejos</td></tr>
-              </tbody>
-            </table></div>
-          </div>
-        </div>
+      <div class="fc-filters">
+        <button class="fc-filter-btn active" onclick="filterFC('all',this)">TODOS</button>
+        <button class="fc-filter-btn" onclick="filterFC('magnitud',this)">MAGNITUDES</button>
+        <button class="fc-filter-btn" onclick="filterFC('formula',this)">FÓRMULAS</button>
+        <button class="fc-filter-btn" onclick="filterFC('concepto',this)">CONCEPTOS</button>
+        <button class="fc-filter-btn" onclick="filterFC('seguridad',this)">SEGURIDAD</button>
       </div>
-
-      <!-- ════════════════════════════════════════
-           EJERCICIOS
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-ejercicios">
-        <div class="content-inner">
-          <div class="page-title">// <span>EJERCICIOS</span></div>
-          <div class="page-subtitle">Clase 1 · Repasa y pon a prueba lo aprendido</div>
-
-          <div class="exercise open">
-            <div class="exercise-header" onclick="toggleExercise(this)">
-              <span class="exercise-num">E01</span>
-              <span class="exercise-title">Identifica componentes de la cadena de control</span>
-              <span class="exercise-tag tipo-analisis">Análisis</span>
-              <span class="exercise-chevron">▾</span>
-            </div>
-            <div class="exercise-body">
-              <div class="exercise-question">
-                En una planta embotelladora, un <strong>sensor de nivel</strong> detecta que el estanque está lleno y envía una señal al controlador, el que apaga la bomba de llenado. Identifica cada componente de la cadena de control automático en este ejemplo.
-              </div>
-              <div class="exercise-answer-label">// Solución</div>
-              <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
-              <div class="answer-content">
-                <ul class="styled">
-                  <li><strong>Medición:</strong> El sensor de nivel (detecta que el estanque está lleno)</li>
-                  <li><strong>Transmisión:</strong> La señal eléctrica enviada desde el sensor al controlador</li>
-                  <li><strong>Control:</strong> El controlador (decide apagar la bomba según la señal recibida)</li>
-                  <li><strong>Actuación:</strong> La bomba de llenado (ejecuta la acción: apagarse)</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="exercise">
-            <div class="exercise-header" onclick="toggleExercise(this)">
-              <span class="exercise-num">E02</span>
-              <span class="exercise-title">Clasifica: ¿Cableada o programable?</span>
-              <span class="exercise-tag tipo-clasificacion">Clasificación</span>
-              <span class="exercise-chevron">▾</span>
-            </div>
-            <div class="exercise-body">
-              <div class="exercise-question">
-                Clasifica cada sistema según si usa <strong>lógica cableada</strong> o <strong>lógica programable</strong> y justifica brevemente:<br><br>
-                a) Una cortadora industrial que usa relés y contactores para activar la hoja.<br>
-                b) Un sistema de gestión de un brazo robótico reprogramable.<br>
-                c) Un tablero eléctrico con temporizadores físicos para encender luces.<br>
-                d) Una línea de producción de automóviles controlada por Siemens S7.
-              </div>
-              <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
-              <div class="answer-content">
-                <ul class="styled">
-                  <li><strong>a) Lógica Cableada:</strong> usa componentes físicos (relés y contactores), sin programación.</li>
-                  <li><strong>b) Lógica Programable:</strong> el brazo robótico es reprogramable, requiere un PLC o controlador equivalente.</li>
-                  <li><strong>c) Lógica Cableada:</strong> los temporizadores físicos son hardware, no hay software involucrado.</li>
-                  <li><strong>d) Lógica Programable:</strong> Siemens S7 es un PLC industrial.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="exercise">
-            <div class="exercise-header" onclick="toggleExercise(this)">
-              <span class="exercise-num">E03</span>
-              <span class="exercise-title">Aplica los 5 objetivos de la automatización</span>
-              <span class="exercise-tag tipo-definicion">Aplicación</span>
-              <span class="exercise-chevron">▾</span>
-            </div>
-            <div class="exercise-body">
-              <div class="exercise-question">
-                Una empresa minera decide automatizar su sistema de extracción de mineral. Describe cómo la automatización impacta en <strong>cada uno de los 5 objetivos</strong> estudiados en este contexto específico.
-              </div>
-              <button class="btn-reveal" onclick="revealAnswer(this)">▷ Ver respuesta</button>
-              <div class="answer-content">
-                <ul class="styled">
-                  <li><strong>Económico:</strong> Reducción de personal en zonas de extracción y menor gasto energético por optimización de maquinaria.</li>
-                  <li><strong>Seguridad:</strong> El personal no ingresa a zonas peligrosas; robots y maquinaria automatizada hacen el trabajo riesgoso.</li>
-                  <li><strong>Calidad:</strong> Extracción más uniforme y controlada, evitando pérdidas de mineral o daños al yacimiento.</li>
-                  <li><strong>Productividad:</strong> Operación 24 horas sin descanso, mayor volumen extraído y adaptación a variaciones del yacimiento.</li>
-                  <li><strong>Conectividad:</strong> Sensores en tiempo real monitorean mineral, temperatura, gases y maquinaria desde sala de control.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="fc-grid" id="fc-grid">
+        <div class="fc-card" data-cat="magnitud" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">MAGNITUD</div><div class="fc-term">Voltaje</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Diferencia de potencial eléctrico entre dos puntos. Símbolo: V. Unidad: Voltios. Se mide en paralelo.</div></div></div></div>
+        <div class="fc-card" data-cat="magnitud" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">MAGNITUD</div><div class="fc-term">Corriente</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Flujo de electrones a través de un conductor. Símbolo: A. Unidad: Amperes. Se mide en serie.</div></div></div></div>
+        <div class="fc-card" data-cat="magnitud" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">MAGNITUD</div><div class="fc-term">Resistencia</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Oposición al paso de la corriente. Símbolo: Ω. Unidad: Ohm. Medir siempre sin tensión.</div></div></div></div>
+        <div class="fc-card" data-cat="magnitud" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">MAGNITUD</div><div class="fc-term">Capacitancia</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Capacidad de almacenar carga eléctrica. Símbolo: F. Unidad: Faradio. En la práctica: μF o nF.</div></div></div></div>
+        <div class="fc-card" data-cat="formula" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">FÓRMULA</div><div class="fc-term">Ley de Ohm</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">FÓRMULA</div><div class="fc-def" style="font-size:1.1rem;color:var(--green);text-shadow:0 0 8px rgba(0,255,157,0.4)">V = I × R</div><div class="fc-def" style="margin-top:0.5rem;font-size:0.72rem;">V=Voltios · I=Amperes · R=Ohm</div></div></div></div>
+        <div class="fc-card" data-cat="formula" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">FÓRMULA</div><div class="fc-term">Potencia eléctrica</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">FÓRMULA</div><div class="fc-def" style="font-size:1.1rem;color:var(--green);text-shadow:0 0 8px rgba(0,255,157,0.4)">P = V × I</div><div class="fc-def" style="margin-top:0.5rem;font-size:0.72rem;">P=Watts · V=Voltios · I=Amperes</div></div></div></div>
+        <div class="fc-card" data-cat="concepto" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">CONCEPTO</div><div class="fc-term">Continuidad</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Prueba que verifica si hay un camino conductor. Pitido = circuito cerrado ✓. Sin pitido = circuito abierto ✗.</div></div></div></div>
+        <div class="fc-card" data-cat="concepto" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">CONCEPTO</div><div class="fc-term">Tolerancia</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">DEFINICIÓN</div><div class="fc-def">Margen de variación permitido. Ej: 1kΩ ±5% puede ser entre 950Ω y 1050Ω.</div></div></div></div>
+        <div class="fc-card" data-cat="concepto" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">CONCEPTO</div><div class="fc-term">Mnemónico colores</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">0 → 9</div><div class="fc-def">Ne Ca Ro Na Am Ve Az Vi Gr Bl<br><span style="font-size:0.7rem;color:var(--dim)">Negro·Café·Rojo·Naranja·Amarillo·Verde·Azul·Violeta·Gris·Blanco</span></div></div></div></div>
+        <div class="fc-card" data-cat="seguridad" onclick="this.classList.toggle('flipped')"><div class="fc-inner"><div class="fc-front"><div class="fc-cat">SEGURIDAD</div><div class="fc-term">Medir resistencia</div><div class="fc-hint">↻ click para voltear</div></div><div class="fc-back"><div class="fc-cat">REGLA</div><div class="fc-def" style="color:#ffb0bc">SIEMPRE desenergizar el circuito antes de medir resistencia o continuidad. Con tensión se daña el equipo y puede causar lesiones.</div></div></div></div>
       </div>
+    </div>
 
-      <!-- ════════════════════════════════════════
-           QUIZ
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-quiz">
-        <div class="content-inner">
-          <div class="page-title">// <span>QUIZ</span></div>
-          <div class="page-subtitle">Preguntas aleatorias · Clase 1</div>
-          <div class="quiz-controls">
-            <button class="btn" onclick="startQuiz()">▷ NUEVA PREGUNTA</button>
-            <button class="btn-secondary" onclick="resetQuiz()">↺ REINICIAR</button>
-            <div class="quiz-score">SCORE: <span id="quiz-score">0</span> / <span id="quiz-total">0</span></div>
-          </div>
-          <div id="quiz-container"></div>
-        </div>
+    <!-- NOTAS -->
+    <div id="page-notas" class="page">
+      <div class="pg-header">
+        <div class="pg-sup">General · Personal</div>
+        <div class="pg-title">Mis <span>Notas</span></div>
+        <div class="pg-sub">Se guardan automáticamente en el navegador</div>
       </div>
-
-      <!-- ════════════════════════════════════════
-           FLASHCARDS
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-flashcards">
-        <div class="content-inner">
-          <div class="page-title">// <span>FLASH</span>CARDS</div>
-          <div class="page-subtitle">Toca la tarjeta para voltearla · Filtra o baraja</div>
-          <div class="flashcard-controls">
-            <button class="fc-filter active" onclick="filterFC('all',this)">TODOS</button>
-            <button class="fc-filter" onclick="filterFC('definicion',this)">DEFINICIONES</button>
-            <button class="fc-filter" onclick="filterFC('componente',this)">COMPONENTES</button>
-            <button class="fc-filter" onclick="filterFC('tecnologia',this)">TECNOLOGÍAS</button>
-            <button class="btn-shuffle" onclick="shuffleFC()">⇌ BARAJAR</button>
-          </div>
-          <div class="flashcards-grid" id="flashcards-grid"></div>
-        </div>
+      <div class="theory-section">
+        <h2>Editor de notas</h2>
+        <textarea class="notes-area" id="notes-ta" placeholder="Escribe aquí tus notas, dudas, apuntes de clase..." oninput="autoSaveNotes()"></textarea>
+        <div class="notes-meta" id="notes-meta">Sin cambios guardados.</div>
+        <button class="notes-btn" onclick="clearNotes()">LIMPIAR NOTAS</button>
       </div>
+    </div>
 
-      <!-- ════════════════════════════════════════
-           GLOSARIO
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-glosario">
-        <div class="content-inner">
-          <div class="page-title">// <span>GLOSARIO</span></div>
-          <div class="page-subtitle">Clase 1 · Busca cualquier término</div>
-          <input type="text" class="glosario-search" id="glosarioSearch" placeholder="// buscar término..." oninput="filterGlosario()">
-          <div id="glosario-list">
-            <div class="term-card" data-term="automatizacion industrial">
-              <div class="term-word">Automatización<br>Industrial</div>
-              <div class="term-def">Tecnología que permite controlar un proceso o sistema productivo buscando la mínima participación humana. Integra informática, electrónica, electricidad y mecánica.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="control automatico">
-              <div class="term-word">Control<br>Automático</div>
-              <div class="term-def">Conjunto de componentes (medición, transmisión, control, actuación y comunicación) que trabajan en conjunto para controlar un proceso productivo sin intervención humana directa.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="sistema">
-              <div class="term-word">Sistema</div>
-              <div class="term-def">Combinación de todos los componentes que actúan en conjunto para lograr un objetivo determinado. Posee entradas, un proceso de transformación y salidas.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="logica cableada reles contactores">
-              <div class="term-word">Lógica Cableada</div>
-              <div class="term-def">Sistema de control basado en conexiones físicas directas entre componentes electrónicos (relés, contactores, temporizadores). Para modificarlo se debe recablear físicamente.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="logica programable plc">
-              <div class="term-word">Lógica<br>Programable</div>
-              <div class="term-def">Sistema de control basado en programación de software. Flexible y reprogramable sin cambios de hardware. Requiere un PLC (Programmable Logic Controller).<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="plc controlador logico programable siemens">
-              <div class="term-word">PLC</div>
-              <div class="term-def">Programmable Logic Controller. Dispositivo electrónico industrial que ejecuta un programa para controlar máquinas y procesos. Ejemplos: Siemens S7, Allen-Bradley, OMRON.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="actuador motor valvula bomba">
-              <div class="term-word">Actuador</div>
-              <div class="term-def">Componente que ejecuta la acción física en un sistema automatizado (motores, válvulas, pistones, bombas). Corresponde a la etapa de "Actuación" en la cadena de control.<span class="term-source">C1</span></div>
-            </div>
-            <div class="term-card" data-term="sensor medicion temperatura presion nivel posicion">
-              <div class="term-word">Sensor</div>
-              <div class="term-def">Dispositivo encargado de medir variables del proceso (temperatura, presión, nivel, posición, etc.) y convertirlas en señales eléctricas transmisibles. Etapa de "Medición" en la cadena de control.<span class="term-source">C1</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
+  </div><!-- /content -->
 
-      <!-- ════════════════════════════════════════
-           NOTAS
-      ════════════════════════════════════════ -->
-      <div class="panel" id="panel-notas">
-        <div class="content-inner">
-          <div class="page-title">// <span>NOTAS</span></div>
-          <div class="page-subtitle">Escribe dudas, reflexiones o cosas que quieras recordar</div>
-          <div class="card">
-            <div class="card-title">// Nueva entrada</div>
-            <textarea class="note-area" id="noteInput" placeholder="// escribe tu nota aquí..." oninput="autoSaveNote()"></textarea>
-            <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap">
-              <button class="btn" onclick="saveNote()">💾 GUARDAR</button>
-              <button class="btn-secondary" onclick="clearNote()">LIMPIAR</button>
-            </div>
-            <div class="note-saved-msg" id="noteSavedMsg">// NOTA GUARDADA ✓</div>
-          </div>
-          <div style="margin-top:20px">
-            <div class="card-title" style="margin-bottom:12px">// Notas guardadas</div>
-            <div id="notes-list">
-              <p style="font-size:12px;color:var(--text-dim);padding:12px 0;font-family:'Share Tech Mono',monospace">// Sin notas. Escribe tu primera entrada arriba.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="footer">
+    <span>INACAP · Automatización y Robótica · 2025</span>
+    <span>Fundamentos de Mantenimiento para la Automatización</span>
+    <span style="color:var(--green)">x btopg :}</span>
+  </div>
+</div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
+<div class="fab-group">
+  <button class="fab" title="Arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button class="fab" title="Notas" onclick="nav('notas')">✎</button>
+</div>
 
 <script>
-// ── NAVIGATION ──────────────────────────────────────────────────
-const PANELS = ['overview','resumen','ejercicios','quiz','flashcards','glosario','notas'];
-const CRUMBS  = { overview:'INICIO', resumen:'RESUMEN C1', ejercicios:'EJERCICIOS',
-                  quiz:'QUIZ', flashcards:'FLASHCARDS', glosario:'GLOSARIO', notas:'NOTAS' };
-
-function navigate(panel, el) {
-  PANELS.forEach(p => document.getElementById('panel-'+p).classList.remove('active'));
-  document.getElementById('panel-'+panel).classList.add('active');
-  document.getElementById('breadcrumb-current').textContent = CRUMBS[panel];
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  if (el) el.classList.add('active');
-  closeSidebar();
-  document.getElementById('content').scrollTop = 0;
-  if (panel === 'flashcards') { currentFCFilter = 'all'; renderFlashcards(FC_DATA); document.querySelector('.fc-filter').classList.add('active'); }
-  if (panel === 'quiz')       { resetQuiz(); startQuiz(); }
-}
-
-function toggleNavGroup(el) {
-  el.classList.toggle('open');
-  el.nextElementSibling.classList.toggle('open');
-}
-
-// ── SIDEBAR ──────────────────────────────────────────────────────
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('visible');
-}
-function closeSidebar() {
+const pageNames={inicio:'Inicio',u1c1:'U1 / Clase 1',u1calc:'U1 / Calculadora',u1ej:'U1 / Ejercicios',formulas:'Fórmulas',glosario:'Glosario',flashcards:'Flashcards',notas:'Notas'};
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  document.getElementById('tp-path').textContent=pageNames[id]||id;
+  document.querySelectorAll('.sb-item').forEach(item=>{
+    if((item.getAttribute('onclick')||'').includes("'"+id+"'"))item.classList.add('active');
+  });
   document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('visible');
+  window.scrollTo(0,0);
 }
-
-// ── EXERCISES ────────────────────────────────────────────────────
-function toggleExercise(header) { header.parentElement.classList.toggle('open'); }
-function revealAnswer(btn) {
-  const c = btn.nextElementSibling;
-  c.classList.toggle('visible');
-  btn.textContent = c.classList.contains('visible') ? '▽ Ocultar respuesta' : '▷ Ver respuesta';
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+function toggleGroup(hdr){hdr.parentElement.classList.toggle('open');}
+function toggleResp(btn){
+  const fb=btn.nextElementSibling;
+  const open=fb.style.display==='block';
+  fb.style.display=open?'none':'block';
+  btn.textContent=open?'▶ VER RESPUESTA':'▼ OCULTAR RESPUESTA';
 }
-
-// ── GLOSSARY ─────────────────────────────────────────────────────
-function filterGlosario() {
-  const q = norm(document.getElementById('glosarioSearch').value);
-  document.querySelectorAll('#glosario-list .term-card').forEach(c => {
-    c.style.display = norm(c.dataset.term + ' ' + c.textContent).includes(q) ? '' : 'none';
+function checkQ4(){
+  const v=document.getElementById('q4-input').value.toLowerCase();
+  const fb=document.getElementById('q4-feedback');
+  const ok=v.includes('v~')||v.includes('vac')||v.includes('alterna')||v.includes('ac');
+  fb.className='quiz-feedback '+(ok?'ok':'err');
+  fb.style.display='block';
+  fb.innerHTML=ok?'[OK] Correcto. El selector debe estar en <strong>V~</strong> (voltaje AC). La red en Chile es 220V AC.':'[ERR] Incorrecto. La respuesta es <strong>V~</strong> (voltaje de corriente alterna).';
+}
+function checkQ5(){
+  const v=document.getElementById('q5-input').value.toLowerCase();
+  const fb=document.getElementById('q5-feedback');
+  const ok=v.includes('desenergi')||v.includes('apagar')||v.includes('sin tension')||v.includes('cortar');
+  fb.className='quiz-feedback '+(ok?'ok':'err');
+  fb.style.display='block';
+  fb.innerHTML=ok?'[OK] Correcto. Debes <strong>desenergizar el circuito</strong> antes de medir resistencia.':'[ERR] Incorrecto. Debes <strong>desenergizar el circuito</strong> completamente antes de medir resistencia o continuidad.';
+}
+function getSelColor(id){const s=document.getElementById(id);return s.options[s.selectedIndex].dataset.c||'#aaa';}
+function fmtR(v){if(v>=1e6)return(v/1e6).toFixed(3).replace(/\.?0+$/,'')+' MΩ';if(v>=1e3)return(v/1e3).toFixed(3).replace(/\.?0+$/,'')+' kΩ';return v.toFixed(1).replace(/\.0$/,'')+' Ω';}
+function calcR(){
+  const d1=parseInt(document.getElementById('s1').value);
+  const d2=parseInt(document.getElementById('s2').value);
+  const mult=parseFloat(document.getElementById('s3').value);
+  const s4=document.getElementById('s4');
+  const tol=parseFloat(s4.value);
+  const tolLabel=s4.options[s4.selectedIndex].dataset.tol;
+  const val=(d1*10+d2)*mult;
+  document.getElementById('rval').textContent=fmtR(val);
+  document.getElementById('rtol').textContent=tolLabel;
+  document.getElementById('rrange').textContent='Rango: '+fmtR(val*(1-tol/100))+' — '+fmtR(val*(1+tol/100));
+  document.getElementById('pv1').style.background=getSelColor('s1');
+  document.getElementById('pv2').style.background=getSelColor('s2');
+  document.getElementById('pv3').style.background=getSelColor('s3');
+  document.getElementById('pv4').style.background=getSelColor('s4');
+}
+calcR();
+function filterGlosario(q){
+  document.querySelectorAll('#glosario-list .glos-row').forEach(r=>{
+    r.style.display=(r.dataset.term+' '+r.textContent).toLowerCase().includes(q.toLowerCase())?'':'none';
   });
 }
-function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
-
-// ── HOME SEARCH ──────────────────────────────────────────────────
-function homeSearchFn(q) {
-  const res = document.getElementById('search-results');
-  if (!q.trim()) { res.style.display = 'none'; return; }
-  const nq = norm(q);
-  const hits = [];
-  document.querySelectorAll('.theory-section, .term-card, .exercise').forEach(s => {
-    const text = norm(s.dataset.searchContent || s.textContent);
-    if (text.includes(nq)) {
-      const t = s.querySelector('h2, .term-word, .exercise-title');
-      hits.push(t ? t.textContent.replace(/\s+/g,' ').trim() : '—');
+function filterFC(cat,btn){
+  document.querySelectorAll('.fc-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.fc-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';});
+}
+const searchableIds=['ts-prefijos','ts-magnitudes','ts-colores','ts-multimetro'];
+function doSearch(q){
+  const res=document.getElementById('search-results');
+  const hits=document.getElementById('search-hits');
+  if(!q.trim()){res.textContent='';hits.innerHTML='';return;}
+  const lq=q.toLowerCase();let count=0;let html='';
+  searchableIds.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const txt=el.innerText;
+    if(txt.toLowerCase().includes(lq)){
+      count++;
+      const h2=el.querySelector('h2');
+      const title=h2?h2.textContent.trim():'Sección';
+      const idx=txt.toLowerCase().indexOf(lq);
+      const snippet=txt.substring(Math.max(0,idx-60),idx+100).replace(/\n/g,' ');
+      const highlighted=snippet.replace(new RegExp(q,'gi'),m=>'<mark class="search-hit">'+m+'</mark>');
+      html+=`<div class="theory-section" style="cursor:pointer;margin-bottom:0.6rem;" onclick="nav('u1c1')"><h2>${title}</h2><p>...${highlighted}...</p></div>`;
     }
   });
-  res.style.display = 'block';
-  if (!hits.length) {
-    res.innerHTML = `<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--red)">[ERR] Sin resultados para "${escH(q)}"</div>`;
-  } else {
-    res.innerHTML = hits.map(h => `<div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);padding:3px 0">[OK] ${escH(h)}</div>`).join('');
+  res.textContent=count>0?count+' resultado(s) para "'+q+'"':'Sin resultados para "'+q+'"';
+  hits.innerHTML=html;
+}
+const NOTES_KEY='mant-notas-2025';
+function loadNotes(){
+  const saved=localStorage.getItem(NOTES_KEY)||'';
+  document.getElementById('notes-ta').value=saved;
+  if(saved)document.getElementById('notes-meta').textContent='Notas cargadas desde la última sesión.';
+}
+let saveTimer;
+function autoSaveNotes(){
+  clearTimeout(saveTimer);
+  document.getElementById('notes-meta').textContent='Guardando...';
+  saveTimer=setTimeout(()=>{
+    localStorage.setItem(NOTES_KEY,document.getElementById('notes-ta').value);
+    document.getElementById('notes-meta').textContent='✓ Guardado — '+new Date().toLocaleTimeString('es-CL');
+  },800);
+}
+function clearNotes(){
+  if(confirm('¿Borrar todas las notas?')){
+    document.getElementById('notes-ta').value='';
+    localStorage.removeItem(NOTES_KEY);
+    document.getElementById('notes-meta').textContent='Notas eliminadas.';
   }
 }
-
-// ── FLASHCARDS ───────────────────────────────────────────────────
-const FC_DATA = [
-  { term:'Automatización Industrial', def:'Tecnología que controla un proceso productivo con mínima participación humana. Integra informática, electrónica, electricidad y mecánica.', cat:'definicion', accent:'#00c8ff' },
-  { term:'Control Automático',        def:'Componentes (medición, transmisión, control, actuación, comunicación) que trabajan juntos para controlar un proceso.', cat:'definicion', accent:'#00c8ff' },
-  { term:'Sistema',                   def:'Combinación de componentes que actúan en conjunto para lograr un objetivo determinado. Posee entradas, proceso y salidas.', cat:'definicion', accent:'#00c8ff' },
-  { term:'Sensor',                    def:'Mide variables del proceso (temperatura, presión, nivel) y las convierte en señales eléctricas. Etapa de Medición.', cat:'componente', accent:'#00ff9d' },
-  { term:'Actuador',                  def:'Ejecuta la acción física (motores, válvulas, bombas). Corresponde a la etapa de Actuación en la cadena de control.', cat:'componente', accent:'#00ff9d' },
-  { term:'PLC',                       def:'Programmable Logic Controller. Dispositivo industrial que ejecuta un programa para controlar máquinas y procesos. Ej: Siemens S7.', cat:'tecnologia', accent:'#ffb700' },
-  { term:'Lógica Cableada',           def:'Control basado en conexiones físicas (relés, contactores). Para modificarlo hay que recablear. Baja flexibilidad, bajo costo inicial.', cat:'tecnologia', accent:'#ffb700' },
-  { term:'Lógica Programable',        def:'Control basado en software. Flexible y reprogramable. Alta flexibilidad, diagnóstico fácil por software.', cat:'tecnologia', accent:'#ffb700' },
-];
-
-let currentFCFilter = 'all';
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length-1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function renderFlashcards(data) {
-  const grid = document.getElementById('flashcards-grid');
-  if (!data.length) {
-    grid.innerHTML = '<p style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text-dim)">[ERR] Sin tarjetas en esta categoría.</p>';
-    return;
-  }
-  grid.innerHTML = data.map(f => `
-    <div class="flashcard-wrap" onclick="this.classList.toggle('flipped')">
-      <div class="flashcard">
-        <div class="fc-front">
-          <div class="fc-label">// TÉRMINO</div>
-          <div class="fc-term">${escH(f.term)}</div>
-          <div class="fc-category" style="color:${f.accent}">${f.cat.toUpperCase()}</div>
-          <span class="fc-hint">toca →</span>
-        </div>
-        <div class="fc-back">
-          <div class="fc-label">// DEFINICIÓN</div>
-          <div class="fc-def">${escH(f.def)}</div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function filterFC(cat, btn) {
-  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentFCFilter = cat;
-  const filtered = cat === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === cat);
-  renderFlashcards(filtered);
-}
-
-function shuffleFC() {
-  const base = currentFCFilter === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === currentFCFilter);
-  renderFlashcards(shuffle(base));
-  const btn = document.querySelector('.btn-shuffle');
-  btn.textContent = '✓ BARAJADO';
-  setTimeout(() => btn.textContent = '⇌ BARAJAR', 900);
-}
-
-// ── QUIZ ─────────────────────────────────────────────────────────
-const QUIZ_BANK = [
-  { q:'¿Cuál es la definición de Automatización Industrial?', tag:'Definición',
-    opts:['Tecnología que controla procesos con mínima participación humana','Sistema exclusivo de informática aplicada','Técnica de mantenimiento de maquinaria industrial','Método de contabilidad de producción'],
-    correct:0, feedback:'La automatización industrial busca controlar procesos o sistemas productivos con la mínima participación humana.' },
-  { q:'¿Cuál es el orden correcto de la cadena de control automático?', tag:'Control',
-    opts:['Controlar → Medir → Transmitir → Actuar','Medir → Transmitir → Controlar → Actuar','Actuar → Controlar → Medir → Transmitir','Transmitir → Actuar → Medir → Controlar'],
-    correct:1, feedback:'La cadena es: Medir (sensor) → Transmitir (señal) → Controlar (controlador) → Actuar (actuador).' },
-  { q:'Un sistema de control con relés y contactores sin software pertenece a:', tag:'Tecnologías',
-    opts:['Lógica Programable (PLC)','Control SCADA','Lógica Cableada','Control numérico computarizado'],
-    correct:2, feedback:'Los relés y contactores son componentes físicos propios de la Lógica Cableada.' },
-  { q:'¿Cuál es una ventaja de la Lógica Programable (PLC) sobre la Lógica Cableada?', tag:'Tecnologías',
-    opts:['Menor costo inicial','Mayor flexibilidad y facilidad de reprogramación','No requiere electricidad','Es más resistente en ambientes sencillos'],
-    correct:1, feedback:'El PLC permite reprogramar el sistema sin cambios de hardware, siendo mucho más flexible.' },
-  { q:'¿Cuál objetivo busca evitar que los trabajadores realicen tareas peligrosas?', tag:'Objetivos',
-    opts:['Económico','Calidad','Seguridad','Productividad'],
-    correct:2, feedback:'El objetivo de Seguridad busca proteger la integridad de los trabajadores eliminando tareas peligrosas o repetitivas.' },
-  { q:'Un sistema con entradas, un proceso de transformación y salidas describe:', tag:'Sistemas',
-    opts:['Una cadena de control','Un actuador','La definición de Sistema','La lógica programable'],
-    correct:2, feedback:'Un Sistema es la combinación de componentes que actúan juntos con entradas, proceso y salidas.' },
-  { q:'¿Cuál de estos es un PLC real utilizado en la industria?', tag:'PLC',
-    opts:['Arduino Mega','Siemens S7','Raspberry Pi','Intel Core i9'],
-    correct:1, feedback:'Siemens S7 es uno de los PLCs industriales más utilizados en el mundo.' },
-  { q:'El objetivo de Conectividad en automatización industrial se refiere a:', tag:'Objetivos',
-    opts:['Conectar físicamente los cables del sistema','Obtener información en tiempo real para mejores decisiones','Reducir los costos de producción','Aumentar la velocidad de la red eléctrica'],
-    correct:1, feedback:'Conectividad implica monitoreo en tiempo real del proceso productivo para facilitar la toma de decisiones.' },
-];
-
-let quizScore=0, quizTotal=0, usedQs=[], answered=false;
-
-function resetQuiz() {
-  quizScore=0; quizTotal=0; usedQs=[]; answered=false;
-  document.getElementById('quiz-score').textContent='0';
-  document.getElementById('quiz-total').textContent='0';
-  document.getElementById('quiz-container').innerHTML='';
-}
-
-function startQuiz() {
-  if (usedQs.length >= QUIZ_BANK.length) {
-    document.getElementById('quiz-container').innerHTML=`
-      <div class="quiz-card">
-        <div class="quiz-question">// BANCO COMPLETADO. Score final: ${quizScore}/${quizTotal}</div>
-        <button class="btn" onclick="resetQuiz();startQuiz()" style="margin-top:14px">▷ REINICIAR QUIZ</button>
-      </div>`;
-    return;
-  }
-  let idx;
-  do { idx = Math.floor(Math.random()*QUIZ_BANK.length); } while (usedQs.includes(idx));
-  usedQs.push(idx);
-  const q = QUIZ_BANK[idx];
-  answered = false;
-  const letters = ['A','B','C','D'];
-  document.getElementById('quiz-container').innerHTML=`
-    <div class="quiz-card">
-      <div class="quiz-qtag">
-        <span class="qtag-label">${escH(q.tag)}</span>
-        PREGUNTA ${usedQs.length} / ${QUIZ_BANK.length}
-      </div>
-      <div class="quiz-question">${escH(q.q)}</div>
-      <div class="quiz-options">
-        ${q.opts.map((o,i)=>`
-          <button class="quiz-option" onclick="answerQuiz(this,${i},${idx})">
-            <span class="opt-letter">${letters[i]}</span>${escH(o)}
-          </button>`).join('')}
-      </div>
-      <div class="quiz-feedback" id="q-feedback"></div>
-      <button class="btn next-question-btn" id="q-next" onclick="startQuiz()">▷ SIGUIENTE</button>
-    </div>`;
-}
-
-function answerQuiz(btn, idx, qIdx) {
-  if (answered) return;
-  answered=true; quizTotal++;
-  const isOk = idx === QUIZ_BANK[qIdx].correct;
-  if (isOk) quizScore++;
-  document.getElementById('quiz-score').textContent = quizScore;
-  document.getElementById('quiz-total').textContent  = quizTotal;
-  document.querySelectorAll('.quiz-option').forEach((b,i)=>{
-    b.disabled=true;
-    if (i===QUIZ_BANK[qIdx].correct) b.classList.add('correct');
-    else if (i===idx && !isOk) b.classList.add('incorrect');
-  });
-  const fb = document.getElementById('q-feedback');
-  fb.className = 'quiz-feedback show '+(isOk?'ok':'err');
-  fb.textContent = isOk ? QUIZ_BANK[qIdx].feedback : 'Incorrecto. '+QUIZ_BANK[qIdx].feedback;
-  document.getElementById('q-next').classList.add('show');
-}
-
-// ── NOTES ────────────────────────────────────────────────────────
-let notes = JSON.parse(localStorage.getItem('auto_notes_v2')||'[]');
-let autoTimer;
-
-function renderNotes() {
-  const list = document.getElementById('notes-list');
-  if (!notes.length) {
-    list.innerHTML='<p style="font-size:12px;color:var(--text-dim);padding:12px 0;font-family:\'Share Tech Mono\',monospace">// Sin notas guardadas.</p>';
-    return;
-  }
-  list.innerHTML = notes.map((n,i)=>`
-    <div class="note-item">
-      <div class="note-item-date">// ${n.date}</div>
-      <div class="note-item-text">${escH(n.text)}</div>
-      <button class="note-item-del" onclick="deleteNote(${i})">✕</button>
-    </div>`).join('');
-}
-
-function saveNote() {
-  const text = document.getElementById('noteInput').value.trim();
-  if (!text) return;
-  const d = new Date();
-  notes.unshift({ text, date: d.toLocaleDateString('es-CL',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) });
-  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
-  renderNotes();
-  document.getElementById('noteInput').value = '';
-  localStorage.removeItem('auto_note_draft');
-  const msg = document.getElementById('noteSavedMsg');
-  msg.style.display='block';
-  setTimeout(()=>msg.style.display='none', 2500);
-}
-
-function autoSaveNote() {
-  clearTimeout(autoTimer);
-  autoTimer = setTimeout(()=>{
-    const t = document.getElementById('noteInput').value.trim();
-    if (t) localStorage.setItem('auto_note_draft', t);
-  }, 800);
-}
-
-function clearNote() {
-  document.getElementById('noteInput').value='';
-  localStorage.removeItem('auto_note_draft');
-}
-
-function deleteNote(i) {
-  notes.splice(i,1);
-  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
-  renderNotes();
-}
-
-function escH(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// ── GLOBAL SEARCH ────────────────────────────────────────────────
-document.getElementById('globalSearch').addEventListener('input', function(){
-  const q = this.value.trim();
-  if (!q) return;
-  navigate('glosario', null);
-  document.getElementById('glosarioSearch').value = q;
-  filterGlosario();
-});
-
-// ── INIT ─────────────────────────────────────────────────────────
-renderNotes();
-const draft = localStorage.getItem('auto_note_draft');
-if (draft) document.getElementById('noteInput').value = draft;
+loadNotes();
 </script>
 </body>
 </html>
