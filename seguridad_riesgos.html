@@ -371,26 +371,22 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     <div class="sb-unit open" id="uu1">
       <div class="sb-uh" onclick="toggleUnit('u1')">
         <span class="sb-ico-unit">⚡</span>
-        <span>U1 · Conceptos Eléctricos</span>
+        <span>U1 · Fundamentos de Seguridad</span>
         <span class="arr">-</span>
       </div>
       <div class="sb-subs">
-        <div class="sb-si active" onclick="showPage('u1r',this)">› &nbsp;Resúmenes</div>
+        <div class="sb-si active" onclick="showPage('u1a',this)">› &nbsp;Accidentabilidad</div>
+        <div class="sb-si" onclick="showPage('u1r',this)">› &nbsp;Conceptos Eléctricos</div>
         <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
         <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
       </div>
     </div>
 
     <div class="sb-unit" id="uu2">
-      <div class="sb-uh sb-uh-locked" onclick="toggleUnit('u2')">
+      <div class="sb-uh sb-uh-locked">
         <span class="sb-ico-unit" style="opacity:.35">◈</span>
-        <span style="opacity:.4">U2 · Accidentabilidad</span>
+        <span style="opacity:.4">U2 · Por agregar</span>
         <span class="sb-lock">🔒</span>
-      </div>
-      <div class="sb-subs">
-        <div class="sb-si" onclick="showPage('u2r',this)">› &nbsp;Resúmenes</div>
-        <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
-        <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
       </div>
     </div>
 
@@ -431,7 +427,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     <div id="home-ov">
       <div class="sec-hdr"><span class="sec-tag">ÍNDICE</span><span class="sec-title">Contenido del Semestre</span></div>
       <div class="cards">
-        <div class="card" style="cursor:pointer" onclick="showPage('u1r',null)"><div class="c-lbl">Unidad 1</div><div class="c-val">Conceptos Eléctricos</div><div class="c-desc">Electricidad, magnitudes, Ley de Ohm, dispositivos de protección.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('u1r',null)"><div class="c-lbl">Unidad 1</div><div class="c-val">Fundamentos de Seguridad</div><div class="c-desc">Electricidad, magnitudes, Ley de Ohm, dispositivos de protección, accidentabilidad eléctrica.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('u2r',null)"><div class="c-lbl">Unidad 2</div><div class="c-val">Accidentabilidad</div><div class="c-desc">Riesgo, peligro, accidente vs incidente, costos, factores y causas.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('ej',null)"><div class="c-lbl">Práctica</div><div class="c-val">Ejercicios</div><div class="c-desc">7 ejercicios con solución + banco de preguntas interactivo.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('fc',null)"><div class="c-lbl">Repaso</div><div class="c-val">Flashcards</div><div class="c-desc">16 tarjetas con flip 3D, filtradas por categoría.</div></div>
@@ -452,7 +448,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     <div class="unit-section">
       <div class="sec-hdr">
         <span class="sec-tag">U-01</span>
-        <span class="sec-title">Fundamentos de Prevención de Riesgos Eléctricos</span>
+        <span class="sec-title">Riesgos Eléctricos - Aplicación de Accidentabilidad</span>
         <span class="sec-status s-done">✓ COMPLETADO</span>
       </div>
 
@@ -496,27 +492,146 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
   </div>
 </div>
 
-<!-- U2 RESÚMENES -->
-<div class="page" id="page-u2r">
+<!-- U1 ACCIDENTABILIDAD -->
+<div class="page" id="page-u1a">
   <div class="hero" style="padding:26px 46px 22px">
-    <div class="hero-tag">// Unidad 2</div>
-    <h1 style="font-size:22px">Unidad 2 — <em>Por agregar</em></h1>
+    <div class="hero-tag">// Unidad 1</div>
+    <h1 style="font-size:22px"><em>Accidentabilidad</em></h1>
   </div>
   <div class="content">
     <div class="unit-section">
       <div class="sec-hdr">
-        <span class="sec-tag">U-02</span>
-        <span class="sec-title">Contenido pendiente</span>
-        <span class="sec-status s-lock">🔒 BLOQUEADO</span>
+        <span class="sec-tag">U-01</span>
+        <span class="sec-title">¿Por qué ocurren los accidentes?</span>
+        <span class="sec-status s-done">✓ COMPLETADO</span>
       </div>
-      <div class="cs"><div class="ci2">📂</div><p>Esta unidad se completará cuando traigas los apuntes de clase.</p></div>
+
+      <div class="ts searchable">
+        <h2>1.1 · Conceptos Fundamentales</h2>
+        <div class="cards">
+          <div class="card"><div class="c-lbl">Peligro</div><div class="c-val">Potencial de Daño</div><div class="c-desc">Cualquier fuente o situación que PODRÍA causar daño. Existe independientemente de si hay contacto.</div></div>
+          <div class="card"><div class="c-lbl">Riesgo</div><div class="c-val">Probabilidad</div><div class="c-desc">La posibilidad de que el peligro te afecte. Depende de controles, comportamiento, ambiente.</div></div>
+          <div class="card"><div class="c-lbl">Accidente</div><div class="c-val">Evento No Deseado</div><div class="c-desc">Suceso imprevisto que causa lesión, enfermedad o daño material.</div></div>
+          <div class="card"><div class="c-lbl">Incidente</div><div class="c-val">Sin Daño</div><div class="c-desc">Evento que PUDO haber causado daño pero no lo causó (casi-accidente).</div></div>
+        </div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.2 · Causas de Accidentes: Los Tres Factores</h2>
+        <h3>Factor Humano (85% de accidentes)</h3>
+        <p>La mayoría de accidentes se deben a comportamiento humano o error:</p>
+        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
+          <li>Falta de atención o concentración</li>
+          <li>Prisa, impaciencia o estrés</li>
+          <li>Cansancio o fatiga</li>
+          <li>Falta de capacitación o desconocimiento</li>
+          <li>No usar equipo de protección personal (EPP)</li>
+          <li>Ignorar advertencias o procedimientos</li>
+          <li>Confianza excesiva ("no me pasará")</li>
+        </ul>
+        
+        <h3>Factor Técnico (10% de accidentes)</h3>
+        <p>Problemas con máquinas, equipos o instalaciones:</p>
+        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
+          <li>Equipos sin mantenimiento preventivo</li>
+          <li>Protecciones deficientes o ausentes</li>
+          <li>Diseño inadecuado de equipos</li>
+          <li>Falla mecánica, eléctrica o de estructura</li>
+        </ul>
+        
+        <h3>Factor Ambiental (5% de accidentes)</h3>
+        <p>Condiciones del lugar de trabajo:</p>
+        <ul style="margin-left:20px;font-size:12px;color:var(--text);line-height:1.7">
+          <li>Pisos resbaladizos, mojados u obstaculizados</li>
+          <li>Iluminación insuficiente</li>
+          <li>Ruido excesivo</li>
+          <li>Orden y limpieza deficiente</li>
+          <li>Temperatura extrema</li>
+        </ul>
+        <div class="box ok"><div class="box-lbl">[OK] conclusión importante</div>Los peligros siempre existen en la industria. Lo que varía es el RIESGO. Puedes controlar los tres factores para reducir riesgo.</div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.3 · Costos de los Accidentes</h2>
+        <h3>Costos Directos (Lo que se ve)</h3>
+        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
+          <li>Atención médica, hospital, ambulancia</li>
+          <li>Medicamentos y rehabilitación</li>
+          <li>Pólizas de seguros laborales</li>
+        </ul>
+        
+        <h3>Costos Indirectos (Lo que NO se ve - MÁS GRANDES)</h3>
+        <ul style="margin-left:20px;font-size:12px;color:var(--text);line-height:1.7">
+          <li>Tiempo perdido de producción</li>
+          <li>Entrenamiento de trabajador de reemplazo</li>
+          <li>Investigación y documentación del accidente</li>
+          <li>Reparación de equipos/instalaciones dañadas</li>
+          <li>Baja moral y estrés del equipo</li>
+          <li>Multas y sanciones legales</li>
+          <li>Daño a reputación empresarial</li>
+        </ul>
+        <div class="box wn"><div class="box-lbl">[WARN] la realidad económica</div>Estudios muestran que costos indirectos son 4 a 6 veces mayores que directos. Un accidente "leve" puede costar decenas de miles de dólares.</div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.4 · Medición de la Accidentabilidad</h2>
+        <p>Las empresas miden qué tan seguras son usando estos indicadores:</p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Indicador</th><th>Fórmula / Definición</th><th>Interpretación</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Índice de Frecuencia</strong></td><td>Accidentes × 1.000.000 / Horas trabajadas</td><td>Cuántos accidentes ocurren por millón de horas. ↓ = mejor</td></tr>
+              <tr><td><strong>Índice de Gravedad</strong></td><td>Días perdidos × 1.000 / Horas trabajadas</td><td>Cuántos días de incapacidad deja cada accidente. ↓ = mejor</td></tr>
+              <tr><td><strong>Tasa de Accidentabilidad</strong></td><td>% de trabajadores accidentados en período</td><td>Proporción del equipo afectado. ↓ = mejor</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box inf"><div class="box-lbl">[INFO] para ti</div>Una empresa con accidentabilidad alta tiene problemas de seguridad. Una empresa con accidentabilidad baja tiene CULTURA DE PREVENCIÓN consolidada.</div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.5 · Ciclo de Prevención de Riesgos</h2>
+        <p>La prevención no es un evento, es un ciclo continuo que se repite:</p>
+        <div class="fw"><div class="formula">IDENTIFICAR → EVALUAR → CONTROLAR → MONITOREAR → MEJORAR</div></div>
+        
+        <h3>Identificar</h3>
+        <p>Reconocer peligros. ¿Qué puede salir mal? (máquinas, cables, pisos mojados, comportamientos riesgosos)</p>
+        
+        <h3>Evaluar</h3>
+        <p>¿Cuál es el riesgo? ¿Qué tan probable es que cause daño? ¿Cuál sería la gravedad?</p>
+        
+        <h3>Controlar</h3>
+        <p>Aplicar medidas: eliminar peligro, sustituir, usar protecciones, capacitar, mantener.</p>
+        
+        <h3>Monitorear</h3>
+        <p>Verificar que las medidas funcionan. Inspecciones regulares. ¿Se está cumpliendo?</p>
+        
+        <h3>Mejorar</h3>
+        <p>Si algo falla, ajustar. Si ocurre un incidente, aprender y cambiar procedimientos.</p>
+        
+        <div class="box ok"><div class="box-lbl">[OK] tu rol en este ciclo</div>Como estudiante de Automatización y Robótica, participarás en TODOS estos pasos: identificando riesgos eléctricos y mecánicos, evaluando, aplicando controles en tus proyectos, y aprendiendo de cualquier problema.</div>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.6 · Jerarquía de Controles (Lo más importante)</h2>
+        <p>No todos los controles son iguales. Algunos funcionan mejor que otros:</p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Nivel</th><th>Método</th><th>Efectividad</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="color:var(--green)">1</strong></td><td>ELIMINACIÓN</td><td>Máxima ✓✓✓</td><td>No usar electricidad (usar batería)</td></tr>
+              <tr><td><strong style="color:var(--green)">2</strong></td><td>SUSTITUCIÓN</td><td>Muy alta ✓✓✓</td><td>Usar 24V en lugar de 220V</td></tr>
+              <tr><td><strong style="color:var(--amber)">3</strong></td><td>INGENIERÍA</td><td>Alta ✓✓</td><td>Instalar diferencial, disyuntor, aislamiento</td></tr>
+              <tr><td><strong style="color:var(--amber)">4</strong></td><td>ADMINISTRATIVA</td><td>Media ✓</td><td>Capacitación, inspecciones, procedimientos</td></tr>
+              <tr><td><strong style="color:var(--red)">5</strong></td><td>EPP</td><td>Baja (última línea)</td><td>Guantes, casco, gafas</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box wn"><div class="box-lbl">[WARN] no confundir</div>El EPP (nivel 5) es importante pero es la ÚLTIMA línea de defensa. Nunca depender solo de guantes o casco. Primero deben fallar todos los otros controles para que el EPP sea lo único.</div>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- U3 / U4 -->
-<div class="page" id="page-u3r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-03</span><span class="sec-title">Unidad 3 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
-<div class="page" id="page-u4r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-04</span><span class="sec-title">Unidad 4 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
 
 <!-- EJERCICIOS -->
 <div class="page" id="page-ej">
@@ -676,13 +791,17 @@ function showPage(id,el){
   const pg=document.getElementById('page-'+id);
   if(pg)pg.classList.add('active');
   window.scrollTo(0,0);
+  
+  // Quitar active de todos los items del sidebar
   document.querySelectorAll('.sb-item,.sb-si').forEach(i=>i.classList.remove('active'));
+  
+  // Agregar active al elemento clickeado
   if(el)el.classList.add('active');
+  
   if(id==='fc')buildFC();
   if(id==='gl')buildGlos();
   if(id==='no')loadNotes();
   if(id==='ej'){
-    // init quiz only if not yet started
     if(!qState.qs.length) startQuiz('all');
   }
 }
