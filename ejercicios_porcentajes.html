@@ -6,6 +6,14 @@
 <title>Álgebra Ciudadana — INACAP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" crossorigin="anonymous"></script>
 <style>
 :root{
   --bg:#080c10;
@@ -42,7 +50,33 @@ body::after{
   pointer-events:none;z-index:9999;
 }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* ══ EXAM MODE ══ */
+.ex-check{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--text2);
+  background:var(--bg2);border:1px solid var(--border);
+  padding:7px 12px;cursor:pointer;
+  transition:border-color .15s;
+  letter-spacing:.5px;
+}
+.ex-check:hover{border-color:var(--amber);color:var(--amber);}
+.ex-check input{accent-color:var(--amber);}
+.ex-res-item{
+  border-left:3px solid var(--border2);
+  padding:10px 14px;margin-bottom:6px;
+  font-size:12px;color:var(--text2);
+  background:var(--bg2);
+}
+.ex-res-item.ok{border-left-color:var(--green);}
+.ex-res-item.err{border-left-color:var(--red);}
+.ex-res-item .er-q{margin-bottom:4px;color:var(--text);}
+.ex-res-item .er-a{font-size:11px;}
+.er-ok{color:var(--green);}
+.er-err{color:var(--red);}
+
+@media(max-width:600px){
+  .sg-val{font-size:16px;}
+}
 @keyframes glowPulse{0%,100%{text-shadow:0 0 8px var(--green),0 0 20px var(--green)}50%{text-shadow:0 0 4px var(--green)}}
 @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes borderBlink{0%,100%{opacity:1}40%,60%{opacity:.3}}
@@ -409,24 +443,37 @@ body::after{
 
 /* formula */
 .formula-chip{
-  display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;gap:14px;
   background:var(--bg);
   border:1px solid var(--border2);
   border-left:3px solid var(--green);
-  padding:12px 16px;
+  padding:14px 18px;
   margin-bottom:14px;
   position:relative;
   flex-wrap:wrap;
 }
 .fc-label{
   font-size:8px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--green);flex-shrink:0;
+  color:var(--green);flex-shrink:0;min-width:80px;
 }
 .fc-val{
   font-family:'JetBrains Mono',monospace;
   font-size:13px;color:var(--green);font-weight:500;
   text-shadow:0 0 10px rgba(0,255,157,.4);
   word-break:break-word;
+}
+/* MathJax override inside formula-chip */
+.formula-chip mjx-container{
+  color:var(--green) !important;
+  font-size:1.15em !important;
+  filter: drop-shadow(0 0 6px rgba(0,255,157,.35));
+}
+.formula-chip mjx-container svg{fill:var(--green);}
+/* MathJax inside theory text */
+.tb-desc mjx-container, .box-info mjx-container,
+.box-ok mjx-container, .box-warn mjx-container{
+  color:var(--cyan) !important;
+  vertical-align:middle;
 }
 
 /* box highlights */
@@ -483,11 +530,19 @@ body::after{
   font-family:'JetBrains Mono',monospace;
   font-size:12px;color:var(--green);
   background:var(--panel);border:1px solid var(--border);
-  padding:12px 14px;line-height:2;
-  white-space:pre-wrap;
-  word-break:break-word;
+  padding:16px 20px;line-height:2;
   overflow-x:auto;
   text-shadow:0 0 8px rgba(0,255,157,.3);
+}
+/* MathJax inside ej-operacion */
+.ej-operacion mjx-container{
+  color:var(--green) !important;
+  filter: drop-shadow(0 0 5px rgba(0,255,157,.25));
+  margin:4px 0 !important;
+}
+.ej-operacion mjx-container svg{fill:var(--green);}
+.ej-operacion mjx-container[display="true"]{
+  margin:8px auto !important;
 }
 .ej-resultado{margin-top:6px;font-size:12px;font-weight:600;color:var(--green);}
 
@@ -935,45 +990,95 @@ tbody td strong{color:var(--text);}
     <button class="nav-btn" id="nav-mixto" onclick="ir('mixto')">
       <span class="ni">◈</span> Modo Mixto
     </button>
+    <button class="nav-btn" id="nav-examen" onclick="ir('examen')" style="color:var(--amber)">
+      <span class="ni">⏱</span> Modo Examen
+    </button>
   </div>
 
   <div class="sb-section">
-    <div class="sb-section-label">// Unidades</div>
+    <div class="sb-section-label">// Teoría Base</div>
 
-    <!-- Unidad 1: Porcentajes -->
+    <!-- Porcentajes -->
     <div class="nav-unit">
       <button class="nav-unit-header open" id="unit-pct-hdr" onclick="toggleUnit('pct')">
-        <span class="ni">%</span>
-        Porcentajes
+        <span class="ni">%</span> Porcentajes
         <span class="arrow">›</span>
       </button>
       <div class="nav-sub open" id="unit-pct-sub">
         <button class="nav-sub-btn" id="nav-porcentajes" onclick="ir('porcentajes')"> Resúmenes</button>
         <button class="nav-sub-btn" id="nav-ejer-pct" onclick="ir('ejer-pct')"> Ejercicios</button>
         <button class="nav-sub-btn" id="nav-flash-pct" onclick="ir('flash-pct')"> Flashcards</button>
-        <button class="nav-sub-btn" id="nav-glosario" onclick="ir('glosario')"> Glosario</button>
-        <button class="nav-sub-btn" id="nav-notas" onclick="ir('notas')"> Notas</button>
       </div>
     </div>
 
-    <!-- Unidad 2: Fracciones -->
+    <!-- Fracciones -->
     <div class="nav-unit">
-      <button class="nav-unit-header" id="unit-frac-hdr" onclick="toggleUnit('frac')">
-        <span class="ni">½</span>
-        Fracciones
+      <button class="nav-unit-header open" id="unit-frac-hdr" onclick="toggleUnit('frac')">
+        <span class="ni">½</span> Fracciones
         <span class="arrow">›</span>
       </button>
-      <div class="nav-sub" id="unit-frac-sub">
+      <div class="nav-sub open" id="unit-frac-sub">
         <button class="nav-sub-btn" id="nav-fracciones" onclick="ir('fracciones')"> Resúmenes</button>
         <button class="nav-sub-btn" id="nav-ejer-frac" onclick="ir('ejer-frac')"> Ejercicios</button>
       </div>
     </div>
 
-    <button class="nav-btn" style="opacity:.3;pointer-events:none">
-      <span class="ni">🔒</span> Próxima unidad
+    <div class="sb-section-label" style="margin-top:10px">// Situaciones de Modelación</div>
+
+    <!-- SM1: Presupuesto -->
+    <div class="nav-unit">
+      <button class="nav-unit-header" id="unit-sm1-hdr" onclick="toggleUnit('sm1')">
+        <span class="ni">💰</span> SM1 Presupuesto
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub" id="unit-sm1-sub">
+        <button class="nav-sub-btn" id="nav-sm1" onclick="ir('sm1')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-sm1" onclick="ir('ejer-sm1')"> Ejercicios</button>
+      </div>
+    </div>
+
+    <!-- SM2: Herederos -->
+    <div class="nav-unit">
+      <button class="nav-unit-header" id="unit-sm2-hdr" onclick="toggleUnit('sm2')">
+        <span class="ni">🏛️</span> SM2 Herederos
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub" id="unit-sm2-sub">
+        <button class="nav-sub-btn" id="nav-sm2" onclick="ir('sm2')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-sm2" onclick="ir('ejer-sm2')"> Ejercicios</button>
+      </div>
+    </div>
+
+    <!-- SM3: Reduflación -->
+    <div class="nav-unit">
+      <button class="nav-unit-header" id="unit-sm3-hdr" onclick="toggleUnit('sm3')">
+        <span class="ni">📉</span> SM3 Reduflación
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub" id="unit-sm3-sub">
+        <button class="nav-sub-btn" id="nav-sm3" onclick="ir('sm3')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-sm3" onclick="ir('ejer-sm3')"> Ejercicios</button>
+      </div>
+    </div>
+
+    <!-- ARPA2: Quórum -->
+    <div class="nav-unit">
+      <button class="nav-unit-header" id="unit-arpa2-hdr" onclick="toggleUnit('arpa2')">
+        <span class="ni">⚖️</span> ARPA2 Quórum
+        <span class="arrow">›</span>
+      </button>
+      <div class="nav-sub" id="unit-arpa2-sub">
+        <button class="nav-sub-btn" id="nav-arpa2" onclick="ir('arpa2')"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-arpa2" onclick="ir('ejer-arpa2')"> Ejercicios</button>
+      </div>
+    </div>
+
+    <div class="sb-section-label" style="margin-top:10px">// Recursos</div>
+    <button class="nav-btn" id="nav-glosario" onclick="ir('glosario')">
+      <span class="ni">≡</span> Glosario
     </button>
-    <button class="nav-btn" style="opacity:.3;pointer-events:none">
-      <span class="ni">🔒</span> Próxima unidad
+    <button class="nav-btn" id="nav-notas" onclick="ir('notas')">
+      <span class="ni">✎</span> Notas
     </button>
   </div>
 
@@ -1012,9 +1117,9 @@ tbody td strong{color:var(--text);}
 <!-- ══ PAGE: INICIO ══ -->
 <div class="page active" id="page-inicio">
   <div class="hero">
-    <div class="hero-tag">// CUADERNO DIGITAL — SEM. 2025</div>
+    <div class="hero-tag">// CUADERNO DIGITAL — OTOÑO 2026 · MTAE02</div>
     <h2>Álgebra Ciudadana<span class="cursor">_</span></h2>
-    <p>Cada unidad tiene teoría completa con ejemplos y ejercicios interactivos con contexto ciudadano. Iremos agregando unidades a medida que avancemos en el semestre.</p>
+    <p>Apuntes digitales basados en las Situaciones de Modelación del ramo. Incluye teoría, actividades y ejercicios interactivos con énfasis en comprensión lectora.</p>
   </div>
 
   <div class="search-wrap">
@@ -1023,55 +1128,92 @@ tbody td strong{color:var(--text);}
     <div class="search-results" id="search-results"></div>
   </div>
 
-  <div class="section-label">// UNIDADES DISPONIBLES</div>
+  <div class="section-label">// SITUACIONES DE MODELACIÓN — UNIDAD 1</div>
+  <div class="unidades-grid">
+    <div class="u-card" onclick="ir('sm1')">
+      <div class="uc-ico">💰</div>
+      <div class="uc-n">SM 1</div>
+      <div class="uc-t">Presupuesto Mensual</div>
+      <div class="uc-d">Método 50/30/20, carga financiera SERNAC y presupuesto base cero.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+    <div class="u-card cyan-card" onclick="ir('sm2')">
+      <div class="uc-ico">🏛️</div>
+      <div class="uc-n">SM 2</div>
+      <div class="uc-t">Herederos</div>
+      <div class="uc-d">Herencia intestada y testada. Código Civil chileno. Masa hereditaria.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+    <div class="u-card" style="border-top-color:var(--amber)" onclick="ir('sm3')">
+      <div class="uc-ico">📉</div>
+      <div class="uc-n">SM 3</div>
+      <div class="uc-t">Reduflación</div>
+      <div class="uc-d">Variación porcentual de contenido y precio. Análisis de datos reales.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+    <div class="u-card cyan-card" onclick="ir('arpa2')">
+      <div class="uc-ico">⚖️</div>
+      <div class="uc-n">ARPA 2</div>
+      <div class="uc-t">Quórum Parlamentario</div>
+      <div class="uc-d">Tipos de leyes y fracciones de quórum. Cámara y Senado, año 2025.</div>
+      <div class="uc-s s-done">[OK] Disponible</div>
+    </div>
+  </div>
+
+  <div class="section-label">// TEORÍA BASE</div>
   <div class="unidades-grid">
     <div class="u-card" onclick="ir('porcentajes')">
       <div class="uc-ico">%</div>
-      <div class="uc-n">Unidad 01</div>
+      <div class="uc-n">Teoría</div>
       <div class="uc-t">Porcentajes</div>
-      <div class="uc-d">5 tipos de problemas con finanzas personales, IVA y descuentos.</div>
+      <div class="uc-d">Los 5 tipos de problemas: parte, total, aumento, descuento, etc.</div>
       <div class="uc-s s-done">[OK] Disponible</div>
     </div>
-    <div class="u-card cyan-card" onclick="ir('fracciones')">
+    <div class="u-card" onclick="ir('fracciones')">
       <div class="uc-ico">½</div>
-      <div class="uc-n">Unidad 02</div>
+      <div class="uc-n">Teoría</div>
       <div class="uc-t">Fracciones</div>
       <div class="uc-d">Suma, resta, multiplicación, división y conversión decimal.</div>
       <div class="uc-s s-done">[OK] Disponible</div>
     </div>
     <div class="u-card locked">
       <div class="uc-ico">🔒</div>
-      <div class="uc-n">Unidad 03</div>
-      <div class="uc-t">Próximamente</div>
-      <div class="uc-d">Se desbloqueará cuando avancemos.</div>
+      <div class="uc-n">Próximamente</div>
+      <div class="uc-t">Unidad 2</div>
+      <div class="uc-d">Se desbloqueará cuando avancemos en el semestre.</div>
       <div class="uc-s s-lock">[LOCK] No disponible</div>
     </div>
     <div class="u-card locked">
       <div class="uc-ico">🔒</div>
-      <div class="uc-n">Unidad 04</div>
-      <div class="uc-t">Próximamente</div>
-      <div class="uc-d">Se desbloqueará cuando avancemos.</div>
+      <div class="uc-n">Próximamente</div>
+      <div class="uc-t">Unidad 3</div>
+      <div class="uc-d">Se desbloqueará cuando avancemos en el semestre.</div>
       <div class="uc-s s-lock">[LOCK] No disponible</div>
     </div>
   </div>
 
   <div class="section-label">// PROGRESO DEL SEMESTRE</div>
   <div class="prog-card">
-    <h3>Rendimiento por unidad</h3>
+    <h3>Rendimiento por unidad (sesión actual)</h3>
     <div class="prog-row">
-      <div class="pr-lbl">Porcentajes</div>
+      <div class="pr-lbl">SM1 Presupuesto</div>
       <div class="pr-bg"><div class="pr-fill" id="prog-p" style="width:0%;background:var(--green)"></div></div>
       <div class="pr-pct" id="pct-p">—</div>
     </div>
     <div class="prog-row">
-      <div class="pr-lbl">Fracciones</div>
+      <div class="pr-lbl">SM2 Herederos</div>
+      <div class="pr-bg"><div class="pr-fill" id="prog-h" style="width:0%;background:var(--purple)"></div></div>
+      <div class="pr-pct" id="pct-h">—</div>
+    </div>
+    <div class="prog-row">
+      <div class="pr-lbl">SM3 Reduflación</div>
+      <div class="pr-bg"><div class="pr-fill" id="prog-r" style="width:0%;background:var(--amber)"></div></div>
+      <div class="pr-pct" id="pct-r">—</div>
+    </div>
+    <div class="prog-row">
+      <div class="pr-lbl">ARPA2 Quórum</div>
       <div class="pr-bg"><div class="pr-fill" id="prog-f" style="width:0%;background:var(--cyan)"></div></div>
       <div class="pr-pct" id="pct-f">—</div>
-    </div>
-    <div class="prog-row" style="opacity:.3">
-      <div class="pr-lbl">Unidad 03</div>
-      <div class="pr-bg"><div class="pr-fill" style="width:0%;background:var(--amber)"></div></div>
-      <div class="pr-pct">—</div>
     </div>
   </div>
 </div>
@@ -1095,9 +1237,10 @@ tbody td strong{color:var(--text);}
   <div class="theory-section">
     <div class="tb-tipo">Fundamento</div>
     <div class="tb-titulo">¿Qué es un porcentaje?</div>
-    <div class="tb-desc">Un <strong>porcentaje</strong> significa "por cada cien". El símbolo <strong>%</strong> equivale a dividir entre 100. Es decir, <strong>25% = 25/100 = 0,25</strong>. Toda operación con porcentajes parte de esta conversión.</div>
-    <div class="formula-chip"><span class="fc-label">Clave</span><span class="fc-val">X% = X ÷ 100</span></div>
-    <div class="box-info"><strong>Antes de resolver, siempre pregúntate: ¿qué me dan? y ¿qué me piden?</strong> Esa pregunta define cuál de los 5 tipos usar.</div>
+    <div class="tb-desc">Un <strong>porcentaje</strong> es una forma de expresar una parte de algo, tomando como referencia siempre <strong>100</strong>. El símbolo <strong>%</strong> simplemente significa "de cada cien". Por eso, <strong>25%</strong> equivale a decir "25 de cada 100", lo que en decimal se escribe como <strong>0,25</strong>. Esta conversión (% → decimal) es el primer paso en cualquier cálculo.</div>
+    <div class="formula-chip"><span class="fc-label">Clave</span><span class="fc-val">\[ X\% = \frac{X}{100} \]</span></div>
+    <div class="box-info"><strong>Antes de resolver, hazte siempre dos preguntas: ¿qué datos me entrega el problema? y ¿qué me están pidiendo calcular?</strong> Dependiendo de la respuesta, usarás uno de los 5 tipos que se explican a continuación.</div>
+    <div class="box-ok"><strong>Truco mental:</strong> "por ciento" literalmente significa "por cada cien". Si tienes 30%, imagina que de cada 100 pesos, 30 van a esa categoría. El resto (70) queda afuera.</div>
   </div>
 
   <div class="section-label">// TIPOS DE PROBLEMAS</div>
@@ -1105,28 +1248,33 @@ tbody td strong{color:var(--text);}
   <div class="theory-section">
     <div class="tb-tipo">Tipo 1</div>
     <div class="tb-titulo">Calcular la parte de un total</div>
-    <div class="tb-desc">Cuando conoces el <strong>total</strong> y el <strong>porcentaje</strong>, y quieres saber a cuánto equivale ese porcentaje en términos concretos.</div>
-    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Parte = (% ÷ 100) × Total</span></div>
+    <div class="tb-desc">Este es el tipo más común. Lo usas cuando ya sabes <strong>cuánto es el total</strong> y <strong>qué porcentaje quieres calcular</strong>, y lo que necesitas es saber a <em>cuánto dinero</em> (o cuántas unidades) equivale ese porcentaje.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">\[ \text{Parte} = \frac{\%}{100} \times \text{Total} \]</span></div>
     <div class="pasos-lista">
-      <div class="paso-item"><div class="paso-n">1</div><span>Convierte el % a decimal: divide entre 100.</span></div>
+      <div class="paso-item"><div class="paso-n">1</div><span>Convierte el porcentaje a decimal dividiendo entre 100. Ejemplo: 10% → 0,10.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span>Multiplica ese decimal por el total.</span></div>
       <div class="paso-item"><div class="paso-n">3</div><span>El resultado es la parte que buscas.</span></div>
     </div>
     <div class="ejemplo-bloque">
-      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-label">📘 Ejemplo — AFP</div>
       <div class="ej-texto">Tu sueldo es <strong>$600.000</strong>. El <strong>10%</strong> va a AFP. ¿Cuánto descuentan?</div>
-      <div class="ej-operacion">Parte = (10 / 100) × 600.000
-     = 0,10 × 600.000 = 60.000</div>
+      <div class="ej-operacion">\[ \text{Parte} = \frac{10}{100} \times 600.000 = 0{,}10 \times 600.000 = \mathbf{60.000} \]</div>
       <div class="ej-resultado">[OK] Descuentan $60.000 para AFP</div>
     </div>
-    <div class="box-warn"><strong>Error común:</strong> multiplicar por 10 en vez de 0,10. Recuerda <strong>siempre dividir el % entre 100</strong> antes de multiplicar.</div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo — Descuento en tienda</div>
+      <div class="ej-texto">Una chaqueta cuesta <strong>$45.000</strong> y tiene un descuento del <strong>20%</strong>. ¿Cuánto dinero te ahorras?</div>
+      <div class="ej-operacion">\[ \text{Parte} = \frac{20}{100} \times 45.000 = 0{,}20 \times 45.000 = \mathbf{9.000} \]</div>
+      <div class="ej-resultado">[OK] Te ahorras $9.000 (y pagas $36.000)</div>
+    </div>
+    <div class="box-warn"><strong>Error frecuente:</strong> multiplicar por 10 en vez de 0,10. Recuerda: el % siempre se divide entre 100 antes de operar. Si no lo haces, el resultado es 100 veces mayor que el correcto.</div>
   </div>
 
   <div class="theory-section">
     <div class="tb-tipo">Tipo 2</div>
     <div class="tb-titulo">Encontrar el total</div>
     <div class="tb-desc">Cuando conoces <strong>la parte</strong> y sabes <strong>qué porcentaje representa</strong>, pero necesitas el total del que proviene.</div>
-    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">\[ \text{Total} = \frac{\text{Parte} \times 100}{\%} \]</span></div>
     <div class="pasos-lista">
       <div class="paso-item"><div class="paso-n">1</div><span>Multiplica la parte por 100.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span>Divide el resultado entre el porcentaje.</span></div>
@@ -1135,8 +1283,7 @@ tbody td strong{color:var(--text);}
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Ejemplo</div>
       <div class="ej-texto">Pagaste <strong>$57.000</strong> de IVA, que equivale al <strong>19%</strong>. ¿Cuál era el precio neto?</div>
-      <div class="ej-operacion">Total = (57.000 × 100) / 19
-     = 5.700.000 / 19 = 300.000</div>
+      <div class="ej-operacion">\[ \text{Total} = \frac{57.000 \times 100}{19} = \frac{5.700.000}{19} = \mathbf{300.000} \]</div>
       <div class="ej-resultado">[OK] El precio neto era $300.000</div>
     </div>
     <div class="box-info"><strong>Verificación:</strong> 0,19 × 300.000 = 57.000 ✓ Siempre puedes verificar con el Tipo 1.</div>
@@ -1146,8 +1293,8 @@ tbody td strong{color:var(--text);}
     <div class="tb-tipo">Tipo 3</div>
     <div class="tb-titulo">Aumento y descuento porcentual</div>
     <div class="tb-desc">A una cantidad le <strong>sumas o restas</strong> un porcentaje de sí misma. El <strong>1</strong> representa el 100% original que ya tenías.</div>
-    <div class="formula-chip"><span class="fc-label">Aumento</span><span class="fc-val">Total × (1 + % ÷ 100)</span></div>
-    <div class="formula-chip"><span class="fc-label">Descuento</span><span class="fc-val">Total × (1 − % ÷ 100)</span></div>
+    <div class="formula-chip"><span class="fc-label">Aumento</span><span class="fc-val">\[ \text{Resultado} = \text{Total} \times \left(1 + \frac{\%}{100}\right) \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Descuento</span><span class="fc-val">\[ \text{Resultado} = \text{Total} \times \left(1 - \frac{\%}{100}\right) \]</span></div>
     <div class="pasos-lista">
       <div class="paso-item"><div class="paso-n">1</div><span>Si es aumento: suma el % a 1 → ejemplo: 30% → 1,30.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span>Si es descuento: resta el % a 1 → ejemplo: 20% → 0,80.</span></div>
@@ -1156,13 +1303,13 @@ tbody td strong{color:var(--text);}
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Aumento</div>
       <div class="ej-texto">Tu arriendo era <strong>$350.000</strong> y subió un <strong>8%</strong>. ¿Cuánto pagas ahora?</div>
-      <div class="ej-operacion">350.000 × (1 + 0,08) = 350.000 × 1,08 = 378.000</div>
+      <div class="ej-operacion">\[ 350.000 \times \left(1 + 0{,}08\right) = 350.000 \times 1{,}08 = \mathbf{378.000} \]</div>
       <div class="ej-resultado">[OK] Ahora pagas $378.000</div>
     </div>
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Descuento</div>
       <div class="ej-texto">Un celular costaba <strong>$250.000</strong> y tiene un descuento del <strong>15%</strong>. ¿Cuánto pagas?</div>
-      <div class="ej-operacion">250.000 × (1 − 0,15) = 250.000 × 0,85 = 212.500</div>
+      <div class="ej-operacion">\[ 250.000 \times \left(1 - 0{,}15\right) = 250.000 \times 0{,}85 = \mathbf{212.500} \]</div>
       <div class="ej-resultado">[OK] Pagas $212.500</div>
     </div>
     <div class="box-warn"><strong>Error común:</strong> calcular solo el porcentaje y olvidar sumarlo/restarlo al total. La fórmula con el factor (1 ± %) lo hace en un solo paso.</div>
@@ -1172,7 +1319,7 @@ tbody td strong{color:var(--text);}
     <div class="tb-tipo">Tipo 4</div>
     <div class="tb-titulo">¿Qué porcentaje es una parte de un total?</div>
     <div class="tb-desc">Cuando tienes <strong>la parte y el total</strong>, y quieres saber qué porcentaje representa la parte respecto al total.</div>
-    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">% = (Parte ÷ Total) × 100</span></div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">\[ \% = \frac{\text{Parte}}{\text{Total}} \times 100 \]</span></div>
     <div class="pasos-lista">
       <div class="paso-item"><div class="paso-n">1</div><span>Divide la parte entre el total.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span>Multiplica el resultado por 100.</span></div>
@@ -1181,7 +1328,7 @@ tbody td strong{color:var(--text);}
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Ejemplo</div>
       <div class="ej-texto">Ganas <strong>$500.000</strong> y pagas <strong>$150.000</strong> de arriendo. ¿Qué % del sueldo es el arriendo?</div>
-      <div class="ej-operacion">% = (150.000 / 500.000) × 100 = 0,30 × 100 = 30%</div>
+      <div class="ej-operacion">\[ \% = \frac{150.000}{500.000} \times 100 = 0{,}30 \times 100 = \mathbf{30\%} \]</div>
       <div class="ej-resultado">[OK] El arriendo es el 30% del sueldo</div>
     </div>
   </div>
@@ -1189,15 +1336,16 @@ tbody td strong{color:var(--text);}
   <div class="theory-section">
     <div class="tb-tipo">Tipo 5</div>
     <div class="tb-titulo">Encontrar el total cuando la parte representa cierto %</div>
-    <div class="tb-desc">Tienes <strong>una parte</strong> y sabes <strong>qué porcentaje debería representar</strong> del total. La fórmula es idéntica al Tipo 2 — solo cambia la redacción.</div>
-    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">Total = (Parte × 100) ÷ %</span></div>
+    <div class="tb-desc">Este tipo usa la misma fórmula que el Tipo 2, pero el enunciado lo presenta de forma diferente. Aquí te dicen cuánto es una parte y qué porcentaje del total debería representar, y debes encontrar ese total. La clave es identificar cuál es la "parte" y cuál es el "%" en el texto del problema.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">\[ \text{Total} = \frac{\text{Parte} \times 100}{\%} \]</span></div>
     <div class="ejemplo-bloque">
-      <div class="ej-label">📘 Ejemplo</div>
+      <div class="ej-label">📘 Ejemplo — Impuesto</div>
       <div class="ej-texto">Pagaste <strong>$45.000</strong> de impuesto, que representa el <strong>15%</strong> de tu ingreso. ¿Cuánto fue tu ingreso?</div>
-      <div class="ej-operacion">Total = (45.000 × 100) / 15 = 4.500.000 / 15 = 300.000</div>
+      <div class="ej-operacion">\[ \text{Total} = \frac{45.000 \times 100}{15} = \frac{4.500.000}{15} = \mathbf{300.000} \]</div>
       <div class="ej-resultado">[OK] Tu ingreso fue $300.000</div>
     </div>
-    <div class="box-info">Tipos 2 y 5 son idénticos en fórmula. La diferencia es solo cómo está redactado el enunciado. Si el <strong>% y la parte están dados, y buscas el total</strong> → siempre es (Parte × 100) ÷ %</div>
+    <div class="box-info"><strong>¿Cómo diferenciar Tipo 2 y Tipo 5?</strong> En realidad, no hace falta diferenciarlos: si te dan la parte y el porcentaje, y te piden el total, siempre usas \(\text{Total} = \dfrac{\text{Parte} \times 100}{\%}\). La redacción puede cambiar, pero la operación es la misma.</div>
+    <div class="box-ok"><strong>Verificación rápida:</strong> Una vez que tengas el total, aplica Tipo 1 para confirmar: (% / 100) × Total debería darte la parte original. Si coincide, ¡está correcto!</div>
   </div>
 </div>
 
@@ -1401,7 +1549,30 @@ IVA pagado = Precio total − Precio neto</div>
       <p>Términos y fórmulas clave del módulo de Álgebra Ciudadana.</p>
     </div>
   </div>
-  <div class="section-label">// PORCENTAJES</div>
+  <div class="section-label">// SITUACIONES DE MODELACIÓN</div>
+  <table>
+    <thead>
+      <tr><th>Término</th><th>Definición</th><th>Fórmula / Valor</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="td-term">Reduflación</td><td>Fenómeno en que un producto reduce su contenido sin bajar el precio, a veces incluso aumentándolo.</td><td class="td-formula">—</td></tr>
+      <tr><td class="td-term">Variación porcentual</td><td>Mide cuánto cambió una cantidad respecto a su valor original, en términos relativos.</td><td class="td-formula">((Vf − Vi) / Vi) × 100</td></tr>
+      <tr><td class="td-term">Presupuesto 50/30/20</td><td>Método financiero que distribuye el ingreso: 50% necesidades, 30% deseos, 20% ahorro.</td><td class="td-formula">Monto = (% / 100) × Ingreso</td></tr>
+      <tr><td class="td-term">Presupuesto base cero</td><td>Asigna un propósito a cada peso: Ingresos − Gastos − Ahorros = 0.</td><td class="td-formula">Ingresos = Gastos + Ahorros</td></tr>
+      <tr><td class="td-term">Carga financiera</td><td>Porcentaje del ingreso destinado al pago de deudas financieras (créditos, hipotecas, tarjetas).</td><td class="td-formula">(Deudas / Ingreso) × 100</td></tr>
+      <tr><td class="td-term">Masa hereditaria</td><td>Conjunto de bienes del causante que se reparten entre los herederos. No es todo el patrimonio del matrimonio.</td><td class="td-formula">—</td></tr>
+      <tr><td class="td-term">Causante</td><td>Persona fallecida cuya herencia se distribuye.</td><td class="td-formula">—</td></tr>
+      <tr><td class="td-term">Herencia intestada</td><td>Herencia sin testamento. Se rige por el Código Civil. Trámite en el SRCeI.</td><td class="td-formula">—</td></tr>
+      <tr><td class="td-term">Herencia testada</td><td>Herencia con testamento: 50% legitimaria + 25% mejoras + 25% libre disposición.</td><td class="td-formula">50 / 25 / 25</td></tr>
+      <tr><td class="td-term">Mitad legitimaria</td><td>El 50% de la herencia testada que se distribuye como si fuera intestada.</td><td class="td-formula">(50/100) × Masa</td></tr>
+      <tr><td class="td-term">Cuarta de mejoras</td><td>25% de la herencia testada que el causante puede asignar a cualquier heredero.</td><td class="td-formula">(25/100) × Masa</td></tr>
+      <tr><td class="td-term">Cuarta libre disposición</td><td>25% restante que el causante puede destinar a cualquier persona.</td><td class="td-formula">(25/100) × Masa</td></tr>
+      <tr><td class="td-term">Quórum</td><td>Número mínimo de parlamentarios que deben asistir y votar a favor para aprobar una ley.</td><td class="td-formula">⌈(num/den) × N⌉</td></tr>
+      <tr><td class="td-term">UTM</td><td>Unidad Tributaria Mensual: valor en pesos actualizado por el IPC. Referencia tributaria en Chile.</td><td class="td-formula">Ver SII</td></tr>
+      <tr><td class="td-term">UTA</td><td>Unidad Tributaria Anual = UTM del último mes × 12.</td><td class="td-formula">UTM × 12</td></tr>
+    </tbody>
+  </table>
+  <div class="section-label">// PORCENTAJES — TEORÍA BASE</div>
   <table>
     <thead>
       <tr><th>Término</th><th>Definición</th><th>Fórmula / Valor</th></tr>
@@ -1490,8 +1661,8 @@ IVA pagado = Precio total − Precio neto</div>
     <div class="tb-tipo" style="color:var(--cyan)">Suma y Resta</div>
     <div class="tb-titulo">Sumar y restar fracciones</div>
     <div class="tb-desc">Si los denominadores son <strong>iguales</strong>: opera directamente los numeradores. Si son <strong>distintos</strong>: busca el MCM (Mínimo Común Múltiplo) para igualar denominadores.</div>
-    <div class="formula-chip"><span class="fc-label">Suma</span><span class="fc-val">a/b + c/d = (a×d + c×b) / (b×d)</span></div>
-    <div class="formula-chip"><span class="fc-label">Resta</span><span class="fc-val">a/b − c/d = (a×d − c×b) / (b×d)</span></div>
+    <div class="formula-chip"><span class="fc-label">Suma</span><span class="fc-val">\[ \frac{a}{b} + \frac{c}{d} = \frac{a \cdot d + c \cdot b}{b \cdot d} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Resta</span><span class="fc-val">\[ \frac{a}{b} - \frac{c}{d} = \frac{a \cdot d - c \cdot b}{b \cdot d} \]</span></div>
     <div class="pasos-lista">
       <div class="paso-item"><div class="paso-n">1</div><span>Calcula el MCM de los denominadores.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span>Convierte ambas fracciones al denominador común.</span></div>
@@ -1500,8 +1671,7 @@ IVA pagado = Precio total − Precio neto</div>
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Ejemplo</div>
       <div class="ej-texto">De tu sueldo, <strong>1/3</strong> va a arriendo y <strong>1/4</strong> a alimentación. ¿Qué fracción del sueldo usas?</div>
-      <div class="ej-operacion">MCM(3,4) = 12
-1/3 + 1/4 = 4/12 + 3/12 = 7/12</div>
+      <div class="ej-operacion">\[ \text{MCM}(3,4) = 12 \qquad \frac{1}{3} + \frac{1}{4} = \frac{4}{12} + \frac{3}{12} = \mathbf{\frac{7}{12}} \]</div>
       <div class="ej-resultado">[OK] Usas 7/12 del sueldo</div>
     </div>
     <div class="box-warn"><strong>Error común:</strong> sumar numeradores Y denominadores directamente → 1/3 + 1/4 ≠ 2/7. Los denominadores no se suman.</div>
@@ -1511,8 +1681,8 @@ IVA pagado = Precio total − Precio neto</div>
     <div class="tb-tipo" style="color:var(--amber)">Multiplicación y División</div>
     <div class="tb-titulo">Multiplicar y dividir fracciones</div>
     <div class="tb-desc">La multiplicación es directa: <strong>numerador × numerador</strong> y <strong>denominador × denominador</strong>. La división se convierte en multiplicación invirtiendo la segunda fracción.</div>
-    <div class="formula-chip"><span class="fc-label">Multiplicación</span><span class="fc-val">(a/b) × (c/d) = (a×c) / (b×d)</span></div>
-    <div class="formula-chip"><span class="fc-label">División</span><span class="fc-val">(a/b) ÷ (c/d) = (a×d) / (b×c)</span></div>
+    <div class="formula-chip"><span class="fc-label">Multiplicación</span><span class="fc-val">\[ \frac{a}{b} \times \frac{c}{d} = \frac{a \cdot c}{b \cdot d} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">División</span><span class="fc-val">\[ \frac{a}{b} \div \frac{c}{d} = \frac{a \cdot d}{b \cdot c} \]</span></div>
     <div class="pasos-lista">
       <div class="paso-item"><div class="paso-n">1</div><span><strong>Multiplicación:</strong> multiplica numeradores entre sí y denominadores entre sí.</span></div>
       <div class="paso-item"><div class="paso-n">2</div><span><strong>División:</strong> invierte la segunda fracción y multiplica.</span></div>
@@ -1521,7 +1691,7 @@ IVA pagado = Precio total − Precio neto</div>
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 División</div>
       <div class="ej-texto">Tienes <strong>3/4</strong> de tu presupuesto para dividir en <strong>3/2</strong> partes. ¿Cuánto es cada parte?</div>
-      <div class="ej-operacion">(3/4) ÷ (3/2) = (3×2) / (4×3) = 6/12 = 1/2</div>
+      <div class="ej-operacion">\[ \frac{3}{4} \div \frac{3}{2} = \frac{3 \times 2}{4 \times 3} = \frac{6}{12} = \mathbf{\frac{1}{2}} \]</div>
       <div class="ej-resultado">[OK] Cada parte es 1/2 del presupuesto</div>
     </div>
   </div>
@@ -1530,12 +1700,12 @@ IVA pagado = Precio total − Precio neto</div>
     <div class="tb-tipo" style="color:var(--green)">Conversión</div>
     <div class="tb-titulo">Fracción ↔ Decimal</div>
     <div class="tb-desc">Toda fracción puede expresarse como decimal y viceversa. Esto es útil para interpretar tasas, cotizaciones y porcentajes en formatos distintos.</div>
-    <div class="formula-chip"><span class="fc-label">Fracc → Dec</span><span class="fc-val">Numerador ÷ Denominador</span></div>
-    <div class="formula-chip"><span class="fc-label">Dec → Fracc</span><span class="fc-val">decimal × 10ⁿ / 10ⁿ → simplificar</span></div>
+    <div class="formula-chip"><span class="fc-label">Fracc → Dec</span><span class="fc-val">\[ \frac{\text{Numerador}}{\text{Denominador}} = \text{decimal} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Dec → Fracc</span><span class="fc-val">\[ 0{,}d = \frac{d}{10^n} \rightarrow \text{simplificar con MCD} \]</span></div>
     <div class="ejemplo-bloque">
       <div class="ej-label">📘 Ejemplo</div>
       <div class="ej-texto">Tu cotización de salud es <strong>7/100</strong> de tu sueldo. ¿Cuánto es en decimal?</div>
-      <div class="ej-operacion">7 ÷ 100 = 0,07</div>
+      <div class="ej-operacion">\[ \frac{7}{100} = 7 \div 100 = \mathbf{0{,}07} \]</div>
       <div class="ej-resultado">[OK] La cotización es 0,07 (es decir, el 7%)</div>
     </div>
     <div class="box-info"><strong>Nota:</strong> fracción → porcentaje es igual a fracción → decimal × 100. Por eso 7/100 = 0,07 = 7%.</div>
@@ -1587,6 +1757,595 @@ IVA pagado = Precio total − Precio neto</div>
   </div>
 </div>
 
+<!-- ══ PAGE: SM1 PRESUPUESTO MENSUAL ══ -->
+<div class="page" id="page-sm1">
+  <div class="unidad-hero">
+    <div class="uh-ico">💰</div>
+    <div class="uh-info">
+      <h2>SM1 — Presupuesto Mensual</h2>
+      <p>Un plan financiero mensual permite organizar los ingresos y gastos personales mediante cálculos aritméticos y porcentajes. Esto permite definir prioridades, optimizar los recursos y ahorrar para situaciones emergentes.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">50/30/20</span>
+        <span class="uh-tag">Carga financiera</span>
+        <span class="uh-tag">SERNAC</span>
+        <span class="uh-tag">Presupuesto base cero</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// CONCEPTO CLAVE</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Método 50/30/20</div>
+    <div class="tb-titulo">¿Cómo funciona el presupuesto 50/30/20?</div>
+    <div class="tb-desc">Es una forma sencilla de organizar el dinero que entra cada mes. La idea es dividir el ingreso en tres grandes grupos, cada uno con un propósito claro. No es una regla rígida, sino una <strong>guía de referencia</strong> para saber si estás gastando de forma equilibrada.</div>
+    <div class="box-ok"><strong>50% — Lo que no puedes evitar pagar (necesidades):</strong> Arriendo o dividendo, servicios básicos (agua, luz, gas), transporte para ir al trabajo, alimentación del mes, seguro de salud y los pagos mínimos de deudas que ya tienes.</div>
+    <div class="box-info"><strong>30% — Lo que disfrutas pero no es urgente (deseos):</strong> Salidas a comer, entretenimiento, suscripciones como Netflix o Spotify, compras de ropa no esencial, vacaciones. Son gastos válidos, pero puedes ajustarlos si es necesario.</div>
+    <div class="box-warn"><strong>20% — Lo que cuida tu futuro (ahorro e inversión):</strong> Dinero reservado para emergencias, ahorros de largo plazo, pagar deudas antes de tiempo o iniciar una inversión. Este porcentaje es el que más cuesta mantener, pero es el más importante a largo plazo.</div>
+    <div class="formula-chip"><span class="fc-label">Calcular cada categoría</span><span class="fc-val">\[ \text{Monto} = \frac{\%}{100} \times \text{Ingreso mensual} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Encontrar el ingreso desde un monto</span><span class="fc-val">\[ \text{Ingreso} = \frac{\text{Monto} \times 100}{\%} \]</span></div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 1 — Caso real del ramo</div>
+      <div class="ej-texto">Una persona recibe ingresos mensuales de <strong>$680.000</strong>. Aplicando el método 50/30/20, ¿cuánto debe destinar a cada categoría?</div>
+      <div class="ej-operacion">\[\begin{aligned}
+\text{Gastos fijos} &= \frac{50}{100} \times 680.000 = \mathbf{\$340.000} \\[6pt]
+\text{Deseos} &= \frac{30}{100} \times 680.000 = \mathbf{\$204.000} \\[6pt]
+\text{Ahorros} &= \frac{20}{100} \times 680.000 = \mathbf{\$136.000} \\[8pt]
+\hline \\[-6pt]
+\text{Total} &= 340.000 + 204.000 + 136.000 = \mathbf{\$680.000} \checkmark
+\end{aligned}\]</div>
+      <div class="ej-resultado">[OK] La suma de las tres partes debe ser igual al ingreso total</div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 2 — Encontrar el ingreso desde una categoría</div>
+      <div class="ej-texto">Una persona gasta <strong>$450.000</strong> en gastos variables (deseos), que corresponden al 30% de su ingreso. ¿Cuál es su ingreso mensual?</div>
+      <div class="ej-operacion">\[ \text{Ingreso} = \frac{450.000 \times 100}{30} = \frac{45.000.000}{30} = \mathbf{\$1.500.000} \]</div>
+      <div class="ej-resultado">[OK] Su ingreso mensual es $1.500.000</div>
+    </div>
+    <div class="box-info"><strong>¿Cómo verificar?</strong> Aplica el 30% al ingreso que encontraste: 0,30 × $1.500.000 = $450.000. Si coincide con el dato original, el cálculo está correcto.</div>
+  </div>
+
+  <div class="section-label">// CARGA FINANCIERA (SERNAC)</div>
+  <div class="theory-section" style="border-left-color:var(--red)">
+    <div class="tb-tipo">Actividad 4</div>
+    <div class="tb-titulo">¿Qué es la carga financiera?</div>
+    <div class="tb-desc">La <strong>carga financiera</strong> es el porcentaje del ingreso mensual que una persona (o familia) destina a pagar deudas: créditos hipotecarios, créditos de consumo, préstamos bancarios, tarjetas de crédito, etc. El SERNAC establece límites recomendados según el nivel de renta, para que las personas no se endeuden más de lo que pueden pagar.</div>
+    <div class="box-info"><strong>¿Para qué sirve este límite?</strong> Si tu carga financiera supera el porcentaje recomendado, significa que estás destinando demasiado de tu ingreso a deudas, lo que puede dejarte sin dinero para imprevistos.</div>
+    <table>
+      <thead><tr><th>Tramo de renta líquida</th><th>Carga financiera máxima</th></tr></thead>
+      <tbody>
+        <tr><td>$200.000 a $600.000</td><td style="color:var(--green)">25%</td></tr>
+        <tr><td>$600.001 a $1.300.000</td><td style="color:var(--amber)">40%</td></tr>
+        <tr><td>$1.300.001 a $2.500.000</td><td style="color:var(--amber)">50%</td></tr>
+        <tr><td>$2.500.001 y más</td><td style="color:var(--red)">55%</td></tr>
+      </tbody>
+    </table>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Caso Luis y Francisca</div>
+      <div class="ej-texto">Luis gana <strong>$700.000</strong> y Francisca gana <strong>$560.000</strong>. Quieren tomar crédito hipotecario ($350.000/mes) + crédito de consumo ($400.000/mes). ¿Supera la recomendación SERNAC?</div>
+      <div class="ej-operacion">\[\begin{aligned}
+\textbf{Paso 1} &\text{ — Ingreso familiar:} \\
+&\$700.000 + \$560.000 = \mathbf{\$1.260.000} \quad \Rightarrow \text{Tramo 40\%} \\[8pt]
+\textbf{Paso 2} &\text{ — Límite en pesos:} \\
+&\frac{40}{100} \times 1.260.000 = \mathbf{\$504.000} \\[8pt]
+\textbf{Paso 3} &\text{ — Total deudas:} \\
+&\$350.000 + \$400.000 = \mathbf{\$750.000} \\[8pt]
+\textbf{Paso 4} &\text{ — Carga real:} \\
+&\frac{750.000}{1.260.000} \times 100 = \mathbf{59{,}52\%}
+\end{aligned}\]</div>
+      <div class="ej-resultado">[WARN] 59,52% supera el 40% recomendado → NO es aconsejable tomar esas deudas</div>
+    </div>
+    <div class="box-warn"><strong>Importante leer bien el problema:</strong> La carga financiera siempre se calcula sobre el ingreso <strong>familiar total combinado</strong>, no sobre el sueldo individual de cada persona. El tramo también se determina sumando ambos ingresos.</div>
+  </div>
+
+  <div class="section-label">// PRESUPUESTO BASE CERO</div>
+  <div class="theory-section" style="border-left-color:var(--purple)">
+    <div class="tb-tipo">Concepto adicional</div>
+    <div class="tb-titulo">Presupuesto base cero</div>
+    <div class="tb-desc">Asigna un propósito a <strong>cada peso que se gana</strong> hasta que no quede nada sin asignar. Al final del mes: <strong>Ingresos − Gastos − Ahorros = 0</strong>. No debe haber dinero "flotante" sin destino.</div>
+    <div class="formula-chip"><span class="fc-label">Condición</span><span class="fc-val">\[ \text{Ingresos} - \text{Gastos totales} - \text{Ahorros} = 0 \]</span></div>
+    <div class="box-info">A diferencia del 50/30/20 (que es <strong>proporcional</strong>), el base cero es <strong>absoluto</strong>: cada peso tiene destino, sin importar los porcentajes. Si sobra dinero, se redistribuye a categorías existentes o se crea una nueva.</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS SM1 ══ -->
+<div class="page" id="page-ejer-sm1">
+  <div class="unidad-hero">
+    <div class="uh-ico">💰</div>
+    <div class="uh-info">
+      <h2>Ejercicios — SM1 Presupuesto</h2>
+      <p>Ejercicios generados con énfasis en comprensión lectora, tal como los practica el profesor en clases.</p>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-sm1">
+    <button class="st-btn active" onclick="setSt('sm1','rand')">[RAND]</button>
+    <button class="st-btn" onclick="setSt('sm1','5030')">50/30/20</button>
+    <button class="st-btn" onclick="setSt('sm1','cf')">Carga financiera</button>
+  </div>
+  <div id="ej-sm1"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicioSM()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: SM2 HEREDEROS ══ -->
+<div class="page" id="page-sm2">
+  <div class="unidad-hero">
+    <div class="uh-ico">🏛️</div>
+    <div class="uh-info">
+      <h2>SM2 — Herederos</h2>
+      <p>Las herencias en Chile están reguladas por la Ley de Herencias y el Código Civil. El tipo de herencia, los bienes del causante y los herederos determinan cómo se distribuye la masa hereditaria.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">Herencia intestada</span>
+        <span class="uh-tag">Herencia testada</span>
+        <span class="uh-tag">Código Civil</span>
+        <span class="uh-tag">SRCeI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// CONCEPTOS CLAVE</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Definición esencial</div>
+    <div class="tb-titulo">¿Qué es la masa hereditaria?</div>
+    <div class="tb-desc">La <strong>masa hereditaria</strong> es el conjunto de bienes que efectivamente se reparten entre los herederos. <strong>No corresponde a todos los bienes del matrimonio</strong>, sino solo a la parte que pertenece al fallecido (causante) y que debe distribuirse según la ley o el testamento.</div>
+    <div class="box-warn"><strong>Error de comprensión frecuente:</strong> La masa hereditaria NO es igual al patrimonio total del matrimonio. Solo corresponde a la parte del causante.</div>
+  </div>
+
+  <div class="section-label">// HERENCIA INTESTADA (sin testamento)</div>
+  <div class="theory-section" style="border-left-color:var(--cyan)">
+    <div class="tb-tipo">Primer orden sucesorio</div>
+    <div class="tb-titulo">¿Cómo se reparte sin testamento?</div>
+    <div class="tb-desc">Los herederos del primer orden son los <strong>hijos del causante</strong> y el <strong>cónyuge o conviviente civil sobreviviente</strong>. La distribución depende del número de hijos:</div>
+    <table>
+      <thead><tr><th>Situación</th><th>Regla de distribución</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Solo 1 hijo/a + cónyuge</strong></td><td>Heredan en <strong>partes iguales</strong> (50% cada uno)</td></tr>
+        <tr><td><strong>2 o más hijos + cónyuge</strong></td><td>Hijos heredan en partes iguales; el cónyuge recibe el <strong>doble</strong> que cualquier hijo</td></tr>
+        <tr><td><strong>Grupo numeroso de hijos</strong></td><td>El cónyuge <strong>no puede recibir menos del 25%</strong>; el resto se divide entre los hijos</td></tr>
+        <tr><td><strong>Solo hijos, sin cónyuge</strong></td><td>Se dividen en <strong>partes iguales</strong> entre todos los hijos</td></tr>
+      </tbody>
+    </table>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 1 — Caso Patricia y Ariel</div>
+      <div class="ej-texto">Patricia fallece. El matrimonio tuvo <strong>1 solo hijo</strong> (Sebastián). No existe testamento. La masa hereditaria es <strong>$30.894.572</strong>. ¿Cuánto reciben Ariel (viudo) y Sebastián?</div>
+      <div class="ej-operacion">\[ \text{1 hijo + cónyuge} \Rightarrow \text{partes iguales} \qquad \frac{\$30.894.572}{2} = \mathbf{\$15.447.286 \text{ c/u}} \]</div>
+      <div class="ej-resultado">[OK] Ariel recibe $15.447.286 y Sebastián recibe $15.447.286</div>
+    </div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 2 — Caso Ariel (segundo matrimonio)</div>
+      <div class="ej-texto">Ariel fallece con herencia intestada de <strong>$120.000.000</strong>. Sus herederos son: Vania (cónyuge), Andrea, Ricardo (hijos biológicos), David (adoptado). <strong>Ojo:</strong> Samuel y Francisca son hijos de Vania de su primer matrimonio → <strong>no son herederos de Ariel por ley</strong>.</div>
+      <div class="ej-operacion">\[\begin{aligned}
+&\text{Herederos: Vania + Andrea + Ricardo + David} = 4 \text{ personas} \\[6pt]
+&\text{Regla: cónyuge recibe el doble que cada hijo} \\[6pt]
+&\text{Partes: } 3 \times 1 + 1 \times 2 = \mathbf{5 \text{ partes totales}} \\[8pt]
+&\text{Valor de 1 parte} = \frac{\$120.000.000}{5} = \mathbf{\$24.000.000} \\[6pt]
+&\text{Cada hijo (Andrea, Ricardo, David)} = \mathbf{\$24.000.000} \\[6pt]
+&\text{Vania (cónyuge)} = \$24.000.000 \times 2 = \mathbf{\$48.000.000}
+\end{aligned}\]</div>
+      <div class="ej-resultado">[OK] Vania: $48.000.000 (40%) | Cada hijo: $24.000.000 (20%)</div>
+    </div>
+    <div class="box-warn"><strong>Comprensión lectora:</strong> Samuel y Francisca son hijastros de Ariel, no hijos legales. <strong>Solo los hijos propios, adoptados o reconocidos son herederos del primer orden.</strong></div>
+  </div>
+
+  <div class="section-label">// HERENCIA TESTADA (con testamento)</div>
+  <div class="theory-section" style="border-left-color:var(--green)">
+    <div class="tb-tipo">Marco legal vigente</div>
+    <div class="tb-titulo">División de la herencia testada</div>
+    <div class="tb-desc">Cuando existe testamento, la masa hereditaria se divide en tres partes según el Código Civil:</div>
+    <div class="box-ok"><strong>Mitad legitimaria (50%):</strong> Sigue las mismas reglas que la herencia intestada. El causante no puede modificar esta distribución.</div>
+    <div class="box-info"><strong>Cuarta de mejoras (25%):</strong> El causante puede repartirla libremente entre uno o varios herederos según su voluntad.</div>
+    <div class="box-warn"><strong>Cuarta de libre disposición (25%):</strong> El causante puede destinarla a cualquier persona, sea o no heredero.</div>
+    <div class="formula-chip"><span class="fc-label">Mitad legitimaria</span><span class="fc-val">\[ \text{Parte} = \frac{50}{100} \times \text{Masa total} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Cuarta de mejoras</span><span class="fc-val">\[ \text{Parte} = \frac{25}{100} \times \text{Masa total} \]</span></div>
+    <div class="formula-chip"><span class="fc-label">Libre disposición</span><span class="fc-val">\[ \text{Parte} = \frac{25}{100} \times \text{Masa total} \]</span></div>
+  </div>
+
+  <div class="section-label">// COSTO DEL TRÁMITE (SRCeI)</div>
+  <div class="theory-section" style="border-left-color:var(--amber)">
+    <div class="tb-tipo">Actividad 4</div>
+    <div class="tb-titulo">Posesión efectiva — Tabla de costos</div>
+    <div class="tb-desc">El costo del trámite es único y depende del <strong>valor total de la masa hereditaria</strong>, independiente del número de herederos.</div>
+    <table>
+      <thead><tr><th>Tramo</th><th>Valor total masa hereditaria</th><th>Costo del trámite</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Hasta 15 UTA</td><td style="color:var(--green)">Gratuito</td></tr>
+        <tr><td>2</td><td>Superior a 15 UTA y hasta 45 UTA</td><td style="color:var(--amber)">1.6 UTM</td></tr>
+        <tr><td>3</td><td>Superior a 45 UTA</td><td style="color:var(--red)">2.5 UTM</td></tr>
+      </tbody>
+    </table>
+    <div class="box-info"><strong>UTM</strong> (Unidad Tributaria Mensual): valor en pesos actualizado mensualmente por el IPC. <strong>UTA</strong> (Unidad Tributaria Anual) = UTM del último mes × 12.</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS SM2 ══ -->
+<div class="page" id="page-ejer-sm2">
+  <div class="unidad-hero">
+    <div class="uh-ico">🏛️</div>
+    <div class="uh-info">
+      <h2>Ejercicios — SM2 Herederos</h2>
+      <p>Ejercicios de comprensión lectora sobre herencias: identifica el tipo, los herederos y calcula los montos.</p>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-sm2">
+    <button class="st-btn active" onclick="setSt('sm2','rand')">[RAND]</button>
+    <button class="st-btn" onclick="setSt('sm2','int')">Intestada</button>
+    <button class="st-btn" onclick="setSt('sm2','test')">Testada</button>
+  </div>
+  <div id="ej-sm2"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicioSM()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: SM3 REDUFLACIÓN ══ -->
+<div class="page" id="page-sm3">
+  <div class="unidad-hero">
+    <div class="uh-ico">📉</div>
+    <div class="uh-info">
+      <h2>SM3 — Reduflación</h2>
+      <p>La reduflación es un fenómeno en que los productos reducen su contenido —o mantienen el envase con menor cantidad— sin disminuir su precio e incluso aumentándolo. Analizar estos cambios exige calcular variaciones porcentuales.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">Variación porcentual</span>
+        <span class="uh-tag">Reduflación</span>
+        <span class="uh-tag">Datos reales</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// CONCEPTO CLAVE</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Fundamento</div>
+    <div class="tb-titulo">¿Qué es la variación porcentual?</div>
+    <div class="tb-desc">La <strong>variación porcentual</strong> responde a una pregunta simple: <em>¿cuánto cambió algo, expresado como porcentaje de lo que había antes?</em> Es una forma de comparar cambios de manera <strong>justa</strong>, porque no todos los puntos de partida son iguales. Un cambio de 50 gramos en un producto de 500 g no es lo mismo que 50 g en uno de 2.000 g, aunque el número absoluto sea idéntico.</div>
+    <div class="formula-chip"><span class="fc-label">Fórmula</span><span class="fc-val">\[ \text{Variación \%} = \frac{V_{\text{nuevo}} - V_{\text{antiguo}}}{V_{\text{antiguo}}} \times 100 \]</span></div>
+    <div class="box-ok">Si el resultado es <strong>positivo</strong> → la cantidad aumentó (por ejemplo, el precio subió).</div>
+    <div class="box-warn">Si el resultado es <strong>negativo</strong> → la cantidad disminuyó (por ejemplo, el contenido bajó).</div>
+    <div class="box-info"><strong>¿Qué significa "redondear a la centésima"?</strong> Es dejar el resultado con exactamente 2 decimales. Ejemplo: −6.666... se escribe como −6,67% (el tercer decimal era 6, que es ≥ 5, entonces se sube el segundo decimal).</div>
+
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 1 — Caso Quaker (caso real del ramo)</div>
+      <div class="ej-texto">La usuaria @paolamode publicó que el Quaker pasó de <strong>750 g</strong> a <strong>700 g</strong> en dos semanas. ¿Cuál es la variación porcentual del contenido?</div>
+      <div class="ej-operacion">\[\begin{aligned}
+\text{Variación \%} &= \frac{700 - 750}{750} \times 100 \\[8pt]
+&= \frac{-50}{750} \times 100 \\[8pt]
+&= -0{,}0\overline{6} \times 100 \\[8pt]
+&= \mathbf{-6{,}67\%}
+\end{aligned}\]</div>
+      <div class="ej-resultado">[OK] El contenido disminuyó un 6,67% → esto es reduflación</div>
+    </div>
+    <div class="box-info"><strong>¿Por qué se llama "reduflación"?</strong> Es una combinación de "reducción" e "inflación". El producto cuesta lo mismo (o más), pero trae menos cantidad. El precio por gramo sube aunque el precio total parezca igual.</div>
+  </div>
+
+  <div class="section-label">// ANÁLISIS CON DATOS REALES</div>
+  <div class="theory-section" style="border-left-color:var(--amber)">
+    <div class="tb-tipo">Actividad 2 — Tabla Quaker</div>
+    <div class="tb-titulo">Variaciones en tres períodos</div>
+    <div class="tb-desc">La siguiente tabla muestra el contenido y precio del Quaker en tres momentos. Las variaciones porcentuales se calculan <strong>siempre respecto al período anterior</strong> (o al período de referencia indicado):</div>
+    <table>
+      <thead>
+        <tr><th>Criterio</th><th>Oct. 2021</th><th>Ene. 2022</th><th>Feb. 2022</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Contenido</strong></td><td>1.000 g</td><td>750 g</td><td>700 g</td></tr>
+        <tr><td><strong>Precio</strong></td><td>$1.850</td><td>$2.340</td><td>$2.500</td></tr>
+      </tbody>
+    </table>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Solución — Actividad 2a</div>
+      <div class="ej-texto">Calcula las variaciones porcentuales por período:</div>
+      <div class="ej-operacion">\[\begin{aligned}
+\textbf{Oct} &\boldsymbol{\to} \textbf{Ene} \\
+&\text{Contenido: } \frac{750-1000}{1000}\times100 = \mathbf{-25{,}00\%} \\
+&\text{Precio: } \frac{2340-1850}{1850}\times100 = \mathbf{+26{,}49\%} \\[10pt]
+\textbf{Ene} &\boldsymbol{\to} \textbf{Feb} \\
+&\text{Contenido: } \frac{700-750}{750}\times100 = \mathbf{-6{,}67\%} \\
+&\text{Precio: } \frac{2500-2340}{2340}\times100 = \mathbf{+6{,}84\%} \\[10pt]
+\textbf{Oct} &\boldsymbol{\to} \textbf{Feb (total)} \\
+&\text{Contenido: } \frac{700-1000}{1000}\times100 = \mathbf{-30{,}00\%} \\
+&\text{Precio: } \frac{2500-1850}{1850}\times100 = \mathbf{+35{,}14\%}
+\end{aligned}\]</div>
+    </div>
+    <div class="box-info"><strong>¿Por qué la variación total (Oct→Feb) no es la suma de las dos variaciones?</strong> Porque cada variación toma como base un número distinto. La de Oct→Ene usa 1.000 g como base; la de Ene→Feb usa 750 g. Sumar −25% + (−6,67%) daría −31,67%, pero el resultado real es −30%. Nunca se suman variaciones porcentuales de períodos distintos directamente.</div>
+  </div>
+
+  <div class="theory-section" style="border-left-color:var(--red)">
+    <div class="tb-tipo">Actividad 3</div>
+    <div class="tb-titulo">¿Por qué no se comparan diferencias absolutas?</div>
+    <div class="tb-desc">Un producto sube 100 g (de 1800 a 1900) y otro sube $80 (de $1000 a $1080). No se puede decir cuál cambio fue "mayor" mirando solo los números absolutos porque las <strong>bases son distintas</strong>.</div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Actividad 3 — Solución</div>
+      <div class="ej-texto">Enero: 1800 g, $1000. Febrero: 1900 g, $1000. Marzo: 1900 g, $1080.</div>
+      <div class="ej-operacion">\[\begin{aligned}
+a)\quad &\text{Variación contenido Ene→Feb:} \\
+&\frac{1900-1800}{1800}\times100 = \frac{100}{1800}\times100 = \mathbf{5{,}56\%} \\[10pt]
+b)\quad &\text{Variación precio Feb→Mar:} \\
+&\frac{1080-1000}{1000}\times100 = \frac{80}{1000}\times100 = \mathbf{8{,}00\%} \\[10pt]
+c)\quad &8{,}00\% > 5{,}56\% \Rightarrow \text{el precio subió proporcionalmente más}
+\end{aligned}\]</div>
+      <div class="ej-resultado">[OK] La variación porcentual del precio (8%) fue mayor que la del contenido (5,56%)</div>
+    </div>
+  </div>
+
+  <div class="section-label">// DATOS REALES — CIPER 2022</div>
+  <div class="theory-section" style="border-left-color:var(--purple)">
+    <div class="tb-tipo">Actividad 4 — Actividad de cierre</div>
+    <div class="tb-titulo">Alzas de precios en supermercados</div>
+    <div class="tb-desc">CIPER registró precios entre el 03/12/2021 y el 07/04/2022. Tabla completa con soluciones:</div>
+    <table>
+      <thead>
+        <tr><th>Producto</th><th>Precio Dic.2021</th><th>Precio Abr.2022</th><th>Variación $</th><th>Variación %</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Agua Benedictino 2L</td><td>$750</td><td class="td-formula">$820</td><td class="td-formula">$70</td><td class="td-formula">9,33%</td></tr>
+        <tr><td>Coca Cola 2.5L</td><td>$1.990</td><td>$1.990</td><td class="td-formula">$0</td><td class="td-formula">0,00%</td></tr>
+        <tr><td>Leche cond. Nestlé</td><td>$1.190</td><td class="td-formula">$1.490</td><td class="td-formula">$300</td><td>25,2%</td></tr>
+        <tr><td>Azúcar Iansa 1kg</td><td class="td-formula">$890</td><td>$990</td><td class="td-formula">$100</td><td>11,2%</td></tr>
+      </tbody>
+    </table>
+    <div class="box-warn"><strong>Mayor alza porcentual:</strong> La leche condensada Nestlé con un alza del 25,2%.</div>
+    <div class="box-info"><strong>Comprensión lectora:</strong> La Coca Cola no tuvo variación en precio ($1.990 → $1.990), por lo tanto su variación porcentual es 0%. Esto puede ser un caso de reduflación si redujo su contenido manteniendo el precio.</div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS SM3 ══ -->
+<div class="page" id="page-ejer-sm3">
+  <div class="unidad-hero">
+    <div class="uh-ico">📉</div>
+    <div class="uh-info">
+      <h2>Ejercicios — SM3 Reduflación</h2>
+      <p>Practica el cálculo de variación porcentual con contextos reales de consumo.</p>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-sm3">
+    <button class="st-btn active" onclick="setSt('sm3','rand')">[RAND]</button>
+    <button class="st-btn" onclick="setSt('sm3','cont')">Variación contenido</button>
+    <button class="st-btn" onclick="setSt('sm3','precio')">Variación precio</button>
+    <button class="st-btn" onclick="setSt('sm3','encad')">Períodos encadenados</button>
+  </div>
+  <div id="ej-sm3"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicioSM()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: ARPA2 QUÓRUM ══ -->
+<div class="page" id="page-arpa2">
+  <div class="unidad-hero">
+    <div class="uh-ico">⚖️</div>
+    <div class="uh-info">
+      <h2>ARPA2 — Quórum Parlamentario</h2>
+      <p>El quórum legislativo es el número mínimo de parlamentarios que deben estar presentes y votar a favor para aprobar una ley. Se expresa como fracción de los parlamentarios en ejercicio de cada cámara.</p>
+      <div class="uh-tags">
+        <span class="uh-tag">Cámara: 155 diputados</span>
+        <span class="uh-tag">Senado: 50 senadores</span>
+        <span class="uh-tag">2025</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">// TIPOS DE LEYES Y QUÓRUM</div>
+  <div class="theory-section">
+    <div class="tb-tipo">Tabla oficial — Carta Fundamental</div>
+    <div class="tb-titulo">¿Cuántos votos se necesitan?</div>
+    <table>
+      <thead>
+        <tr><th>Tipo de Ley</th><th>Quórum</th><th>Diputados</th><th>Senadores</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Leyes ordinarias</strong></td>
+          <td>1/3 asistencia + mayoría simple</td>
+          <td class="td-formula">≥ 52</td>
+          <td class="td-formula">≥ 17</td>
+        </tr>
+        <tr>
+          <td><strong>Leyes interpretativas</strong></td>
+          <td>3/5 asisten y votan a favor</td>
+          <td class="td-formula">≥ 93</td>
+          <td class="td-formula">≥ 30</td>
+        </tr>
+        <tr>
+          <td><strong>Leyes orgánicas constitucionales</strong></td>
+          <td>4/7 asisten y votan a favor</td>
+          <td class="td-formula">≥ 89</td>
+          <td class="td-formula">≥ 29</td>
+        </tr>
+        <tr>
+          <td><strong>Leyes de quórum calificado</strong></td>
+          <td>Mayoría absoluta (50%+1)</td>
+          <td class="td-formula">≥ 78</td>
+          <td class="td-formula">≥ 26</td>
+        </tr>
+        <tr>
+          <td><strong>Reforma constitucional</strong></td>
+          <td>3/5 o 2/3 según el caso</td>
+          <td class="td-formula">≥ 93 o ≥ 104</td>
+          <td class="td-formula">≥ 30 o ≥ 34</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="formula-chip"><span class="fc-label">Calcular votos requeridos</span><span class="fc-val">\[ \text{Votos} = \left\lceil \frac{\text{num}}{\text{den}} \times \text{total parlamentarios} \right\rceil \]</span></div>
+    <div class="box-info">El símbolo ⌈ ⌉ indica <strong>redondeo hacia arriba</strong> (techo). Si el resultado da decimal, siempre se sube al entero siguiente porque no hay fracciones de personas.</div>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejemplo — Ley orgánica constitucional</div>
+      <div class="ej-texto">¿Cuántos diputados se necesitan para una ley orgánica constitucional (quórum 4/7)?</div>
+      <div class="ej-operacion">\[ \text{Votos} = \left\lceil \frac{4}{7} \times 155 \right\rceil = \lceil 88{,}57\ldots \rceil = \mathbf{89 \text{ diputados}} \]</div>
+      <div class="ej-resultado">[OK] Se necesitan al menos 89 diputados</div>
+    </div>
+  </div>
+
+  <div class="section-label">// COMPOSICIÓN DEL CONGRESO 2025</div>
+  <div class="theory-section" style="border-left-color:var(--purple)">
+    <div class="tb-tipo">ARPA2 — Ejercicio principal del ramo</div>
+    <div class="tb-titulo">Distribución por pactos políticos</div>
+    <table>
+      <thead>
+        <tr><th>Pacto</th><th>Diputados</th><th>Senadores</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Unidad por Chile</td><td>61</td><td>20</td></tr>
+        <tr><td>Cambio por Chile</td><td>42</td><td>18</td></tr>
+        <tr><td>Chile Grande y Unido</td><td>34</td><td>7</td></tr>
+        <tr><td>Verdes, Regionalistas y Humanistas</td><td>3</td><td>3</td></tr>
+        <tr><td>Partido de la Gente</td><td>14</td><td>0</td></tr>
+        <tr><td>Independientes sin pacto</td><td>1</td><td>2</td></tr>
+        <tr><td><strong>TOTAL</strong></td><td><strong>155</strong></td><td><strong>50</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="ejemplo-bloque">
+      <div class="ej-label">📘 Ejercicio ARPA2 — Reforma constitucional (3/5)</div>
+      <div class="ej-texto">Se impulsa una reforma constitucional con quórum 3/5. Votan a favor todos los parlamentarios de <strong>Cambio por Chile</strong> y <strong>Chile Grande y Unido</strong>. ¿Cuántos parlamentarios adicionales se necesitan en cada cámara?</div>
+      <div class="ej-operacion">\[\begin{aligned}
+\textbf{Cámara de Diputados} \\[4pt]
+\text{Quórum requerido} &= \left\lceil \frac{3}{5} \times 155 \right\rceil = \lceil 93 \rceil = \mathbf{93} \\
+\text{Ya tienen} &= 42 + 34 = 76 \\
+\text{Faltan} &= 93 - 76 = \mathbf{17 \text{ diputados}} \\[12pt]
+\textbf{Senado} \\[4pt]
+\text{Quórum requerido} &= \left\lceil \frac{3}{5} \times 50 \right\rceil = \lceil 30 \rceil = \mathbf{30} \\
+\text{Ya tienen} &= 18 + 7 = 25 \\
+\text{Faltan} &= 30 - 25 = \mathbf{5 \text{ senadores}}
+\end{aligned}\]</div>
+      <div class="ej-resultado">[OK] Faltan 17 diputados y 5 senadores de otros pactos</div>
+    </div>
+    <div class="box-warn"><strong>Comprensión lectora clave:</strong> La pregunta pide los que faltan de <strong>otros pactos</strong>, no el total. Hay que restar los que ya votan a favor al quórum total requerido.</div>
+  </div>
+
+  <div class="section-label">// EXTENSIÓN ARPA2</div>
+  <div class="theory-section" style="border-left-color:var(--cyan)">
+    <div class="tb-tipo">Tabla extendida — todos los tipos</div>
+    <div class="tb-titulo">Cálculo completo por tipo de ley y cámara</div>
+    <div class="tb-desc">Aplicando la fórmula de quórum para cada tipo de ley, en ambas cámaras:</div>
+    <table>
+      <thead>
+        <tr><th>Tipo de Ley</th><th>Fracción</th><th>Diputados (155)</th><th>Senadores (50)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ley ordinaria (asistencia)</td><td>1/3</td><td class="td-formula">⌈51,67⌉ = 52</td><td class="td-formula">⌈16,67⌉ = 17</td></tr>
+        <tr><td>Ley interpretativa</td><td>3/5</td><td class="td-formula">⌈93⌉ = 93</td><td class="td-formula">⌈30⌉ = 30</td></tr>
+        <tr><td>Ley orgánica constitucional</td><td>4/7</td><td class="td-formula">⌈88,57⌉ = 89</td><td class="td-formula">⌈28,57⌉ = 29</td></tr>
+        <tr><td>Quórum calificado (50%+1)</td><td>mayoría abs.</td><td class="td-formula">78</td><td class="td-formula">26</td></tr>
+        <tr><td>Reforma constitucional (op.1)</td><td>3/5</td><td class="td-formula">93</td><td class="td-formula">30</td></tr>
+        <tr><td>Reforma constitucional (op.2)</td><td>2/3</td><td class="td-formula">⌈103,33⌉ = 104</td><td class="td-formula">⌈33,33⌉ = 34</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ PAGE: EJERCICIOS ARPA2 ══ -->
+<div class="page" id="page-ejer-arpa2">
+  <div class="unidad-hero">
+    <div class="uh-ico">⚖️</div>
+    <div class="uh-info">
+      <h2>Ejercicios — ARPA2 Quórum</h2>
+      <p>Practica el cálculo de quórum legislativo con fracciones. Interpretación del enunciado es clave.</p>
+    </div>
+  </div>
+  <div class="section-label">// EJERCICIOS INTERACTIVOS</div>
+  <div class="subtipo-row" id="st-arpa2">
+    <button class="st-btn active" onclick="setSt('arpa2','rand')">[RAND]</button>
+    <button class="st-btn" onclick="setSt('arpa2','cam')">Solo Cámara</button>
+    <button class="st-btn" onclick="setSt('arpa2','sen')">Solo Senado</button>
+    <button class="st-btn" onclick="setSt('arpa2','pol')">Con pactos políticos</button>
+  </div>
+  <div id="ej-arpa2"></div>
+  <div class="ej-btns">
+    <button class="btn-s" onclick="nuevoEjercicioSM()">↻ NUEVO EJERCICIO</button>
+    <button class="btn-s danger" onclick="resetScore()">✕ REINICIAR PUNTAJE</button>
+  </div>
+</div>
+
+<!-- ══ PAGE: MODO EXAMEN ══ -->
+<div class="page" id="page-examen">
+  <div class="unidad-hero" style="border-left-color:var(--amber)">
+    <div class="uh-ico" style="color:var(--amber)">⏱</div>
+    <div class="uh-info">
+      <h2>Modo Examen</h2>
+      <p>Responde preguntas sin ayuda de fórmulas ni pistas. Tienes un tiempo límite. Al final ves tu puntaje y cuánto tardaste. Ideal para simular una prueba real.</p>
+      <div class="uh-tags">
+        <span class="uh-tag" style="border-color:var(--amber);color:var(--amber)">⏱ Tiempo límite</span>
+        <span class="uh-tag">Sin fórmulas</span>
+        <span class="uh-tag">Resultado final</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG PANEL -->
+  <div id="examen-config" class="theory-section" style="border-left-color:var(--amber)">
+    <div class="tb-tipo" style="color:var(--amber)">Configuración del examen</div>
+    <div class="tb-titulo">Personaliza tu simulación</div>
+
+    <div style="margin-bottom:16px">
+      <div class="section-label" style="margin-bottom:8px">// UNIDADES A EVALUAR</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="ex-units">
+        <label class="ex-check"><input type="checkbox" value="sm1" checked> 💰 SM1 Presupuesto</label>
+        <label class="ex-check"><input type="checkbox" value="sm2" checked> 🏛️ SM2 Herederos</label>
+        <label class="ex-check"><input type="checkbox" value="sm3" checked> 📉 SM3 Reduflación</label>
+        <label class="ex-check"><input type="checkbox" value="arpa2" checked> ⚖️ ARPA2 Quórum</label>
+        <label class="ex-check"><input type="checkbox" value="pct" checked> % Porcentajes</label>
+        <label class="ex-check"><input type="checkbox" value="frac" checked> ½ Fracciones</label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div class="section-label" style="margin-bottom:8px">// CANTIDAD DE PREGUNTAS</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="ex-qty">
+        <button class="st-btn" onclick="selExQty(this,5)">5</button>
+        <button class="st-btn active" onclick="selExQty(this,10)">10</button>
+        <button class="st-btn" onclick="selExQty(this,15)">15</button>
+        <button class="st-btn" onclick="selExQty(this,20)">20</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-label" style="margin-bottom:8px">// TIEMPO POR PREGUNTA</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="ex-time">
+        <button class="st-btn" onclick="selExTime(this,60)">1 min</button>
+        <button class="st-btn active" onclick="selExTime(this,90)">1:30 min</button>
+        <button class="st-btn" onclick="selExTime(this,120)">2 min</button>
+        <button class="st-btn" onclick="selExTime(this,0)">Sin límite</button>
+      </div>
+    </div>
+
+    <button class="btn-s" style="border-color:var(--amber);color:var(--amber);font-size:13px;padding:12px 28px" onclick="iniciarExamen()">▶ INICIAR EXAMEN</button>
+  </div>
+
+  <!-- EXAMEN EN CURSO -->
+  <div id="examen-curso" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:var(--bg2);border:1px solid var(--border);padding:12px 18px">
+      <div style="font-size:11px;color:var(--text2);letter-spacing:1px">PREGUNTA <span id="ex-num" style="color:var(--amber);font-family:'Orbitron',sans-serif">1</span> / <span id="ex-total">10</span></div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:20px;color:var(--amber)" id="ex-timer">1:30</div>
+      <div style="font-size:11px;color:var(--text2);letter-spacing:1px">✓ <span id="ex-ok-live">0</span> &nbsp; ✗ <span id="ex-err-live">0</span></div>
+    </div>
+    <div id="ex-pregunta-wrap"></div>
+    <div class="ej-btns" style="margin-top:12px">
+      <button class="btn-s" id="ex-next-btn" onclick="examenSiguiente()" style="display:none;border-color:var(--amber);color:var(--amber)">→ SIGUIENTE</button>
+      <button class="btn-s danger" onclick="terminarExamen()">✕ TERMINAR</button>
+    </div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="examen-resultado" style="display:none">
+    <div class="theory-section" style="border-left-color:var(--amber)">
+      <div class="tb-tipo" style="color:var(--amber)">Examen finalizado</div>
+      <div class="tb-titulo" id="ex-res-titulo">Tus resultados</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0">
+        <div class="sg-cell sg-ok"><div class="sg-val" id="ex-res-ok">0</div><div class="sg-lbl">Correctas</div></div>
+        <div class="sg-cell sg-err"><div class="sg-val" id="ex-res-err">0</div><div class="sg-lbl">Incorrectas</div></div>
+        <div class="sg-cell sg-tot"><div class="sg-val" id="ex-res-pct">0%</div><div class="sg-lbl">Nota</div></div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:16px">⏱ Tiempo total: <span id="ex-res-time" style="color:var(--cyan)">—</span></div>
+      <div id="ex-res-detalle" style="margin-bottom:16px"></div>
+      <button class="btn-s" style="border-color:var(--amber);color:var(--amber)" onclick="resetExamen()">↺ NUEVO EXAMEN</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /page-body -->
 </main>
 </div><!-- /layout -->
@@ -1603,11 +2362,15 @@ let ejercicio=null, respondido=false;
 let sOk=0, sErr=0;
 let spP={ok:0,tot:0}, spF={ok:0,tot:0};
 
-const PAGINAS_EJERCICIOS=['ejer-pct','ejer-frac','mixto'];
+const PAGINAS_EJERCICIOS=['ejer-pct','ejer-frac','mixto','ejer-sm1','ejer-sm2','ejer-sm3','ejer-arpa2'];
 const MOD_PAGINA={
   'ejer-pct':'porcentajes',
   'ejer-frac':'fracciones',
-  'mixto':'mixto'
+  'mixto':'mixto',
+  'ejer-sm1':'sm1',
+  'ejer-sm2':'sm2',
+  'ejer-sm3':'sm3',
+  'ejer-arpa2':'arpa2'
 };
 
 // ══════════════════════════════════════
@@ -1947,6 +2710,231 @@ function gFQ(){
 // ══════════════════════════════════════
 // GENERAR
 // ══════════════════════════════════════
+// SM EXERCISE STATE
+// ══════════════════════════════════════
+let stSM1='rand', stSM2='rand', stSM3='rand', stArpa2='rand';
+let spSM1={ok:0,tot:0}, spSM2={ok:0,tot:0}, spSM3={ok:0,tot:0}, spArpa2={ok:0,tot:0};
+
+// ══════════════════════════════════════
+// SM1 — PRESUPUESTO GENERATORS
+// ══════════════════════════════════════
+function gSM1_5030(){
+  const ingresos=rnd(400000,2000000,50000);
+  const sub=pick(['monto','ingreso']);
+  const cats=[
+    {nom:'gastos fijos o necesidades',p:50},
+    {nom:'gastos variables o deseos',p:30},
+    {nom:'ahorros e inversiones',p:20}
+  ];
+  const cat=pick(cats);
+  const monto=Math.round(ingresos*cat.p/100);
+  if(sub==='monto'){
+    return{tag:'t-vd',label:'SM1 — 50/30/20',
+      enunciado:`Una persona recibe ingresos mensuales de <strong>$${fmt(ingresos)}</strong>. Aplicando el método <strong>50/30/20</strong>, ¿cuánto dinero debería destinar a <strong>${cat.nom}</strong> (${cat.p}%)?`,
+      formula:`Monto = (${cat.p}/100) × Ingreso`,ctx:{ico:'💰',nom:'Presupuesto'},
+      respuesta:monto,unidad:'$',
+      pasos:`(${cat.p}/100) × ${fmt(ingresos)} = ${cat.p/100} × ${fmt(ingresos)} = $${fmt(monto)}`,
+      inputType:'simple',mod:'sm1'};
+  } else {
+    return{tag:'t-az',label:'SM1 — Encontrar ingreso',
+      enunciado:`Aplicando el método <strong>50/30/20</strong>, una persona destina <strong>$${fmt(monto)}</strong> a <strong>${cat.nom}</strong>, lo que corresponde al <strong>${cat.p}%</strong> de su ingreso mensual. ¿Cuál es su ingreso mensual?`,
+      formula:`Ingreso = (Monto × 100) / ${cat.p}`,ctx:{ico:'💰',nom:'Presupuesto'},
+      respuesta:ingresos,unidad:'$',
+      pasos:`($${fmt(monto)} × 100) / ${cat.p} = ${fmt(monto*100)} / ${cat.p} = $${fmt(ingresos)}`,
+      inputType:'simple',mod:'sm1'};
+  }
+}
+function gSM1_CF(){
+  const tramos=[
+    {min:200000,max:600000,cf:25},
+    {min:600001,max:1300000,cf:40},
+    {min:1300001,max:2500000,cf:50},
+  ];
+  const t=pick(tramos);
+  const ingreso=rnd(t.min,Math.min(t.max,t.max),10000);
+  const cfMax=Math.round(ingreso*t.cf/100);
+  return{tag:'t-ro',label:'SM1 — Carga financiera',
+    enunciado:`El ingreso mensual de una persona es <strong>$${fmt(ingreso)}</strong>. Según la tabla de recomendaciones del <strong>SERNAC</strong>, para ese tramo la carga financiera máxima es <strong>${t.cf}%</strong>. ¿Cuál es el monto máximo en pesos que puede destinar al pago de deudas financieras?`,
+    formula:`CF máxima = (${t.cf}/100) × Ingreso`,ctx:{ico:'🏦',nom:'SERNAC'},
+    respuesta:cfMax,unidad:'$',
+    pasos:`(${t.cf}/100) × ${fmt(ingreso)} = ${t.cf/100} × ${fmt(ingreso)} = $${fmt(cfMax)}`,
+    inputType:'simple',mod:'sm1'};
+}
+function generarSM1(){
+  if(stSM1==='5030')return gSM1_5030();
+  if(stSM1==='cf')return gSM1_CF();
+  return pick([gSM1_5030,gSM1_5030,gSM1_CF])();
+}
+
+// ══════════════════════════════════════
+// SM2 — HEREDEROS GENERATORS
+// ══════════════════════════════════════
+function gSM2_int(){
+  const masa=rnd(10000000,120000000,500000);
+  const numHijos=rnd(1,4);
+  const tieneConyugue=Math.random()>0.2;
+  let enunciado,respuesta,pasos;
+  if(numHijos===1&&tieneConyugue){
+    const porCada=Math.round(masa/2);
+    const quien=pick(['el cónyuge sobreviviente','el/la único/a hijo/a']);
+    respuesta=porCada;
+    enunciado=`Una persona fallece sin dejar testamento (<strong>herencia intestada</strong>). La masa hereditaria es <strong>$${fmt(masa)}</strong>. Deja <strong>1 hijo/a</strong> y <strong>cónyuge sobreviviente</strong>. Cuando hay un solo hijo/a, ambos heredan en <strong>partes iguales</strong>. ¿Cuánto recibe <strong>${quien}</strong>?`;
+    pasos=`1 hijo + cónyuge → partes iguales\n$${fmt(masa)} / 2 = $${fmt(porCada)} cada uno`;
+  } else if(tieneConyugue){
+    const totalPartes=numHijos+2;
+    const porHijo=Math.round(masa/totalPartes);
+    const porConyugue=porHijo*2;
+    const quien=pick(['el cónyuge sobreviviente','cada hijo/a']);
+    respuesta=quien.includes('cónyuge')?porConyugue:porHijo;
+    enunciado=`Una herencia intestada tiene masa de <strong>$${fmt(masa)}</strong>. Los herederos son: <strong>${numHijos} hijos/as</strong> y el <strong>cónyuge sobreviviente</strong>. Los hijos heredan en partes iguales y el cónyuge recibe el <strong>doble</strong> que cualquier hijo. ¿Cuánto recibe <strong>${quien}</strong>?`;
+    pasos=`Partes: ${numHijos} hijos×1 + cónyuge×2 = ${totalPartes} partes\nPor parte = $${fmt(masa)} / ${totalPartes} = $${fmt(porHijo)}\nCónyuge = $${fmt(porHijo)} × 2 = $${fmt(porConyugue)}`;
+  } else {
+    const porCada=Math.round(masa/numHijos);
+    respuesta=porCada;
+    enunciado=`Una herencia intestada de <strong>$${fmt(masa)}</strong> debe repartirse en <strong>partes iguales</strong> entre <strong>${numHijos} hijos/as</strong> (no hay cónyuge sobreviviente). ¿Cuánto recibe <strong>cada hijo/a</strong>?`;
+    pasos=`$${fmt(masa)} / ${numHijos} = $${fmt(porCada)} por hijo/a`;
+  }
+  return{tag:'t-mo',label:'SM2 — Herencia intestada',enunciado,
+    formula:'División según reglas del Código Civil',ctx:{ico:'🏛️',nom:'Herencia'},
+    respuesta,unidad:'$',pasos,inputType:'simple',mod:'sm2'};
+}
+function gSM2_test(){
+  const masa=rnd(20000000,150000000,1000000);
+  const legitimaria=Math.round(masa*0.50);
+  const mejoras=Math.round(masa*0.25);
+  const variante=pick(['leg','mej','lib','ing_mej','ing_leg']);
+  let enunciado,respuesta,pasos;
+  if(variante==='leg'){
+    enunciado=`En una <strong>herencia testada</strong> de <strong>$${fmt(masa)}</strong>, la <strong>mitad legitimaria</strong> corresponde al <strong>50%</strong> de la masa y se distribuye según las reglas de la herencia intestada. ¿Cuánto dinero equivale la mitad legitimaria?`;
+    respuesta=legitimaria;pasos=`(50/100) × $${fmt(masa)} = $${fmt(legitimaria)}`;
+  } else if(variante==='mej'){
+    enunciado=`En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de mejoras</strong> es el <strong>25%</strong> de la masa y puede distribuirse libremente entre los herederos. ¿A cuánto asciende la cuarta de mejoras?`;
+    respuesta=mejoras;pasos=`(25/100) × $${fmt(masa)} = $${fmt(mejoras)}`;
+  } else if(variante==='lib'){
+    const libreDisp=Math.round(masa*0.25);
+    enunciado=`En una herencia testada de <strong>$${fmt(masa)}</strong>, la <strong>cuarta de libre disposición</strong> (25%) puede destinarse a cualquier persona según la voluntad del causante. ¿Cuánto es ese monto?`;
+    respuesta=libreDisp;pasos=`(25/100) × $${fmt(masa)} = $${fmt(libreDisp)}`;
+  } else if(variante==='ing_mej'){
+    enunciado=`En una herencia testada, la <strong>cuarta de mejoras</strong> asciende a <strong>$${fmt(mejoras)}</strong> y equivale al <strong>25%</strong> de la masa hereditaria. ¿Cuál es el valor total de la masa?`;
+    respuesta=masa;pasos=`Masa = ($${fmt(mejoras)} × 100) / 25 = $${fmt(masa)}`;
+  } else {
+    enunciado=`La <strong>mitad legitimaria</strong> de una herencia testada es <strong>$${fmt(legitimaria)}</strong> (corresponde al 50% de la masa). ¿Cuál es el valor total de la masa hereditaria?`;
+    respuesta=masa;pasos=`Masa = ($${fmt(legitimaria)} × 100) / 50 = $${fmt(masa)}`;
+  }
+  return{tag:'t-am',label:'SM2 — Herencia testada',enunciado,
+    formula:'50% legitimaria | 25% mejoras | 25% libre disposición',ctx:{ico:'📜',nom:'Testamento'},
+    respuesta,unidad:'$',pasos,inputType:'simple',mod:'sm2'};
+}
+function generarSM2(){
+  if(stSM2==='int')return gSM2_int();
+  if(stSM2==='test')return gSM2_test();
+  return pick([gSM2_int,gSM2_int,gSM2_test])();
+}
+
+// ══════════════════════════════════════
+// SM3 — REDUFLACIÓN GENERATORS
+// ══════════════════════════════════════
+function gSM3_cont(){
+  const vi=rnd(500,1200,50);
+  const pct=pick([-5,-6.67,-10,-15,-20,-25,-8]);
+  const vf=Math.round(vi*(1+pct/100));
+  const varReal=r2((vf-vi)/vi*100);
+  const productos=['avena','maíz tostado','arroz','pasas','granola','café'];
+  const prod=pick(productos);
+  return{tag:'t-nr',label:'SM3 — Variación contenido',
+    enunciado:`Un envase de <strong>${prod}</strong> reducía su contenido de <strong>${vi} g</strong> a <strong>${vf} g</strong> manteniendo el mismo precio. ¿Cuál es la variación porcentual del contenido? Aproxima por redondeo a la <strong>centésima</strong>.`,
+    formula:'Variación % = ((Vf − Vi) / Vi) × 100',ctx:{ico:'🛒',nom:'Consumo'},
+    respuesta:varReal,unidad:'%',
+    pasos:`((${vf} − ${vi}) / ${vi}) × 100\n= (${vf-vi} / ${vi}) × 100\n= ${r2((vf-vi)/vi)} × 100\n= ${varReal}%`,
+    inputType:'simple',mod:'sm3'};
+}
+function gSM3_precio(){
+  const pi=rnd(800,3000,50);
+  const pct=pick([5,8,9.33,10,11.2,15,20,25.2,30]);
+  const pf=Math.round(pi*(1+pct/100));
+  const varReal=r2((pf-pi)/pi*100);
+  const productos=['leche condensada','azúcar','agua con gas','jugo','mermelada'];
+  const prod=pick(productos);
+  return{tag:'t-az',label:'SM3 — Variación precio',
+    enunciado:`El precio de <strong>${prod}</strong> pasó de <strong>$${fmt(pi)}</strong> a <strong>$${fmt(pf)}</strong>. ¿Cuál es la variación porcentual del precio? Aproxima a la <strong>centésima</strong>.`,
+    formula:'Variación % = ((Pf − Pi) / Pi) × 100',ctx:{ico:'🏷️',nom:'Precio'},
+    respuesta:varReal,unidad:'%',
+    pasos:`((${pf} − ${pi}) / ${pi}) × 100\n= (${pf-pi} / ${pi}) × 100\n= ${varReal}%`,
+    inputType:'simple',mod:'sm3'};
+}
+function gSM3_encad(){
+  const vi=rnd(600,1200,100);
+  const vm=Math.round(vi*(1+rnd(5,30,5)/100));
+  const vf=Math.round(vm*(1-rnd(5,20,5)/100));
+  const varTotal=r2((vf-vi)/vi*100);
+  return{tag:'t-mo',label:'SM3 — Variación total',
+    enunciado:`Un producto tenía contenido de <strong>${vi} g</strong>. En el período 1 aumentó a <strong>${vm} g</strong>. En el período 2 bajó a <strong>${vf} g</strong>. ¿Cuál es la variación porcentual total desde el valor inicial hasta el valor final? Aproxima a la centésima.`,
+    formula:'Variación % total = ((Vf − Vi inicial) / Vi inicial) × 100',ctx:{ico:'📊',nom:'Análisis'},
+    respuesta:varTotal,unidad:'%',
+    pasos:`Usar el valor INICIAL (${vi} g) como base:\n((${vf} − ${vi}) / ${vi}) × 100\n= (${vf-vi} / ${vi}) × 100 = ${varTotal}%\nNOTA: No es la suma de las dos variaciones parciales.`,
+    inputType:'simple',mod:'sm3'};
+}
+function generarSM3(){
+  if(stSM3==='cont')return gSM3_cont();
+  if(stSM3==='precio')return gSM3_precio();
+  if(stSM3==='encad')return gSM3_encad();
+  return pick([gSM3_cont,gSM3_precio,gSM3_encad])();
+}
+
+// ══════════════════════════════════════
+// ARPA2 — QUÓRUM GENERATORS
+// ══════════════════════════════════════
+const QUORUMS_DATA=[
+  {ley:'ley ordinaria (asistencia mínima)',frac:[1,3],label:'1/3'},
+  {ley:'ley interpretativa de la Constitución',frac:[3,5],label:'3/5'},
+  {ley:'ley orgánica constitucional',frac:[4,7],label:'4/7'},
+  {ley:'reforma constitucional',frac:[3,5],label:'3/5'},
+  {ley:'reforma constitucional',frac:[2,3],label:'2/3'},
+];
+const CAMARAS_DATA=[
+  {nom:'Cámara de Diputadas y Diputados',total:155,tipo:'diputados',
+   pactos:[{nom:'Cambio por Chile',n:42},{nom:'Chile Grande y Unido',n:34},{nom:'Unidad por Chile',n:61},{nom:'Partido de la Gente',n:14}]},
+  {nom:'Senado',total:50,tipo:'senadores',
+   pactos:[{nom:'Cambio por Chile',n:18},{nom:'Chile Grande y Unido',n:7},{nom:'Unidad por Chile',n:20}]},
+];
+function gArpa2_votos(){
+  const camara=pick(CAMARAS_DATA);
+  const q=pick(QUORUMS_DATA);
+  const[num,den]=q.frac;
+  const N=camara.total;
+  const req=Math.ceil(N*num/den);
+  return{tag:'t-ci',label:'ARPA2 — Votos requeridos',
+    enunciado:`Para aprobar una <strong>${q.ley}</strong> se requiere un quórum de <strong>${q.label}</strong> de los parlamentarios en ejercicio. La <strong>${camara.nom}</strong> cuenta con <strong>${N} ${camara.tipo}</strong> en ejercicio. ¿Cuántos deben asistir y votar a favor?`,
+    formula:`Votos = ⌈(${num}/${den}) × ${N}⌉`,ctx:{ico:'🏛️',nom:'Parlamento'},
+    respuesta:req,unidad:'',
+    pasos:`(${num}/${den}) × ${N} = ${r2(num/den*N)}\n→ Redondear hacia arriba → ${req} ${camara.tipo}`,
+    inputType:'simple',mod:'arpa2'};
+}
+function gArpa2_pol(){
+  const camara=pick(CAMARAS_DATA);
+  const q=pick(QUORUMS_DATA);
+  const[num,den]=q.frac;
+  const N=camara.total;
+  const req=Math.ceil(N*num/den);
+  const p1=pick(camara.pactos);
+  const p2=pick(camara.pactos.filter(p=>p.nom!==p1.nom));
+  const yaFavor=p1.n+p2.n;
+  const faltan=Math.max(0,req-yaFavor);
+  return{tag:'t-mo',label:'ARPA2 — Negociación política',
+    enunciado:`Se impulsa una <strong>${q.ley}</strong> que requiere quórum de <strong>${q.label}</strong> en la <strong>${camara.nom}</strong> (${N} ${camara.tipo}). Asistirán y votarán a favor todos los parlamentarios de <strong>${p1.nom}</strong> (${p1.n}) y <strong>${p2.nom}</strong> (${p2.n}). ¿Cuántos parlamentarios adicionales de <strong>otros pactos</strong> se necesitan para alcanzar el quórum?`,
+    formula:`Faltan = ⌈(${num}/${den})×${N}⌉ − (${p1.n} + ${p2.n})`,ctx:{ico:'🗳️',nom:'Negociación'},
+    respuesta:faltan,unidad:'',
+    pasos:`Quórum requerido: ⌈(${num}/${den})×${N}⌉ = ${req}\nYa asegurados: ${p1.n} + ${p2.n} = ${yaFavor}\nFaltan: ${req} − ${yaFavor} = ${faltan} ${camara.tipo}`,
+    inputType:'simple',mod:'arpa2'};
+}
+function generarArpa2(){
+  if(stArpa2==='cam'){const c=CAMARAS_DATA[0];const q=pick(QUORUMS_DATA);const[n,d]=q.frac;const req=Math.ceil(c.total*n/d);return{tag:'t-ci',label:'ARPA2 — Cámara',enunciado:`Para aprobar una <strong>${q.ley}</strong> (quórum <strong>${q.label}</strong>), ¿cuántos diputados de los <strong>155 en ejercicio</strong> deben asistir y votar a favor?`,formula:`⌈(${n}/${d}) × 155⌉`,ctx:{ico:'🏛️',nom:'Cámara'},respuesta:req,unidad:'',pasos:`(${n}/${d})×155=${r2(n/d*155)} → ⌈${r2(n/d*155)}⌉ = ${req}`,inputType:'simple',mod:'arpa2'};}
+  if(stArpa2==='sen'){const c=CAMARAS_DATA[1];const q=pick(QUORUMS_DATA);const[n,d]=q.frac;const req=Math.ceil(c.total*n/d);return{tag:'t-vd',label:'ARPA2 — Senado',enunciado:`Para aprobar una <strong>${q.ley}</strong> (quórum <strong>${q.label}</strong>), ¿cuántos senadores de los <strong>50 en ejercicio</strong> deben asistir y votar a favor?`,formula:`⌈(${n}/${d}) × 50⌉`,ctx:{ico:'⚖️',nom:'Senado'},respuesta:req,unidad:'',pasos:`(${n}/${d})×50=${r2(n/d*50)} → ⌈${r2(n/d*50)}⌉ = ${req}`,inputType:'simple',mod:'arpa2'};}
+  if(stArpa2==='pol')return gArpa2_pol();
+  return pick([gArpa2_votos,gArpa2_votos,gArpa2_pol])();
+}
+
+// ══════════════════════════════════════
 function generar(){
   const mod=MOD_PAGINA[pagina]||'mixto';
   if(mod==='porcentajes'){
@@ -1996,7 +2984,10 @@ function renderInput(ej){
 }
 
 function renderEj(ej){
-  const map={'ejer-pct':'ej-p','ejer-frac':'ej-f','mixto':'ej-m'};
+  const map={
+    'ejer-pct':'ej-p','ejer-frac':'ej-f','mixto':'ej-m',
+    'ejer-sm1':'ej-sm1','ejer-sm2':'ej-sm2','ejer-sm3':'ej-sm3','ejer-arpa2':'ej-arpa2'
+  };
   const id=map[pagina]||'ej-m';
   document.getElementById(id).innerHTML=`
   <div class="ej-card" id="card-ej">
@@ -2035,7 +3026,11 @@ function verificar(){
   }else{
     const v=parseFloat(document.getElementById('inp-s').value);
     if(isNaN(v))return;
-    ok=Math.abs(v-ej.respuesta)<0.6;
+    // Tighter tolerance for % (centésimas) and integer answers (quórum, parlamentarios)
+    const isInt=Number.isInteger(ej.respuesta);
+    const isPct=ej.unidad==='%';
+    const tol=isInt?0.5:(isPct?0.1:0.6);
+    ok=Math.abs(v-ej.respuesta)<tol;
     document.getElementById('inp-s').classList.add(ok?'ok':'err');
   }
   respondido=true;
@@ -2044,6 +3039,10 @@ function verificar(){
   if(ok)sOk++;else sErr++;
   if(ej.mod==='p'){spP.tot++;if(ok)spP.ok++;}
   if(ej.mod==='f'){spF.tot++;if(ok)spF.ok++;}
+  if(ej.mod==='sm1'){spSM1.tot++;if(ok)spSM1.ok++;}
+  if(ej.mod==='sm2'){spSM2.tot++;if(ok)spSM2.ok++;}
+  if(ej.mod==='sm3'){spSM3.tot++;if(ok)spSM3.ok++;}
+  if(ej.mod==='arpa2'){spArpa2.tot++;if(ok)spArpa2.ok++;}
   const rStr=ej.inputType==='fraccion'?`${ej.respuestaN}/${ej.respuestaD}`
     :`${ej.unidad==='$'?'$':''}${fmt(ej.respuesta)}${ej.unidad==='%'?'%':''}`;
   const fb=document.getElementById('fb');
@@ -2058,10 +3057,14 @@ function verificar(){
 // NAV
 // ══════════════════════════════════════
 const TITULOS={
-  inicio:'INICIO',porcentajes:'PORCENTAJES',fracciones:'FRACCIONES',
+  inicio:'INICIO',porcentajes:'TEORÍA PORCENTAJES',fracciones:'TEORÍA FRACCIONES',
   'ejer-pct':'EJERCICIOS %','ejer-frac':'EJERCICIOS ½',
   'flash-pct':'FLASHCARDS','glosario':'GLOSARIO','notas':'NOTAS',
-  mixto:'MODO MIXTO'
+  mixto:'MODO MIXTO',examen:'MODO EXAMEN',
+  sm1:'SM1 — PRESUPUESTO','ejer-sm1':'EJERCICIOS SM1',
+  sm2:'SM2 — HEREDEROS','ejer-sm2':'EJERCICIOS SM2',
+  sm3:'SM3 — REDUFLACIÓN','ejer-sm3':'EJERCICIOS SM3',
+  arpa2:'ARPA2 — QUÓRUM','ejer-arpa2':'EJERCICIOS ARPA2'
 };
 
 function ir(id){
@@ -2076,7 +3079,15 @@ function ir(id){
   if(nb)nb.classList.add('active');
   document.getElementById('bc-current').textContent=TITULOS[id]||id.toUpperCase();
   document.getElementById('btn-back').style.display=historial.length>1?'flex':'none';
-  if(PAGINAS_EJERCICIOS.includes(id))nuevoEjercicio();
+  // re-render MathJax on new page
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise([document.getElementById('page-'+id)]).catch(()=>{});
+  }
+  if(PAGINAS_EJERCICIOS.includes(id)){
+    const smPages=['ejer-sm1','ejer-sm2','ejer-sm3','ejer-arpa2'];
+    if(smPages.includes(id)) nuevoEjercicioSM();
+    else nuevoEjercicio();
+  }
   window.scrollTo({top:0,behavior:'smooth'});
   closeSidebar();
 }
@@ -2097,16 +3108,47 @@ function irAtras(){
 }
 
 function setSt(mod,val){
-  if(mod==='p')stP=val;else stF=val;
-  const stId=mod==='p'?'st-porcentajes':'st-fracciones';
-  const vals=mod==='p'?[0,1,2,3,4,5,6,7,8,9]:[0,'f1','f2','f3','fq'];
-  document.querySelectorAll(`#${stId} .st-btn`).forEach((b,i)=>b.classList.toggle('active',vals[i]==val));
-  nuevoEjercicio();
+  if(mod==='p'){stP=val;
+    const vals=[0,1,2,3,4,5,6,7,8,9];
+    document.querySelectorAll('#st-porcentajes .st-btn').forEach((b,i)=>b.classList.toggle('active',vals[i]==val));
+    nuevoEjercicio();
+  } else if(mod==='f'){stF=val;
+    const vals=[0,'f1','f2','f3','fq'];
+    document.querySelectorAll('#st-fracciones .st-btn').forEach((b,i)=>b.classList.toggle('active',vals[i]==val));
+    nuevoEjercicio();
+  } else if(mod==='sm1'){stSM1=val;
+    document.querySelectorAll('#st-sm1 .st-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`#st-sm1 .st-btn[onclick*="'${val}'"]`)?.classList.add('active');
+    nuevoEjercicioSM();
+  } else if(mod==='sm2'){stSM2=val;
+    document.querySelectorAll('#st-sm2 .st-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`#st-sm2 .st-btn[onclick*="'${val}'"]`)?.classList.add('active');
+    nuevoEjercicioSM();
+  } else if(mod==='sm3'){stSM3=val;
+    document.querySelectorAll('#st-sm3 .st-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`#st-sm3 .st-btn[onclick*="'${val}'"]`)?.classList.add('active');
+    nuevoEjercicioSM();
+  } else if(mod==='arpa2'){stArpa2=val;
+    document.querySelectorAll('#st-arpa2 .st-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`#st-arpa2 .st-btn[onclick*="'${val}'"]`)?.classList.add('active');
+    nuevoEjercicioSM();
+  }
 }
 
 function nuevoEjercicio(){
   respondido=false;
   ejercicio=generar();
+  renderEj(ejercicio);
+}
+
+function nuevoEjercicioSM(){
+  respondido=false;
+  const mod=MOD_PAGINA[pagina]||'mixto';
+  if(mod==='sm1') ejercicio=generarSM1();
+  else if(mod==='sm2') ejercicio=generarSM2();
+  else if(mod==='sm3') ejercicio=generarSM3();
+  else if(mod==='arpa2') ejercicio=generarArpa2();
+  else ejercicio=generar();
   renderEj(ejercicio);
 }
 
@@ -2116,10 +3158,18 @@ function updateScore(){
   document.getElementById('s-tot').textContent=sOk+sErr;
   const pp=spP.tot>0?Math.round(spP.ok/spP.tot*100):0;
   const pf=spF.tot>0?Math.round(spF.ok/spF.tot*100):0;
-  document.getElementById('prog-p').style.width=pp+'%';
-  document.getElementById('prog-f').style.width=pf+'%';
-  document.getElementById('pct-p').textContent=spP.tot>0?pp+'%':'—';
-  document.getElementById('pct-f').textContent=spF.tot>0?pf+'%':'—';
+  const ps1=spSM1.tot>0?Math.round(spSM1.ok/spSM1.tot*100):0;
+  const ps2=spSM2.tot>0?Math.round(spSM2.ok/spSM2.tot*100):0;
+  const ps3=spSM3.tot>0?Math.round(spSM3.ok/spSM3.tot*100):0;
+  const pa2=spArpa2.tot>0?Math.round(spArpa2.ok/spArpa2.tot*100):0;
+  document.getElementById('prog-p').style.width=ps1+'%';
+  document.getElementById('pct-p').textContent=spSM1.tot>0?ps1+'%':'—';
+  const ph=document.getElementById('prog-h');if(ph)ph.style.width=ps2+'%';
+  const pcth=document.getElementById('pct-h');if(pcth)pcth.textContent=spSM2.tot>0?ps2+'%':'—';
+  const pr=document.getElementById('prog-r');if(pr)pr.style.width=ps3+'%';
+  const pctr=document.getElementById('pct-r');if(pctr)pctr.textContent=spSM3.tot>0?ps3+'%':'—';
+  document.getElementById('prog-f').style.width=pa2+'%';
+  document.getElementById('pct-f').textContent=spArpa2.tot>0?pa2+'%':'—';
 }
 
 function toggleFormula(){
@@ -2131,8 +3181,13 @@ function toggleFormula(){
 }
 
 function resetScore(){
-  sOk=sErr=0;spP={ok:0,tot:0};spF={ok:0,tot:0};
-  updateScore();nuevoEjercicio();
+  sOk=sErr=0;
+  spP={ok:0,tot:0};spF={ok:0,tot:0};
+  spSM1={ok:0,tot:0};spSM2={ok:0,tot:0};spSM3={ok:0,tot:0};spArpa2={ok:0,tot:0};
+  updateScore();
+  const smPages=['ejer-sm1','ejer-sm2','ejer-sm3','ejer-arpa2'];
+  if(smPages.includes(pagina)) nuevoEjercicioSM();
+  else nuevoEjercicio();
 }
 
 // ══════════════════════════════════════
@@ -2186,21 +3241,26 @@ function clearNotes(){
 // SEARCH
 // ══════════════════════════════════════
 const SEARCH_DATA=[
-  {page:'porcentajes',title:'Porcentajes — Fundamento',text:'porcentaje por cada cien símbolo equivale dividir 100 conversión'},
-  {page:'porcentajes',title:'Tipo 1 — Calcular la parte',text:'parte total porcentaje calcular Parte = (% / 100) × Total AFP descuento'},
-  {page:'porcentajes',title:'Tipo 2 — Encontrar el total',text:'total parte porcentaje Total = (Parte × 100) / % IVA precio neto'},
-  {page:'porcentajes',title:'Tipo 3 — Aumento y descuento',text:'aumento descuento factor Total × (1 + % / 100) arriendo celular vuelo'},
-  {page:'porcentajes',title:'Tipo 4 — Calcular el %',text:'qué porcentaje parte total % = (Parte / Total) × 100 sueldo arriendo'},
-  {page:'porcentajes',title:'Tipo 5 — Total desde parte',text:'total desde parte porcentaje Total = (Parte × 100) / % impuesto ingreso'},
-  {page:'ejer-pct',title:'Ejercicios de Porcentajes',text:'ejercicios interactivos porcentajes tipos herencia presupuesto 50 30 20'},
-  {page:'fracciones',title:'Fracciones — Fundamento',text:'fracción parte entero numerador denominador simplificada MCD'},
-  {page:'fracciones',title:'Suma y Resta de Fracciones',text:'sumar restar fracciones MCM denominador común a/b + c/d'},
-  {page:'fracciones',title:'Multiplicación y División',text:'multiplicar dividir fracciones (a/b)×(c/d) = (a×c)/(b×d) invertir'},
-  {page:'fracciones',title:'Fracción ↔ Decimal',text:'fracción decimal conversión numerador dividir denominador cotización'},
-  {page:'ejer-frac',title:'Ejercicios de Fracciones',text:'ejercicios fracciones suma resta multiplicación división quórum parlamentario'},
-  {page:'glosario',title:'Glosario — Términos',text:'glosario términos definiciones IVA AFP MCD MCM legitimaria mejoras libre disposición quórum'},
-  {page:'flash-pct',title:'Flashcards — Porcentajes',text:'flashcards repaso conceptos fórmulas clave porcentajes'},
-  {page:'notas',title:'Notas personales',text:'notas apuntes editor personal'},
+  {page:'sm1',title:'SM1 — Presupuesto Mensual',text:'presupuesto 50 30 20 gastos fijos deseos ahorros inversiones ingreso carga financiera SERNAC base cero'},
+  {page:'sm1',title:'SM1 — Carga financiera SERNAC',text:'carga financiera SERNAC tramo renta deuda crédito hipotecario consumo porcentaje máximo'},
+  {page:'ejer-sm1',title:'Ejercicios SM1 Presupuesto',text:'ejercicios presupuesto 50/30/20 carga financiera'},
+  {page:'sm2',title:'SM2 — Herederos',text:'herederos herencia intestada testada masa hereditaria cónyuge hijos Código Civil SRCeI causante'},
+  {page:'sm2',title:'SM2 — Herencia intestada',text:'intestada sin testamento partes iguales cónyuge doble hijo primer orden sucesorio'},
+  {page:'sm2',title:'SM2 — Herencia testada',text:'testada testamento mitad legitimaria cuarta mejoras libre disposición 50 25 25'},
+  {page:'ejer-sm2',title:'Ejercicios SM2 Herederos',text:'ejercicios herencia intestada testada masa hereditaria'},
+  {page:'sm3',title:'SM3 — Reduflación',text:'reduflación variación porcentual contenido precio quaker envase reducción inflación'},
+  {page:'sm3',title:'SM3 — Variación porcentual',text:'variación porcentual fórmula valor nuevo antiguo redondeo centésima encadenada'},
+  {page:'ejer-sm3',title:'Ejercicios SM3 Reduflación',text:'ejercicios variación porcentual reduflación precio contenido'},
+  {page:'arpa2',title:'ARPA2 — Quórum parlamentario',text:'quórum parlamento ley ordinaria interpretativa orgánica constitucional reforma diputados senadores 155 50 2025'},
+  {page:'arpa2',title:'ARPA2 — Tipos de leyes',text:'tipos leyes quórum 1/3 3/5 4/7 2/3 mayoría absoluta reforma constitucional pactos políticos'},
+  {page:'ejer-arpa2',title:'Ejercicios ARPA2 Quórum',text:'ejercicios quórum parlamentario fracciones cámara senado pactos políticos'},
+  {page:'porcentajes',title:'Teoría Porcentajes — Los 5 tipos',text:'porcentaje por cada cien tipos calcular parte total aumento descuento AFP IVA'},
+  {page:'ejer-pct',title:'Ejercicios Porcentajes',text:'ejercicios interactivos porcentajes tipos herencia presupuesto 50 30 20'},
+  {page:'fracciones',title:'Teoría Fracciones',text:'fracción parte entero numerador denominador simplificada MCD MCM suma resta multiplicación división'},
+  {page:'ejer-frac',title:'Ejercicios Fracciones',text:'ejercicios fracciones suma resta multiplicación división quórum parlamentario'},
+  {page:'glosario',title:'Glosario — Términos',text:'glosario términos definiciones IVA AFP masa hereditaria legitimaria mejoras quórum variación porcentual reduflación'},
+  {page:'flash-pct',title:'Flashcards',text:'flashcards repaso conceptos fórmulas clave porcentajes'},
+  {page:'notas',title:'Notas personales',text:'notas apuntes editor personal localStorage'},
 ];
 
 function doSearch(q){
@@ -2236,8 +3296,202 @@ window.addEventListener('scroll',()=>{
   fab.classList.toggle('visible',window.scrollY>300);
 });
 
+// ══════════════════════════════════════
+// MODO EXAMEN
+// ══════════════════════════════════════
+let exQty=10, exTimeSeg=90;
+let exPreguntas=[], exIdx=0, exOk=0, exErr=0;
+let exTimerInterval=null, exSegRestantes=0;
+let exStartTime=null;
+let exHistorial=[];
+
+function selExQty(btn,n){
+  exQty=n;
+  document.querySelectorAll('#ex-qty .st-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selExTime(btn,s){
+  exTimeSeg=s;
+  document.querySelectorAll('#ex-time .st-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function iniciarExamen(){
+  // collect selected units
+  const checks=[...document.querySelectorAll('#ex-units input:checked')].map(c=>c.value);
+  if(!checks.length){alert('Selecciona al menos una unidad.');return;}
+
+  // generate questions pool from existing generators
+  const pool=[];
+  const intentos=exQty*8;
+  let tried=0;
+  while(pool.length<exQty && tried<intentos){
+    tried++;
+    const unit=checks[Math.floor(Math.random()*checks.length)];
+    let ej=null;
+    try{
+      if(unit==='sm1') ej=generarSM1();
+      else if(unit==='sm2') ej=generarSM2();
+      else if(unit==='sm3') ej=generarSM3();
+      else if(unit==='arpa2') ej=generarArpa2();
+      else if(unit==='pct'||unit==='frac') ej=generar();
+    }catch(e){}
+    if(ej) pool.push(ej);
+  }
+  if(!pool.length){alert('No se pudieron generar preguntas. Intenta con más unidades.');return;}
+
+  exPreguntas=pool;
+  exIdx=0; exOk=0; exErr=0;
+  exHistorial=[];
+  exStartTime=Date.now();
+
+  document.getElementById('examen-config').style.display='none';
+  document.getElementById('examen-resultado').style.display='none';
+  document.getElementById('examen-curso').style.display='block';
+  document.getElementById('ex-total').textContent=exPreguntas.length;
+  mostrarPreguntaExamen();
+}
+
+function mostrarPreguntaExamen(){
+  if(exIdx>=exPreguntas.length){terminarExamen();return;}
+  const ej=exPreguntas[exIdx];
+  document.getElementById('ex-num').textContent=exIdx+1;
+  document.getElementById('ex-ok-live').textContent=exOk;
+  document.getElementById('ex-err-live').textContent=exErr;
+  document.getElementById('ex-next-btn').style.display='none';
+
+  // render without formula hint
+  const wrap=document.getElementById('ex-pregunta-wrap');
+  wrap.innerHTML='';
+  const card=document.createElement('div');
+  card.className='ej-card';
+  card.innerHTML=`
+    <div class="ec-top">
+      <div class="ec-top-left">
+        <div class="ec-tag t-am" style="animation:none">EXAMEN</div>
+      </div>
+    </div>
+    <div class="ec-body">
+      <div class="ec-enunciado">${ej.enunciado}</div>
+      <div class="input-row">
+        <div class="inp-wrap">
+          <input type="number" id="ex-inp" placeholder="Tu respuesta..." step="any"
+            onkeydown="if(event.key==='Enter')verificarExamen()">
+          <span class="inp-unit" id="ex-unit-lbl">${ej.unidad||''}</span>
+        </div>
+        <button class="btn-check" onclick="verificarExamen()">✓</button>
+      </div>
+      <div id="ex-feedback" style="margin-top:12px;display:none"></div>
+    </div>`;
+  wrap.appendChild(card);
+  setTimeout(()=>document.getElementById('ex-inp')?.focus(),100);
+
+  // timer
+  clearInterval(exTimerInterval);
+  if(exTimeSeg>0){
+    exSegRestantes=exTimeSeg;
+    actualizarTimerDisplay();
+    exTimerInterval=setInterval(()=>{
+      exSegRestantes--;
+      actualizarTimerDisplay();
+      if(exSegRestantes<=0){
+        clearInterval(exTimerInterval);
+        // time out = wrong
+        registrarExamen(false, '(tiempo agotado)', ej.respuesta);
+        mostrarFeedbackExamen(false,'(tiempo agotado)',ej.respuesta, ej.explicacion||'');
+      }
+    },1000);
+  } else {
+    document.getElementById('ex-timer').textContent='∞';
+  }
+}
+
+function actualizarTimerDisplay(){
+  const m=Math.floor(exSegRestantes/60);
+  const s=exSegRestantes%60;
+  const display=m+':'+(s<10?'0':'')+s;
+  const el=document.getElementById('ex-timer');
+  if(!el)return;
+  el.textContent=display;
+  el.style.color=exSegRestantes<=15?'var(--red)':'var(--amber)';
+}
+
+function verificarExamen(){
+  const inp=document.getElementById('ex-inp');
+  if(!inp||inp.disabled)return;
+  const val=parseFloat(inp.value.replace(',','.'));
+  if(isNaN(val)){inp.style.borderColor='var(--red)';return;}
+  clearInterval(exTimerInterval);
+  const ej=exPreguntas[exIdx];
+  const correcto=Math.abs(val-ej.respuesta)<(ej.tolerancia||0.5);
+  registrarExamen(correcto, val, ej.respuesta);
+  mostrarFeedbackExamen(correcto, val, ej.respuesta, ej.explicacion||'');
+}
+
+function registrarExamen(correcto, dado, correcto_val){
+  const ej=exPreguntas[exIdx];
+  exHistorial.push({enunciado:ej.enunciado, correcto, dado, respuesta:correcto_val, unidad:ej.unidad||''});
+  if(correcto) exOk++; else exErr++;
+}
+
+function mostrarFeedbackExamen(correcto, dado, respuesta, explicacion){
+  const inp=document.getElementById('ex-inp');
+  const fb=document.getElementById('ex-feedback');
+  if(!inp||!fb)return;
+  inp.disabled=true;
+  inp.style.borderColor=correcto?'var(--green)':'var(--red)';
+  fb.style.display='block';
+  fb.innerHTML=correcto
+    ? `<div class="box-ok">Correcto. Respuesta: <strong>${respuesta}${exPreguntas[exIdx].unidad||''}</strong>${explicacion?'<br><small>'+explicacion+'</small>':''}</div>`
+    : `<div class="box-warn">Incorrecto. Respondiste <strong>${dado}</strong>. La respuesta era <strong>${respuesta}${exPreguntas[exIdx].unidad||''}</strong>${explicacion?'<br><small>'+explicacion+'</small>':''}</div>`;
+  document.getElementById('ex-next-btn').style.display='inline-flex';
+}
+
+function examenSiguiente(){
+  exIdx++;
+  if(exIdx>=exPreguntas.length) terminarExamen();
+  else mostrarPreguntaExamen();
+}
+
+function terminarExamen(){
+  clearInterval(exTimerInterval);
+  document.getElementById('examen-curso').style.display='none';
+  document.getElementById('examen-resultado').style.display='block';
+  const total=exOk+exErr;
+  const pct=total>0?Math.round(exOk/total*100):0;
+  const elapsed=exStartTime?Math.round((Date.now()-exStartTime)/1000):0;
+  const em=Math.floor(elapsed/60), es=elapsed%60;
+  document.getElementById('ex-res-ok').textContent=exOk;
+  document.getElementById('ex-res-err').textContent=exErr;
+  document.getElementById('ex-res-pct').textContent=pct+'%';
+  document.getElementById('ex-res-time').textContent=em+'m '+es+'s';
+  const titulo=total===0?'Examen cancelado':pct>=70?'¡Buen resultado! ✓':pct>=50?'Puedes mejorar — repasa los temas fallados':'Necesitas repasar más estos contenidos';
+  document.getElementById('ex-res-titulo').textContent=titulo;
+  const det=document.getElementById('ex-res-detalle');
+  if(exHistorial.length===0){
+    det.innerHTML='<div class="box-info">No se respondió ninguna pregunta.</div>';
+  } else {
+    det.innerHTML='<div class="section-label" style="margin-bottom:8px">// DETALLE POR PREGUNTA</div>'+
+      exHistorial.map((h,i)=>`
+        <div class="ex-res-item ${h.correcto?'ok':'err'}">
+          <div class="er-q">${i+1}. ${h.enunciado}</div>
+          <div class="er-a ${h.correcto?'er-ok':'er-err'}">${h.correcto?'✓ Correcto':'✗ Incorrecto'} — Respuesta: <strong>${h.respuesta}${h.unidad}</strong>${!h.correcto?' (tú respondiste: '+h.dado+')':''}</div>
+        </div>`).join('');
+  }
+}
+
+function resetExamen(){
+  clearInterval(exTimerInterval);
+  exPreguntas=[];exIdx=0;exOk=0;exErr=0;
+  exHistorial=[];exStartTime=null;
+  document.getElementById('examen-resultado').style.display='none';
+  document.getElementById('examen-curso').style.display='none';
+  document.getElementById('examen-config').style.display='block';
+}
+
 // init
 document.getElementById('nav-inicio').classList.add('active');
+
 </script>
 </body>
 </html>
