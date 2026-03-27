@@ -1018,8 +1018,8 @@ tbody td strong{color:var(--text);}
         <span class="arrow">›</span>
       </button>
       <div class="nav-sub open" id="unit-frac-sub">
-        <button class="nav-sub-btn" id="nav-fracciones" onclick="ir('fracciones')"> Resúmenes</button>
-        <button class="nav-sub-btn" id="nav-ejer-frac" onclick="ir('ejer-frac')"> Ejercicios</button>
+        <button class="nav-sub-btn" id="nav-fracciones" onclick="ir('fracciones')" style="display:none"> Resúmenes</button>
+        <button class="nav-sub-btn" id="nav-ejer-frac" onclick="ir('ejer-frac')" style="display:none"> Ejercicios</button>
       </div>
     </div>
 
@@ -1137,12 +1137,12 @@ tbody td strong{color:var(--text);}
       <div class="uc-d">Los 5 tipos de problemas: parte, total, aumento, descuento, etc.</div>
       <div class="uc-s s-done">[OK] Disponible</div>
     </div>
-    <div class="u-card" onclick="ir('fracciones')">
+    <div class="u-card locked">
       <div class="uc-ico">½</div>
       <div class="uc-n">Teoría</div>
       <div class="uc-t">Fracciones</div>
       <div class="uc-d">Suma, resta, multiplicación, división y conversión decimal.</div>
-      <div class="uc-s s-done">[OK] Disponible</div>
+      <div class="uc-s s-lock">[LOCK] Aún no visto en clases</div>
     </div>
     <div class="u-card locked">
       <div class="uc-ico">🔒</div>
@@ -2288,7 +2288,6 @@ c)\quad &8{,}00\% > 5{,}56\% \Rightarrow \text{el precio subió proporcionalment
         <label class="ex-check"><input type="checkbox" value="sm3" checked> 📉 SM3 Reduflación</label>
         <label class="ex-check"><input type="checkbox" value="arpa2" checked> ⚖️ ARPA2 Quórum</label>
         <label class="ex-check"><input type="checkbox" value="pct" checked> % Porcentajes</label>
-        <label class="ex-check"><input type="checkbox" value="frac" checked> ½ Fracciones</label>
       </div>
     </div>
 
@@ -3334,7 +3333,7 @@ function iniciarExamen(){
       else if(unit==='sm2') ej=generarSM2();
       else if(unit==='sm3') ej=generarSM3();
       else if(unit==='arpa2') ej=generarArpa2();
-      else if(unit==='pct'||unit==='frac') ej=generar();
+      else if(unit==='pct') ej=generar();
     }catch(e){}
     if(ej) pool.push(ej);
   }
