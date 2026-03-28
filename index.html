@@ -39,9 +39,7 @@
             );
         }
 
-        /* ══════════════════════════
-           TOPBAR
-        ══════════════════════════ */
+        /* ══ TOPBAR ══ */
         .topbar {
             display: flex;
             align-items: center;
@@ -64,26 +62,14 @@
         }
 
         .ticker-wrap {
-            flex: 1;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
+            flex: 1; height: 100%; overflow: hidden;
+            display: flex; align-items: center;
             mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 88%, transparent 100%);
             -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 88%, transparent 100%);
         }
 
-        .ticker-track {
-            display: flex;
-            white-space: nowrap;
-            animation: ticker 20s linear infinite;
-        }
-
-        .ticker-track span {
-            font-family: 'Share Tech Mono';
-            font-size: 11px;
-            letter-spacing: 1.5px;
-        }
+        .ticker-track { display: flex; white-space: nowrap; animation: ticker 20s linear infinite; }
+        .ticker-track span { font-family: 'Share Tech Mono'; font-size: 11px; letter-spacing: 1.5px; }
 
         .t-sep  { color: var(--border2); padding: 0 20px; }
         .t-neon { color: var(--neon);  text-shadow: 0 0 8px var(--neon); }
@@ -91,395 +77,347 @@
         .t-warn { color: var(--warn);  text-shadow: 0 0 8px var(--warn); }
         .t-dim  { color: var(--muted); }
 
-        @keyframes ticker {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         #clock {
-            font-family: 'Share Tech Mono';
-            font-size: 15px;
-            color: var(--neon);
-            text-shadow: 0 0 6px var(--neon);
-            letter-spacing: 1px;
-            flex-shrink: 0;
+            font-family: 'Share Tech Mono'; font-size: 15px;
+            color: var(--neon); text-shadow: 0 0 6px var(--neon);
+            letter-spacing: 1px; flex-shrink: 0;
         }
 
-        /* ══════════════════════════
-           MAIN
-        ══════════════════════════ */
-        .main {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            -webkit-overflow-scrolling: touch;
-        }
+        /* ══ MAIN ══ */
+        .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
 
-        /* HOME VIEW */
         #homeView {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 32px 40px;
-            gap: 32px;
-            -webkit-overflow-scrolling: touch;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
+            flex: 1; display: flex; flex-direction: column;
+            padding: 32px 40px; gap: 28px;
+            max-width: 1400px; margin: 0 auto; width: 100%;
         }
 
-        .home-header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .home-header { display: flex; flex-direction: column; gap: 6px; }
 
-        .prompt-line {
-            font-family: 'Share Tech Mono';
-            font-size: 10px;
-            color: var(--muted);
-            letter-spacing: 1.5px;
-        }
+        .prompt-line { font-family: 'Share Tech Mono'; font-size: 10px; color: var(--muted); letter-spacing: 1.5px; }
 
         .home-title {
-            font-family: 'Share Tech Mono';
-            font-size: 28px;
-            color: var(--neon);
-            text-shadow: 0 0 16px var(--neon);
-            letter-spacing: 3px;
+            font-family: 'Share Tech Mono'; font-size: 28px;
+            color: var(--neon); text-shadow: 0 0 16px var(--neon); letter-spacing: 3px;
         }
 
-        .home-sub {
-            font-size: 10px;
-            color: var(--accent);
-            letter-spacing: 2px;
-            line-height: 1.5;
-        }
+        .home-sub { font-size: 10px; color: var(--accent); letter-spacing: 2px; line-height: 1.5; }
 
-        .search-wrap { position: relative; margin-bottom: 16px; }
+        /* ══ BUSCADOR ══ */
+        .search-wrap { position: relative; }
 
         .search-wrap::before {
-            content: '>';
-            position: absolute;
-            left: 14px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--neon);
-            font-size: 15px;
-            pointer-events: none;
+            content: '>'; position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%); color: var(--neon); font-size: 15px; pointer-events: none;
         }
 
         #finder {
-            width: 100%;
-            background: var(--panel);
-            border: 1px solid var(--border2);
-            padding: 12px 14px 12px 34px;
-            font-family: 'Fira Code';
-            font-size: 13px;
-            color: var(--text);
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; background: var(--panel); border: 1px solid var(--border2);
+            padding: 12px 14px 12px 34px; font-family: 'Fira Code'; font-size: 13px;
+            color: var(--text); outline: none; transition: border-color 0.2s;
         }
 
-        #finder:focus {
-            border-color: var(--neon2);
-            box-shadow: 0 0 0 2px rgba(0,207,255,0.1);
-        }
-
+        #finder:focus { border-color: var(--neon2); box-shadow: 0 0 0 2px rgba(0,207,255,0.1); }
         #finder::placeholder { color: var(--muted); }
 
-        /* SEMESTER */
-        .semester-block { margin-bottom: 40px; }
+        /* ══ SECCIÓN CALCULADORAS ══ */
+        .calc-section { display: flex; flex-direction: column; gap: 12px; }
+
+        .calc-section-header {
+            display: flex; align-items: center; gap: 12px;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border2);
+        }
+
+        .calc-section-badge {
+            font-family: 'Share Tech Mono'; font-size: 10px; letter-spacing: 2px;
+            color: var(--bg); background: var(--neon2); padding: 4px 10px;
+            font-weight: bold; flex-shrink: 0;
+        }
+
+        .calc-section-title {
+            font-family: 'Share Tech Mono'; font-size: 13px;
+            color: var(--neon2); text-shadow: 0 0 8px rgba(0,207,255,0.5); letter-spacing: 2px; flex: 1;
+        }
+
+        /* Botones de acceso a calculadoras */
+        .calc-btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .calc-open-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 18px;
+            background: rgba(0,207,255,0.06);
+            border: 1px solid rgba(0,207,255,0.25);
+            color: var(--neon2);
+            font-family: 'Share Tech Mono'; font-size: 11px; letter-spacing: 1.5px;
+            cursor: pointer; transition: all 0.22s;
+            text-shadow: 0 0 6px var(--neon2);
+        }
+
+        .calc-open-btn:hover {
+            background: rgba(0,207,255,0.14); border-color: var(--neon2);
+            box-shadow: 0 0 14px rgba(0,207,255,0.25); transform: translateY(-2px);
+        }
+
+        .calc-open-btn:active { transform: translateY(0); }
+
+        .calc-open-btn.active {
+            background: rgba(0,207,255,0.18); border-color: var(--neon2);
+            box-shadow: 0 0 14px rgba(0,207,255,0.3);
+            color: #fff;
+        }
+
+        /* Panel de la calculadora */
+        .calc-panel {
+            display: none;
+            background: var(--panel);
+            border: 1px solid rgba(0,207,255,0.25);
+            padding: 24px 28px;
+            animation: fadeSlideIn 0.25s ease both;
+        }
+
+        .calc-panel.open { display: block; }
+
+        .calc-panel-title {
+            font-family: 'Share Tech Mono'; font-size: 11px; letter-spacing: 2px;
+            color: var(--neon2); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .calc-panel-title::before {
+            content: ''; display: inline-block; width: 6px; height: 6px;
+            background: var(--neon2); box-shadow: 0 0 6px var(--neon2); border-radius: 50%;
+        }
+
+        /* Tabs de fórmulas dentro de la calculadora */
+        .calc-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border2); }
+
+        .calc-tab {
+            padding: 8px 18px; font-family: 'Share Tech Mono'; font-size: 10px;
+            letter-spacing: 1.5px; color: var(--muted); cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s;
+            background: none; border-top: none; border-left: none; border-right: none;
+        }
+
+        .calc-tab:hover { color: var(--neon2); }
+        .calc-tab.active { color: var(--neon2); border-bottom-color: var(--neon2); text-shadow: 0 0 6px var(--neon2); }
+
+        /* Contenido de tabs */
+        .calc-tab-content { display: none; }
+        .calc-tab-content.active { display: block; }
+
+        /* Layout de campos */
+        .calc-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .calc-field { display: flex; flex-direction: column; gap: 6px; }
+
+        .calc-field label {
+            font-family: 'Share Tech Mono'; font-size: 9px; letter-spacing: 2px; color: var(--muted);
+        }
+
+        .calc-field input {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border2);
+            padding: 10px 12px; font-family: 'Fira Code'; font-size: 14px;
+            color: var(--text); outline: none; transition: border-color 0.2s; width: 100%;
+        }
+
+        .calc-field input:focus { border-color: var(--neon2); box-shadow: 0 0 0 2px rgba(0,207,255,0.08); }
+        .calc-field input::placeholder { color: var(--border2); font-size: 11px; }
+
+        .calc-field input.result-field {
+            border-color: rgba(0,255,157,0.3); color: var(--neon);
+            text-shadow: 0 0 6px rgba(0,255,157,0.4);
+            background: rgba(0,255,157,0.04);
+        }
+
+        .calc-field .unit {
+            font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 2px;
+        }
+
+        /* Botones calcular / limpiar */
+        .calc-actions { display: flex; gap: 10px; margin-bottom: 18px; }
+
+        .btn-calc {
+            padding: 10px 24px; background: rgba(0,255,157,0.08);
+            border: 1px solid rgba(0,255,157,0.35); color: var(--neon);
+            font-family: 'Share Tech Mono'; font-size: 11px; letter-spacing: 2px;
+            cursor: pointer; transition: all 0.2s; text-shadow: 0 0 6px var(--neon);
+        }
+
+        .btn-calc:hover { background: rgba(0,255,157,0.16); border-color: var(--neon); box-shadow: 0 0 12px rgba(0,255,157,0.25); }
+
+        .btn-clear {
+            padding: 10px 18px; background: transparent;
+            border: 1px solid var(--border2); color: var(--muted);
+            font-family: 'Share Tech Mono'; font-size: 11px; letter-spacing: 2px;
+            cursor: pointer; transition: all 0.2s;
+        }
+
+        .btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+        /* Resultado y fórmula usada */
+        .calc-result-box {
+            display: none; padding: 14px 18px;
+            background: rgba(0,255,157,0.04); border: 1px solid rgba(0,255,157,0.2);
+            font-family: 'Share Tech Mono'; font-size: 12px; letter-spacing: 1px;
+            color: var(--neon); text-shadow: 0 0 6px rgba(0,255,157,0.3);
+        }
+
+        .calc-result-box.show { display: block; }
+        .calc-result-box .formula-used { font-size: 10px; color: var(--muted); margin-top: 6px; letter-spacing: 1.5px; }
+
+        .calc-error-box {
+            display: none; padding: 14px 18px;
+            background: rgba(255,77,77,0.05); border: 1px solid rgba(255,77,77,0.25);
+            font-family: 'Share Tech Mono'; font-size: 11px; color: var(--red);
+        }
+
+        .calc-error-box.show { display: block; }
+
+        /* ══ SEMESTRES ══ */
+        .semester-block { margin-bottom: 16px; }
 
         .semester-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border2);
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border2);
         }
 
         .semester-badge {
-            font-family: 'Share Tech Mono';
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: var(--bg);
-            background: var(--neon);
-            padding: 5px 12px;
-            flex-shrink: 0;
-            text-shadow: none;
-            font-weight: bold;
+            font-family: 'Share Tech Mono'; font-size: 10px; letter-spacing: 2px;
+            color: var(--bg); background: var(--neon); padding: 5px 12px; font-weight: bold; flex-shrink: 0;
         }
 
         .semester-title {
-            font-family: 'Share Tech Mono';
-            font-size: 14px;
-            color: var(--neon);
-            text-shadow: 0 0 10px rgba(0,255,157,0.5);
-            letter-spacing: 2px;
-            flex: 1;
+            font-family: 'Share Tech Mono'; font-size: 14px;
+            color: var(--neon); text-shadow: 0 0 10px rgba(0,255,157,0.5); letter-spacing: 2px; flex: 1;
         }
 
         .semester-count {
-            font-size: 9px;
-            color: var(--muted);
-            letter-spacing: 2px;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            padding: 4px 10px;
+            font-size: 9px; color: var(--muted); letter-spacing: 2px;
+            flex-shrink: 0; border: 1px solid var(--border); padding: 4px 10px;
         }
 
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 20px;
-        }
+        /* ══ GRID CARDS ══ */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
 
-        @media (max-width: 900px) {
-            .grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
-        /* CARDS MÁS GRANDES CON FONDOS SUTILES */
         .card {
-            background: var(--panel);
-            border: 1px solid var(--border2);
-            padding: 28px 24px 24px;
-            cursor: pointer;
-            transition: all 0.25s;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: flex-start;
-            gap: 18px;
+            background: var(--panel); border: 1px solid var(--border2);
+            padding: 24px 22px; cursor: pointer; transition: all 0.25s;
+            position: relative; overflow: hidden;
+            display: flex; align-items: flex-start; gap: 16px;
             animation: fadeSlideIn 0.35s ease both;
-            -webkit-user-select: none;
-            user-select: none;
-            min-height: 180px;
+            -webkit-user-select: none; user-select: none; min-height: 140px;
         }
 
-        /* Fondos sutiles por materia */
-        .card.electricidad {
-            background: linear-gradient(135deg, var(--panel) 0%, rgba(0,255,157,0.04) 100%);
-        }
-
-        .card.automatizacion {
-            background: linear-gradient(135deg, var(--panel) 0%, rgba(0,207,255,0.04) 100%);
-        }
-
-        .card.algebra {
-            background: linear-gradient(135deg, var(--panel) 0%, rgba(255,183,0,0.04) 100%);
-        }
-
-        .card.seguridad {
-            background: linear-gradient(135deg, var(--panel) 0%, rgba(255,77,77,0.04) 100%);
-        }
-
-        .card.mantenimiento {
-            background: linear-gradient(135deg, var(--panel) 0%, rgba(168,85,247,0.04) 100%);
-        }
+        .card.electricidad  { background: linear-gradient(135deg, var(--panel) 0%, rgba(0,255,157,0.04) 100%); }
+        .card.automatizacion{ background: linear-gradient(135deg, var(--panel) 0%, rgba(0,207,255,0.04) 100%); }
+        .card.algebra       { background: linear-gradient(135deg, var(--panel) 0%, rgba(255,183,0,0.04) 100%); }
+        .card.seguridad     { background: linear-gradient(135deg, var(--panel) 0%, rgba(255,77,77,0.04) 100%); }
+        .card.mantenimiento { background: linear-gradient(135deg, var(--panel) 0%, rgba(168,85,247,0.04) 100%); }
 
         .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--neon);
-            opacity: 0; transition: opacity 0.25s;
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon); opacity: 0; transition: opacity 0.25s;
         }
 
-        .card:hover {
-            border-color: var(--neon);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,255,157,0.15);
-        }
-
+        .card:hover { border-color: var(--neon); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,255,157,0.15); }
         .card:hover::before { opacity: 1; }
-
-        .card:active {
-            transform: translateY(-1px) scale(0.99);
-        }
+        .card:active { transform: translateY(-1px) scale(0.99); }
 
         .card-icon-wrap {
-            width: 56px; height: 56px;
-            background: rgba(0,255,157,0.06);
-            border: 1px solid var(--border2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-            transition: all 0.25s;
+            width: 52px; height: 52px; background: rgba(0,255,157,0.06);
+            border: 1px solid var(--border2); display: flex; align-items: center;
+            justify-content: center; font-size: 26px; flex-shrink: 0; transition: all 0.25s;
         }
 
-        .card:hover .card-icon-wrap {
-            background: rgba(0,255,157,0.12);
-            border-color: var(--neon);
-            box-shadow: 0 0 16px rgba(0,255,157,0.2);
-        }
+        .card:hover .card-icon-wrap { background: rgba(0,255,157,0.12); border-color: var(--neon); box-shadow: 0 0 16px rgba(0,255,157,0.2); }
 
-        .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-        
-        .card h3 { 
-            color: var(--neon2); 
-            font-size: 13px; 
-            letter-spacing: 1px; 
-            margin-bottom: 4px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-        }
-        
-        .card .card-fullname { 
-            color: var(--text); 
-            font-size: 11px; 
-            letter-spacing: 0.5px; 
-            margin-bottom: 6px; 
-            line-height: 1.4;
-            opacity: 0.8; 
-        }
-        
-        .card p { 
-            color: var(--muted); 
-            font-size: 11px; 
-            line-height: 1.6; 
-            flex: 1;
-        }
+        .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+        .card h3 { color: var(--neon2); font-size: 12px; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .card .card-fullname { color: var(--text); font-size: 10px; letter-spacing: 0.5px; line-height: 1.4; opacity: 0.8; }
+
+        .card p { color: var(--muted); font-size: 10px; line-height: 1.6; }
 
         .card-tag {
-            position: absolute;
-            top: 12px; right: 12px;
+            position: absolute; top: 10px; right: 10px;
             font-size: 8px; color: var(--muted);
-            border: 1px solid var(--border); 
-            padding: 3px 8px; 
-            letter-spacing: 2px;
-            flex-shrink: 0;
+            border: 1px solid var(--border); padding: 3px 8px; letter-spacing: 2px;
         }
 
-        /* Botón de calculadoras dentro de la card */
-        .calc-quick-btn {
-            margin-top: 12px;
-            padding: 9px 14px;
-            background: linear-gradient(135deg, rgba(0,255,157,0.08), rgba(0,207,255,0.08));
-            border: 1px solid rgba(0,255,157,0.3);
-            color: var(--neon);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-shadow: 0 0 6px var(--neon);
-        }
-
-        .calc-quick-btn:hover {
-            background: linear-gradient(135deg, rgba(0,255,157,0.15), rgba(0,207,255,0.15));
-            border-color: var(--neon);
-            box-shadow: 0 0 12px rgba(0,255,157,0.3);
-            transform: translateY(-2px);
-        }
-
-        .calc-quick-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 0 8px rgba(0,255,157,0.2);
-        }
-
-        .card:nth-child(1){animation-delay:.05s}
-        .card:nth-child(2){animation-delay:.10s}
-        .card:nth-child(3){animation-delay:.15s}
-        .card:nth-child(4){animation-delay:.20s}
+        .card:nth-child(1){animation-delay:.05s} .card:nth-child(2){animation-delay:.10s}
+        .card:nth-child(3){animation-delay:.15s} .card:nth-child(4){animation-delay:.20s}
         .card:nth-child(5){animation-delay:.25s}
 
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MODULE VIEW */
-        #moduleView {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
+        /* ══ MODULE VIEW ══ */
+        #moduleView { display: none; flex: 1; flex-direction: column; overflow: hidden; }
         #moduleView.active { display: flex; }
 
         .module-topbar {
-            display: flex;
-            align-items: center;
-            height: 48px;
-            background: rgba(0,0,0,0.7);
-            border-bottom: 1px solid var(--border2);
-            flex-shrink: 0;
-            padding: 0 16px;
-            gap: 12px;
+            display: flex; align-items: center; height: 48px;
+            background: rgba(0,0,0,0.7); border-bottom: 1px solid var(--border2);
+            flex-shrink: 0; padding: 0 16px; gap: 12px;
         }
 
         .btn-back {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,60,60,0.07);
-            border: 1px solid rgba(255,77,77,0.35);
-            color: var(--red);
-            font-family: 'Fira Code';
-            font-size: 11px;
-            padding: 7px 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,60,60,0.07); border: 1px solid rgba(255,77,77,0.35);
+            color: var(--red); font-family: 'Fira Code'; font-size: 11px;
+            padding: 7px 14px; cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
         }
 
-        .btn-back:active {
-            background: rgba(255,60,60,0.15);
-            border-color: var(--red);
-        }
+        .btn-back:active { background: rgba(255,60,60,0.15); border-color: var(--red); }
 
-        .module-name-bar {
-            flex: 1;
-            font-family: 'Share Tech Mono';
-            font-size: 12px;
-            color: var(--neon);
-            letter-spacing: 1px;
-        }
-
+        .module-name-bar { flex: 1; font-family: 'Share Tech Mono'; font-size: 12px; color: var(--neon); letter-spacing: 1px; }
         .module-name-bar span:first-child { color: var(--muted); }
 
-        #moduleFrame {
-            flex: 1;
-            border: none;
-            background: var(--bg);
-        }
+        #moduleFrame { flex: 1; border: none; background: var(--bg); }
 
-        /* ══════════════════════════
-           BOTTOMBAR
-        ══════════════════════════ */
+        /* ══ BOTTOMBAR ══ */
         .bottombar {
-            display: flex;
-            align-items: center;
-            height: 32px;
-            background: var(--panel);
-            border-top: 1px solid var(--border2);
-            padding: 0 16px;
-            gap: 20px;
-            font-size: 9px;
-            letter-spacing: 1.5px;
-            flex-shrink: 0;
+            display: flex; align-items: center; height: 32px;
+            background: var(--panel); border-top: 1px solid var(--border2);
+            padding: 0 16px; gap: 20px; font-size: 9px; letter-spacing: 1.5px; flex-shrink: 0;
         }
 
         .bb-item { display: flex; align-items: center; gap: 6px; color: var(--muted); }
         .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 6px var(--neon); }
-        .dot.blue { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-        .dot.yellow { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+        .dot.blue   { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .dot.yellow { background: var(--warn);   box-shadow: 0 0 6px var(--warn); }
 
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            #homeView { padding: 24px 20px; }
-            .home-title { font-size: 24px; }
+        @media (max-width: 900px) { #homeView { padding: 24px 20px; } .home-title { font-size: 22px; } }
+        @media (max-width: 600px) { #homeView { padding: 18px 14px; } .topbar { padding: 0 12px; } }
+
+        /* ── SELECTS CÓDIGO DE COLOR ── */
+        .calc-field select {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border2);
+            padding: 10px 12px;
+            font-family: 'Share Tech Mono';
+            font-size: 11px;
+            color: var(--text);
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+            transition: border-color 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            letter-spacing: 1px;
         }
 
-        @media (max-width: 600px) {
-            #homeView { padding: 20px 16px; }
-            .topbar { padding: 0 12px; }
-            .card { padding: 22px 18px 18px; min-height: 160px; }
-        }
+        .calc-field select:focus { border-color: var(--neon2); }
+        .calc-field select option { background: #0a1220; color: var(--text); }
     </style>
 </head>
 <body>
@@ -488,23 +426,14 @@
     <div class="topbar">
         <div class="ticker-wrap">
             <div class="ticker-track">
-                <span class="t-neon">SISTEMA_ACADEMICO</span>
-                <span class="t-sep">///</span>
-                <span class="t-blue">AUTOMATIZACION_Y_ROBOTICA</span>
-                <span class="t-sep">///</span>
-                <span class="t-dim">SEMESTRE_01</span>
-                <span class="t-sep">///</span>
-                <span class="t-warn">ACTIVO</span>
-                <span class="t-sep">///</span>
-                
-                <span class="t-neon">SISTEMA_ACADEMICO</span>
-                <span class="t-sep">///</span>
-                <span class="t-blue">AUTOMATIZACION_Y_ROBOTICA</span>
-                <span class="t-sep">///</span>
-                <span class="t-dim">SEMESTRE_01</span>
-                <span class="t-sep">///</span>
-                <span class="t-warn">ACTIVO</span>
-                <span class="t-sep">///</span>
+                <span class="t-neon">SISTEMA_ACADEMICO</span><span class="t-sep">///</span>
+                <span class="t-blue">AUTOMATIZACION_Y_ROBOTICA</span><span class="t-sep">///</span>
+                <span class="t-dim">SEMESTRE_01</span><span class="t-sep">///</span>
+                <span class="t-warn">ACTIVO</span><span class="t-sep">///</span>
+                <span class="t-neon">SISTEMA_ACADEMICO</span><span class="t-sep">///</span>
+                <span class="t-blue">AUTOMATIZACION_Y_ROBOTICA</span><span class="t-sep">///</span>
+                <span class="t-dim">SEMESTRE_01</span><span class="t-sep">///</span>
+                <span class="t-warn">ACTIVO</span><span class="t-sep">///</span>
             </div>
         </div>
         <div id="clock">00:00:00</div>
@@ -515,15 +444,204 @@
 
         <!-- HOME VIEW -->
         <div id="homeView">
+
             <div class="home-header">
                 <span class="prompt-line">root@inacap-chillan:~$ ./launch_hub.sh</span>
                 <div class="home-title">ROOT_SYSTEM <span style="animation: blink 1s infinite;">█</span></div>
                 <span class="home-sub">SISTEMA ACADÉMICO · ELECTRICIDAD Y AUTOMATIZACIÓN</span>
             </div>
 
+            <!-- BUSCADOR -->
             <div class="search-wrap">
                 <input type="text" id="finder" placeholder="filtrar asignaturas..." onkeyup="filter()" autocomplete="off">
             </div>
+
+            <!-- ══ SECCIÓN CALCULADORAS ══ -->
+            <div class="calc-section">
+                <div class="calc-section-header">
+                    <span class="calc-section-badge">CALC</span>
+                    <span class="calc-section-title">CALCULADORAS</span>
+                </div>
+
+                <div class="calc-btn-row">
+                    <button class="calc-open-btn" id="btn-elec" onclick="toggleCalc('calc-electricidad', 'btn-elec')">
+                        ⚡ FÓRMULAS ELÉCTRICAS
+                    </button>
+                    <button class="calc-open-btn" id="btn-colores" onclick="toggleCalc('calc-colores', 'btn-colores')">
+                        🎨 CALCULA RESISTENCIAS
+                    </button>
+                    <!-- Aquí se añadirán más calculadoras -->
+                </div>
+
+                <!-- CALCULADORA: FÓRMULAS ELÉCTRICAS -->
+                <div class="calc-panel" id="calc-electricidad">
+                    <div class="calc-panel-title">FÓRMULAS ELÉCTRICAS PRIMORDIALES</div>
+
+                    <div class="calc-tabs">
+                        <button class="calc-tab active" onclick="switchTab('ohm')">LEY DE OHM</button>
+                        <button class="calc-tab" onclick="switchTab('potencia')">POTENCIA</button>
+                    </div>
+
+                    <!-- TAB: LEY DE OHM -->
+                    <div class="calc-tab-content active" id="tab-ohm">
+                        <p style="font-size:10px; color:var(--muted); margin-bottom:16px; letter-spacing:1px;">
+                            Ingresa dos valores conocidos — el tercero se calculará automáticamente.
+                        </p>
+                        <div class="calc-fields">
+                            <div class="calc-field">
+                                <label>V — TENSIÓN</label>
+                                <input type="number" id="ohm-v" placeholder="Voltios" step="any">
+                                <span class="unit">Voltios (V)</span>
+                            </div>
+                            <div class="calc-field">
+                                <label>I — CORRIENTE</label>
+                                <input type="number" id="ohm-i" placeholder="Amperes" step="any">
+                                <span class="unit">Amperes (A)</span>
+                            </div>
+                            <div class="calc-field">
+                                <label>R — RESISTENCIA</label>
+                                <input type="number" id="ohm-r" placeholder="Ohms" step="any">
+                                <span class="unit">Ohms (Ω)</span>
+                            </div>
+                        </div>
+                        <div class="calc-actions">
+                            <button class="btn-calc" onclick="calcOhm()">▶ CALCULAR</button>
+                            <button class="btn-clear" onclick="clearOhm()">✕ LIMPIAR</button>
+                        </div>
+                        <div class="calc-result-box" id="ohm-result"></div>
+                        <div class="calc-error-box"  id="ohm-error"></div>
+                    </div>
+
+                    <!-- TAB: POTENCIA -->
+                    <div class="calc-tab-content" id="tab-potencia">
+                        <p style="font-size:10px; color:var(--muted); margin-bottom:16px; letter-spacing:1px;">
+                            Ingresa dos valores conocidos — el tercero se calculará automáticamente.
+                        </p>
+                        <div class="calc-fields">
+                            <div class="calc-field">
+                                <label>P — POTENCIA</label>
+                                <input type="number" id="pot-p" placeholder="Watts" step="any">
+                                <span class="unit">Watts (W)</span>
+                            </div>
+                            <div class="calc-field">
+                                <label>V — TENSIÓN</label>
+                                <input type="number" id="pot-v" placeholder="Voltios" step="any">
+                                <span class="unit">Voltios (V)</span>
+                            </div>
+                            <div class="calc-field">
+                                <label>I — CORRIENTE</label>
+                                <input type="number" id="pot-i" placeholder="Amperes" step="any">
+                                <span class="unit">Amperes (A)</span>
+                            </div>
+                            <div class="calc-field">
+                                <label>R — RESISTENCIA</label>
+                                <input type="number" id="pot-r" placeholder="Ohms" step="any">
+                                <span class="unit">Ohms (Ω)</span>
+                            </div>
+                        </div>
+                        <div class="calc-actions">
+                            <button class="btn-calc" onclick="calcPotencia()">▶ CALCULAR</button>
+                            <button class="btn-clear" onclick="clearPotencia()">✕ LIMPIAR</button>
+                        </div>
+                        <div class="calc-result-box" id="pot-result"></div>
+                        <div class="calc-error-box"  id="pot-error"></div>
+                    </div>
+
+                </div><!-- /calc-panel electricidad -->
+
+                <!-- CALCULADORA: CÓDIGO DE COLORES -->
+                <div class="calc-panel" id="calc-colores">
+                    <div class="calc-panel-title">CALCULA RESISTENCIAS — CÓDIGO DE COLOR</div>
+
+                    <p style="font-size:10px; color:var(--muted); margin-bottom:18px; letter-spacing:1px;">
+                        Selecciona el color de cada banda — soporta resistencias de 4 y 5 bandas.
+                    </p>
+
+                    <!-- Selector 4 / 5 bandas -->
+                    <div style="display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--border2);">
+                        <button class="calc-tab active" id="tab-4b" onclick="switchBandas(4)">4 BANDAS</button>
+                        <button class="calc-tab" id="tab-5b" onclick="switchBandas(5)">5 BANDAS</button>
+                    </div>
+
+                    <!-- Resistor visual -->
+                    <div style="display:flex; justify-content:center; margin-bottom:22px;">
+                        <svg id="resistor-svg" viewBox="0 0 320 60" width="320" height="60" style="max-width:100%;">
+                            <!-- cuerpo -->
+                            <rect x="10" y="22" width="300" height="16" rx="8" fill="#c8a96e" stroke="#8a6a30" stroke-width="1.5"/>
+                            <!-- terminales -->
+                            <line x1="0" y1="30" x2="30" y2="30" stroke="#c8a96e" stroke-width="3"/>
+                            <line x1="290" y1="30" x2="320" y2="30" stroke="#c8a96e" stroke-width="3"/>
+                            <!-- bandas (posiciones para 4 bandas) -->
+                            <rect id="banda1" x="52"  y="22" width="14" height="16" rx="2" fill="#000"/>
+                            <rect id="banda2" x="78"  y="22" width="14" height="16" rx="2" fill="#000"/>
+                            <rect id="banda3" x="104" y="22" width="14" height="16" rx="2" fill="#000"/>
+                            <rect id="banda4" x="220" y="22" width="14" height="16" rx="2" fill="#c0c0c0"/>
+                            <rect id="banda5" x="148" y="22" width="14" height="16" rx="2" fill="#000" style="display:none"/>
+                        </svg>
+                    </div>
+
+                    <!-- Selectores de banda -->
+                    <div class="calc-fields" id="color-fields" style="align-items:end;">
+
+                        <div class="calc-field">
+                            <label>BANDA 1 — 1er dígito</label>
+                            <select id="col-b1" onchange="updateBandColor('banda1', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-b1" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                        <div class="calc-field">
+                            <label>BANDA 2 — 2do dígito</label>
+                            <select id="col-b2" onchange="updateBandColor('banda2', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-b2" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                        <div class="calc-field" id="field-b3-digit" style="display:none;">
+                            <label>BANDA 3 — 3er dígito</label>
+                            <select id="col-b3digit" onchange="updateBandColor('banda3', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-b3digit" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                        <div class="calc-field" id="field-b3-mult">
+                            <label id="label-mult">BANDA 3 — Multiplicador</label>
+                            <select id="col-b3mult" onchange="updateBandColor('banda3', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-b3mult" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                        <div class="calc-field" id="field-b4-mult" style="display:none;">
+                            <label>BANDA 4 — Multiplicador</label>
+                            <select id="col-b4mult" onchange="updateBandColor('banda4', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-b4mult" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                        <div class="calc-field">
+                            <label id="label-tol">BANDA 4 — Tolerancia</label>
+                            <select id="col-tol" onchange="updateBandColor('banda4', this.value); calcColores()">
+                                <option value="">-- color --</option>
+                            </select>
+                            <div id="preview-tol" style="height:8px; margin-top:4px; border-radius:2px; background:#222;"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="calc-result-box" id="color-result" style="margin-top:4px;"></div>
+                    <div class="calc-error-box"  id="color-error"  style="margin-top:4px;"></div>
+
+                    <div style="margin-top:16px;">
+                        <button class="btn-clear" onclick="clearColores()">✕ LIMPIAR</button>
+                    </div>
+
+                </div><!-- /calc-panel colores -->
+            </div><!-- /calc-section -->
 
             <!-- SEMESTRE 1 -->
             <div class="semester-block">
@@ -541,9 +659,6 @@
                             <h3>ELECTRICIDAD_APLICADA.SYS</h3>
                             <div class="card-fullname">Electricidad Aplicada a la Automatización</div>
                             <p>Circuitos CC, Ley de Ohm y análisis de mallas.</p>
-                            <button class="calc-quick-btn" onclick="event.stopPropagation(); window.open('electricidad_aplicada.html#calculadoras', '_blank')">
-                                🧮 CALCULADORAS
-                            </button>
                         </div>
                         <div class="card-tag">SYS</div>
                     </div>
@@ -591,7 +706,7 @@
                 </div>
             </div>
 
-        </div>
+        </div><!-- /homeView -->
 
         <!-- MODULE VIEW -->
         <div id="moduleView">
@@ -613,14 +728,16 @@
     </footer>
 
     <script>
-        // ── RELOJ ──
-        function tick() {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL');
-        }
-        tick();
-        setInterval(tick, 1000);
+        /* ── RELOJ ── */
+        function tick() { document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL'); }
+        tick(); setInterval(tick, 1000);
 
-        // ── MÓDULOS ──
+        /* ── CURSOR BLINK ── */
+        const blinkStyle = document.createElement('style');
+        blinkStyle.textContent = '@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }';
+        document.head.appendChild(blinkStyle);
+
+        /* ── MÓDULOS ── */
         function openModule(src, name) {
             document.getElementById('homeView').style.display = 'none';
             document.getElementById('moduleView').classList.add('active');
@@ -634,7 +751,7 @@
             document.getElementById('homeView').style.display = 'flex';
         }
 
-        // ── BUSCADOR ──
+        /* ── BUSCADOR ── */
         function filter() {
             const val = document.getElementById('finder').value.toLowerCase();
             document.querySelectorAll('.card').forEach(c => {
@@ -642,10 +759,298 @@
             });
         }
 
-        // Cursor blink
-        const style = document.createElement('style');
-        style.textContent = '@keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }';
-        document.head.appendChild(style);
+        /* ── CALCULADORAS: TOGGLE ── */
+        function toggleCalc(panelId, btnId) {
+            const panel = document.getElementById(panelId);
+            const btn   = document.getElementById(btnId);
+            const isOpen = panel.classList.contains('open');
+            // Cierra todos
+            document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('open'));
+            document.querySelectorAll('.calc-open-btn').forEach(b => b.classList.remove('active'));
+            // Abre el seleccionado si estaba cerrado
+            if (!isOpen) {
+                panel.classList.add('open');
+                btn.classList.add('active');
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        /* ── TABS ── */
+        let activeTab = 'ohm';
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.calc-tab').forEach((t, i) => {
+                t.classList.toggle('active', ['ohm','potencia'][i] === tab);
+            });
+            document.querySelectorAll('.calc-tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        /* ── HELPERS ── */
+        function showResult(id, text, formula) {
+            const el = document.getElementById(id);
+            el.innerHTML = '▶ ' + text + '<div class="formula-used">// Fórmula: ' + formula + '</div>';
+            el.classList.add('show');
+            document.getElementById(id.replace('result','error')).classList.remove('show');
+        }
+
+        function showError(id, text) {
+            const el = document.getElementById(id);
+            el.textContent = '✕ ' + text;
+            el.classList.add('show');
+            document.getElementById(id.replace('error','result')).classList.remove('show');
+        }
+
+        function fmt(n) {
+            // Muestra hasta 4 decimales significativos, sin ceros innecesarios
+            return parseFloat(n.toPrecision(6)).toString();
+        }
+
+        /* ── LEY DE OHM ── */
+        function calcOhm() {
+            const V = document.getElementById('ohm-v').value;
+            const I = document.getElementById('ohm-i').value;
+            const R = document.getElementById('ohm-r').value;
+            const v = V !== '' ? parseFloat(V) : null;
+            const i = I !== '' ? parseFloat(I) : null;
+            const r = R !== '' ? parseFloat(R) : null;
+            const filled = [v,i,r].filter(x => x !== null).length;
+
+            if (filled < 2) return showError('ohm-error', 'Ingresa al menos dos valores para calcular el tercero.');
+            if (filled === 3) return showError('ohm-error', 'Ya tienes los tres valores. Deja uno vacío para calcularlo.');
+
+            if (v === null) {
+                const res = i * r;
+                showResult('ohm-result', 'V = ' + fmt(res) + ' V', 'V = I × R');
+            } else if (i === null) {
+                if (r === 0) return showError('ohm-error', 'La resistencia no puede ser 0.');
+                const res = v / r;
+                showResult('ohm-result', 'I = ' + fmt(res) + ' A', 'I = V / R');
+            } else {
+                if (i === 0) return showError('ohm-error', 'La corriente no puede ser 0.');
+                const res = v / i;
+                showResult('ohm-result', 'R = ' + fmt(res) + ' Ω', 'R = V / I');
+            }
+        }
+
+        function clearOhm() {
+            ['ohm-v','ohm-i','ohm-r'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('ohm-result').classList.remove('show');
+            document.getElementById('ohm-error').classList.remove('show');
+        }
+
+        /* ── POTENCIA ── */
+        function calcPotencia() {
+            const P = document.getElementById('pot-p').value;
+            const V = document.getElementById('pot-v').value;
+            const I = document.getElementById('pot-i').value;
+            const R = document.getElementById('pot-r').value;
+            const p = P !== '' ? parseFloat(P) : null;
+            const v = V !== '' ? parseFloat(V) : null;
+            const i = I !== '' ? parseFloat(I) : null;
+            const r = R !== '' ? parseFloat(R) : null;
+            const filled = [p,v,i,r].filter(x => x !== null).length;
+
+            if (filled < 2) return showError('pot-error', 'Ingresa al menos dos valores para calcular el que falta.');
+            if (p === null) {
+                if (v !== null && i !== null)      showResult('pot-result', 'P = ' + fmt(v*i) + ' W',    'P = V × I');
+                else if (i !== null && r !== null) showResult('pot-result', 'P = ' + fmt(i*i*r) + ' W',  'P = I² × R');
+                else if (v !== null && r !== null) { if(r===0) return showError('pot-error','R no puede ser 0.'); showResult('pot-result', 'P = ' + fmt(v*v/r) + ' W', 'P = V² / R'); }
+                else return showError('pot-error', 'Combinación insuficiente para calcular P.');
+            } else if (v === null) {
+                if (p !== null && i !== null)      { if(i===0) return showError('pot-error','I no puede ser 0.'); showResult('pot-result', 'V = ' + fmt(p/i) + ' V', 'V = P / I'); }
+                else if (p !== null && r !== null) showResult('pot-result', 'V = ' + fmt(Math.sqrt(p*r)) + ' V', 'V = √(P × R)');
+                else return showError('pot-error', 'Combinación insuficiente para calcular V.');
+            } else if (i === null) {
+                if (p !== null && v !== null)      { if(v===0) return showError('pot-error','V no puede ser 0.'); showResult('pot-result', 'I = ' + fmt(p/v) + ' A', 'I = P / V'); }
+                else if (p !== null && r !== null) { if(r===0) return showError('pot-error','R no puede ser 0.'); showResult('pot-result', 'I = ' + fmt(Math.sqrt(p/r)) + ' A', 'I = √(P / R)'); }
+                else return showError('pot-error', 'Combinación insuficiente para calcular I.');
+            } else if (r === null) {
+                if (v !== null && i !== null)      { if(i===0) return showError('pot-error','I no puede ser 0.'); showResult('pot-result', 'R = ' + fmt(v/i) + ' Ω', 'R = V / I  (Ley de Ohm)'); }
+                else if (p !== null && i !== null) { if(i===0) return showError('pot-error','I no puede ser 0.'); showResult('pot-result', 'R = ' + fmt(p/(i*i)) + ' Ω', 'R = P / I²'); }
+                else if (p !== null && v !== null) { if(p===0) return showError('pot-error','P no puede ser 0.'); showResult('pot-result', 'R = ' + fmt(v*v/p) + ' Ω', 'R = V² / P'); }
+                else return showError('pot-error', 'Combinación insuficiente para calcular R.');
+            }
+        }
+
+        function clearPotencia() {
+            ['pot-p','pot-v','pot-i','pot-r'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('pot-result').classList.remove('show');
+            document.getElementById('pot-error').classList.remove('show');
+        }
+        /* ── CÓDIGO DE COLORES ── */
+        const COLOR_DATA = {
+            // nombre: [hex, dígito, multiplicador, tolerancia]
+            'NEGRO':   ['#1a1a1a', 0, 1,        null],
+            'MARRÓN':  ['#8B4513', 1, 10,       '±1%'],
+            'ROJO':    ['#cc2200', 2, 100,       '±2%'],
+            'NARANJA': ['#ff6600', 3, 1000,      null],
+            'AMARILLO':['#f5c400', 4, 10000,     null],
+            'VERDE':   ['#228b22', 5, 100000,    '±0.5%'],
+            'AZUL':    ['#1155cc', 6, 1000000,   '±0.25%'],
+            'VIOLETA': ['#8b008b', 7, 10000000,  '±0.1%'],
+            'GRIS':    ['#888888', 8, 100000000, '±0.05%'],
+            'BLANCO':  ['#e8e8e8', 9, 1000000000,null],
+            'DORADO':  ['#d4a017', null, 0.1,    '±5%'],
+            'PLATEADO':['#c0c0c0', null, 0.01,   '±10%'],
+        };
+
+        const DIGIT_COLORS   = Object.entries(COLOR_DATA).filter(([,v]) => v[1] !== null).map(([k]) => k);
+        const MULT_COLORS    = Object.entries(COLOR_DATA).filter(([,v]) => v[2] !== null).map(([k]) => k);
+        const TOL_COLORS     = Object.entries(COLOR_DATA).filter(([,v]) => v[3] !== null).map(([k]) => k);
+
+        let numBandas = 4;
+
+        function populateSelect(selId, keys) {
+            const sel = document.getElementById(selId);
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">-- color --</option>';
+            keys.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k;
+                opt.textContent = k;
+                if (k === cur) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+
+        function initColorSelects() {
+            populateSelect('col-b1',     DIGIT_COLORS);
+            populateSelect('col-b2',     DIGIT_COLORS);
+            populateSelect('col-b3digit',DIGIT_COLORS);
+            populateSelect('col-b3mult', MULT_COLORS);
+            populateSelect('col-b4mult', MULT_COLORS);
+            populateSelect('col-tol',    TOL_COLORS);
+        }
+
+        function updateBandColor(bandId, colorName) {
+            const band = document.getElementById(bandId);
+            const hex  = colorName && COLOR_DATA[colorName] ? COLOR_DATA[colorName][0] : '#333';
+            band.setAttribute('fill', hex);
+        }
+
+        function updatePreview(previewId, colorName) {
+            const el  = document.getElementById(previewId);
+            const hex = colorName && COLOR_DATA[colorName] ? COLOR_DATA[colorName][0] : '#222';
+            el.style.background = hex;
+            el.style.boxShadow  = colorName ? '0 0 6px ' + hex + '88' : 'none';
+        }
+
+        // Intercept onchange para actualizar preview también
+        function watchSelects() {
+            const pairs = [
+                ['col-b1','preview-b1','banda1'],
+                ['col-b2','preview-b2','banda2'],
+                ['col-b3digit','preview-b3digit','banda3'],
+                ['col-b3mult','preview-b3mult','banda3'],
+                ['col-b4mult','preview-b4mult', numBandas===5?'banda4':'banda4'],
+                ['col-tol','preview-tol', numBandas===5?'banda5':'banda4'],
+            ];
+            pairs.forEach(([selId, prevId, bandId]) => {
+                const sel = document.getElementById(selId);
+                if (!sel._watched) {
+                    sel.addEventListener('change', function() {
+                        updatePreview(prevId, this.value);
+                        updateBandColor(bandId, this.value);
+                        calcColores();
+                    });
+                    sel._watched = true;
+                }
+            });
+        }
+
+        function switchBandas(n) {
+            numBandas = n;
+            document.getElementById('tab-4b').classList.toggle('active', n===4);
+            document.getElementById('tab-5b').classList.toggle('active', n===5);
+
+            // Reposicionar bandas SVG
+            if (n === 4) {
+                document.getElementById('banda1').setAttribute('x','52');
+                document.getElementById('banda2').setAttribute('x','78');
+                document.getElementById('banda3').setAttribute('x','104');
+                document.getElementById('banda4').setAttribute('x','220');
+                document.getElementById('banda5').style.display = 'none';
+                document.getElementById('field-b3-digit').style.display = 'none';
+                document.getElementById('field-b3-mult').style.display  = '';
+                document.getElementById('field-b4-mult').style.display  = 'none';
+                document.getElementById('label-mult').textContent = 'BANDA 3 — Multiplicador';
+                document.getElementById('label-tol').textContent  = 'BANDA 4 — Tolerancia';
+                // sync tol band -> banda4
+            } else {
+                document.getElementById('banda1').setAttribute('x','44');
+                document.getElementById('banda2').setAttribute('x','70');
+                document.getElementById('banda3').setAttribute('x','96');
+                document.getElementById('banda4').setAttribute('x','122');
+                document.getElementById('banda5').setAttribute('x','220');
+                document.getElementById('banda5').style.display = '';
+                document.getElementById('field-b3-digit').style.display = '';
+                document.getElementById('field-b3-mult').style.display  = 'none';
+                document.getElementById('field-b4-mult').style.display  = '';
+                document.getElementById('label-mult').textContent = 'BANDA 4 — Multiplicador';
+                document.getElementById('label-tol').textContent  = 'BANDA 5 — Tolerancia';
+            }
+            clearColores();
+        }
+
+        function calcColores() {
+            const err = document.getElementById('color-error');
+            const res = document.getElementById('color-result');
+
+            if (numBandas === 4) {
+                const b1 = document.getElementById('col-b1').value;
+                const b2 = document.getElementById('col-b2').value;
+                const b3 = document.getElementById('col-b3mult').value;
+                const b4 = document.getElementById('col-tol').value;
+                if (!b1 || !b2 || !b3) { res.classList.remove('show'); err.classList.remove('show'); return; }
+                const val = (COLOR_DATA[b1][1] * 10 + COLOR_DATA[b2][1]) * COLOR_DATA[b3][2];
+                const tol = b4 ? COLOR_DATA[b4][3] : '—';
+                showColorResult(val, tol);
+            } else {
+                const b1 = document.getElementById('col-b1').value;
+                const b2 = document.getElementById('col-b2').value;
+                const b3 = document.getElementById('col-b3digit').value;
+                const b4 = document.getElementById('col-b4mult').value;
+                const b5 = document.getElementById('col-tol').value;
+                if (!b1 || !b2 || !b3 || !b4) { res.classList.remove('show'); err.classList.remove('show'); return; }
+                const val = (COLOR_DATA[b1][1]*100 + COLOR_DATA[b2][1]*10 + COLOR_DATA[b3][1]) * COLOR_DATA[b4][2];
+                const tol = b5 ? COLOR_DATA[b5][3] : '—';
+                showColorResult(val, tol);
+            }
+        }
+
+        function showColorResult(ohms, tol) {
+            const res = document.getElementById('color-result');
+            const err = document.getElementById('color-error');
+            let display, unit;
+            if      (ohms >= 1e9) { display = fmt(ohms/1e9); unit = 'GΩ'; }
+            else if (ohms >= 1e6) { display = fmt(ohms/1e6); unit = 'MΩ'; }
+            else if (ohms >= 1e3) { display = fmt(ohms/1e3); unit = 'kΩ'; }
+            else                  { display = fmt(ohms);      unit = 'Ω';  }
+            res.innerHTML = '▶ R = ' + display + ' ' + unit
+                + '<div class="formula-used">// Tolerancia: ' + tol + ' &nbsp;·&nbsp; Valor exacto: ' + fmt(ohms) + ' Ω</div>';
+            res.classList.add('show');
+            err.classList.remove('show');
+        }
+
+        function clearColores() {
+            ['col-b1','col-b2','col-b3digit','col-b3mult','col-b4mult','col-tol']
+                .forEach(id => { const s = document.getElementById(id); if(s) s.value = ''; });
+            ['preview-b1','preview-b2','preview-b3digit','preview-b3mult','preview-b4mult','preview-tol']
+                .forEach(id => { const p = document.getElementById(id); if(p){ p.style.background='#222'; p.style.boxShadow='none'; }});
+            ['banda1','banda2','banda3','banda4','banda5'].forEach((id,i) => {
+                const defaults = ['#1a1a1a','#1a1a1a','#1a1a1a','#c0c0c0','#c0c0c0'];
+                const el = document.getElementById(id); if(el) el.setAttribute('fill', defaults[i]);
+            });
+            document.getElementById('color-result').classList.remove('show');
+            document.getElementById('color-error').classList.remove('show');
+        }
+
+        // Init al cargar
+        initColorSelects();
+        watchSelects();
+        switchBandas(4);
     </script>
 </body>
 </html>
