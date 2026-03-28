@@ -242,8 +242,12 @@ body::after{
   margin-left:var(--sidebar);
   padding-top:var(--topbar);
   min-height:100vh;
+  width:calc(100% - var(--sidebar));
 }
-.page-body{padding:28px 28px 80px;}
+.page-body{
+  padding:28px 40px 80px;
+  max-width:1400px;
+}
 
 /* ══ PAGES ══ */
 .page{display:none;}
@@ -326,7 +330,7 @@ body::after{
 
 /* ══ UNIT CARDS ══ */
 .unidades-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;
   margin-bottom:24px;
 }
 .u-card{
@@ -819,16 +823,25 @@ tbody td strong{color:var(--text);}
 .sidebar-overlay.active{display:block;}
 
 /* ══════════════════════════════════
+   RESPONSIVE — LARGE SCREEN (≥1400px)
+══════════════════════════════════ */
+@media(min-width:1400px){
+  .page-body{padding:32px 56px 80px;}
+  .unidades-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+  .hero{padding:36px 40px;}
+  .hero h2{font-size:24px;}
+}
+
+/* ══════════════════════════════════
    RESPONSIVE — TABLET (≤900px)
 ══════════════════════════════════ */
 @media(max-width:900px){
   .topbar{left:0;}
-  .content{margin-left:0;}
+  .content{margin-left:0;width:100%;}
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
   .hamburger{display:flex;}
-
-  .page-body{padding:20px 18px 80px;}
+  .page-body{padding:20px 18px 80px;max-width:100%;}
 
   .hero{padding:22px 18px;}
   .hero h2{font-size:17px;}
