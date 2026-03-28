@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Automatización Industrial // Apuntes</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #080c10;
+  --bg2:         #0d1117;
+  --bg3:         #111822;
+  --border:      #1a2535;
+  --border2:     #1f2d40;
+  --text:        #8fa8c0;
+  --text-dim:    #3a5068;
+  --text-bright: #c8ddef;
+  --green:       #00ff9d;
+  --cyan:        #00c8ff;
+  --amber:       #ffb700;
+  --red:         #ff4060;
+  --purple:      #a855f7;
+  --sidebar-w:   260px;
+  --topbar-h:    52px;
+}
+
+html { height: 100%; }
+body {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.06) 2px, rgba(0,0,0,.06) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+/* ── LAYOUT ── */
+#app { display: flex; height: 100vh; overflow: hidden; }
+
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 100;
+  transition: transform .3s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.sidebar-logo::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--green), transparent);
+}
+.logo-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; font-weight: 900;
+  color: var(--text-bright); line-height: 1.35;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.logo-title span { color: var(--green); animation: cursorBlink 1.2s step-end infinite; }
+.logo-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  margin-top: 4px; letter-spacing: 2px; text-transform: uppercase;
+}
+@keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.sidebar-search { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.sidebar-search input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  padding: 7px 10px; color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  outline: none; border-radius: 0; transition: border-color .2s, box-shadow .2s;
+}
+.sidebar-search input:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.15); }
+.sidebar-search input::placeholder { color: var(--text-dim); }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 6px 0 16px; }
+
+.nav-section-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim); padding: 14px 16px 5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.nav-unit-desc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  padding: 2px 16px 8px; letter-spacing: 1px; line-height: 1.4;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px; cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px; color: var(--text-dim);
+  transition: all .15s; border-left: 2px solid transparent;
+  text-transform: uppercase; letter-spacing: .5px;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.nav-item:hover  { color: var(--text-bright); background: rgba(0,255,157,.03); }
+.nav-item.active { color: var(--green); border-left-color: var(--green); background: rgba(0,255,157,.05); }
+.nav-item .nav-icon { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-item .nav-count {
+  margin-left: auto; font-size: 9px; color: var(--text-dim);
+  border: 1px solid var(--border2); padding: 1px 6px;
+  font-family: 'Orbitron', monospace;
+}
+.nav-item.active .nav-count { border-color: var(--green); color: var(--green); }
+
+.nav-group-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px; cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 2px;
+  transition: color .15s; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  border-left: 2px solid transparent;
+}
+.nav-group-toggle:hover { color: var(--cyan); }
+.nav-group-toggle.open  { color: var(--cyan); border-left-color: var(--cyan); }
+.nav-group-toggle .arrow { margin-left: auto; font-size: 11px; transition: transform .2s; color: var(--text-dim); }
+.nav-group-toggle.open .arrow { transform: rotate(90deg); color: var(--cyan); }
+
+.nav-sub { overflow: hidden; max-height: 0; transition: max-height .3s ease; }
+.nav-sub.open { max-height: 400px; }
+.nav-sub .nav-item { padding-left: 32px; font-size: 11px; }
+
+.sidebar-bottom {
+  padding: 10px 16px; border-top: 1px solid var(--border);
+  font-size: 9px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; flex-shrink: 0;
+}
+.status-dot {
+  width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+  box-shadow: 0 0 6px var(--green); animation: glowPulse 2s ease-in-out infinite; flex-shrink: 0;
+}
+@keyframes glowPulse { 0%,100%{box-shadow:0 0 6px var(--green);opacity:1} 50%{box-shadow:0 0 14px var(--green);opacity:.6} }
+
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+#topbar {
+  height: var(--topbar-h);
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 10px;
+  flex-shrink: 0; position: relative;
+}
+#topbar::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, var(--cyan), transparent 60%);
+}
+
+#hamburger {
+  display: none; background: none; border: 1px solid var(--border2);
+  cursor: pointer; padding: 6px 8px; flex-direction: column; gap: 4px;
+  flex-shrink: 0; -webkit-tap-highlight-color: transparent;
+}
+#hamburger span { display: block; width: 18px; height: 1px; background: var(--text); }
+
+.topbar-breadcrumb {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px; letter-spacing: 1px;
+}
+.topbar-breadcrumb .sep { color: var(--border2); }
+.topbar-breadcrumb .bc-section { color: var(--cyan); }
+
+#content {
+  flex: 1; overflow-y: auto; padding: 20px 24px 60px;
+  scroll-behavior: smooth;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px; margin-bottom: 20px; position: relative;
+}
+.page-header::after {
+  content:''; position:absolute; bottom:0; left:0; width:60px; height:1px;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+}
+.page-title {
+  font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700;
+  color: var(--text-bright); letter-spacing: 1px; margin-bottom: 6px;
+}
+.page-subtitle {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.content-block {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 18px 20px; margin-bottom: 18px; position: relative;
+}
+.content-block::before {
+  content: '//'; position: absolute; top: 6px; right: 10px;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--border2); font-weight: 700;
+}
+
+.block-title {
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
+  color: var(--cyan); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.text-content {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.75;
+  color: var(--text); margin-bottom: 12px;
+}
+.text-content:last-child { margin-bottom: 0; }
+.text-content strong { color: var(--text-bright); font-weight: 500; }
+
+.code-inline {
+  background: var(--bg); border: 1px solid var(--border2);
+  padding: 2px 6px; font-family: 'Share Tech Mono', monospace;
+  font-size: 12px; color: var(--green);
+}
+
+.highlight {
+  background: linear-gradient(90deg, rgba(0,255,157,.08), transparent);
+  border-left: 2px solid var(--green); padding: 10px 14px;
+  margin: 12px 0; font-size: 12px; color: var(--text-bright);
+}
+
+.list-std {
+  list-style: none; padding: 0; margin: 12px 0;
+}
+.list-std li {
+  padding: 6px 0 6px 18px; position: relative;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6;
+}
+.list-std li::before {
+  content: '▸'; position: absolute; left: 0; top: 6px;
+  color: var(--green); font-size: 10px;
+}
+
+.grid-2 {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px; margin: 16px 0;
+}
+
+.card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 14px 16px; transition: border-color .2s, box-shadow .2s;
+}
+.card:hover {
+  border-color: var(--cyan); box-shadow: 0 0 12px rgba(0,200,255,.1);
+}
+.card-title {
+  font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700;
+  color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+.card-text {
+  font-size: 12px; line-height: 1.65; color: var(--text);
+}
+
+.table-responsive { overflow-x: auto; margin: 16px 0; }
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+}
+.data-table thead {
+  background: var(--bg3); border-bottom: 2px solid var(--green);
+}
+.data-table th {
+  text-align: left; padding: 10px 12px;
+  font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700;
+  color: var(--green); text-transform: uppercase; letter-spacing: 1px;
+}
+.data-table td {
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.data-table tbody tr:hover { background: rgba(0,255,157,.03); }
+
+.btn {
+  background: var(--bg3); border: 1px solid var(--green);
+  color: var(--green); padding: 8px 16px; cursor: pointer;
+  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: all .2s; -webkit-tap-highlight-color: transparent;
+}
+.btn:hover {
+  background: var(--green); color: var(--bg);
+  box-shadow: 0 0 12px rgba(0,255,157,.4);
+}
+.btn:active { transform: scale(.97); }
+
+/* ── GLOSARIO ── */
+.glosario-controls {
+  display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.glosario-search {
+  flex: 1; min-width: 200px; background: var(--bg3); border: 1px solid var(--border2);
+  padding: 8px 12px; color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
+}
+.glosario-search:focus { border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.15); }
+.glosario-search::placeholder { color: var(--text-dim); }
+
+.filter-btn {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text-dim); padding: 7px 14px; cursor: pointer;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: all .2s; -webkit-tap-highlight-color: transparent;
+}
+.filter-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.filter-btn.active {
+  border-color: var(--green); color: var(--green);
+  background: rgba(0,255,157,.08);
+}
+
+.glosario-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.glosario-item {
+  background: var(--bg3); border-left: 3px solid var(--green);
+  padding: 12px 14px; transition: all .2s;
+}
+.glosario-item:hover {
+  background: var(--bg2); box-shadow: 0 0 14px rgba(0,255,157,.12);
+  transform: translateX(2px);
+}
+.glosario-term {
+  font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 6px; letter-spacing: .5px;
+}
+.glosario-cat {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.glosario-def {
+  font-size: 12px; line-height: 1.6; color: var(--text);
+}
+
+/* ── FLASHCARDS ── */
+.fc-controls {
+  display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.btn-shuffle {
+  background: var(--bg3); border: 1px solid var(--cyan);
+  color: var(--cyan); padding: 8px 16px; cursor: pointer;
+  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: all .2s;
+}
+.btn-shuffle:hover {
+  background: var(--cyan); color: var(--bg);
+  box-shadow: 0 0 12px rgba(0,200,255,.4);
+}
+
+.fc-filter {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text-dim); padding: 7px 14px; cursor: pointer;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: all .2s;
+}
+.fc-filter:hover { border-color: var(--amber); color: var(--amber); }
+.fc-filter.active {
+  border-color: var(--amber); color: var(--amber);
+  background: rgba(255,183,0,.08);
+}
+
+.flashcards-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.flashcard-wrap {
+  perspective: 1000px; cursor: pointer; height: 200px;
+  -webkit-tap-highlight-color: transparent;
+}
+.flashcard {
+  position: relative; width: 100%; height: 100%;
+  transition: transform .6s; transform-style: preserve-3d;
+}
+.flashcard-wrap.flipped .flashcard { transform: rotateY(180deg); }
+
+.fc-front, .fc-back {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 16px; display: flex; flex-direction: column; justify-content: center;
+}
+.fc-front { border-left: 3px solid var(--amber); }
+.fc-back {
+  transform: rotateY(180deg); border-left: 3px solid var(--green);
+}
+
+.fc-label {
+  font-family: 'Orbitron', monospace; font-size: 8px; font-weight: 700;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.fc-term {
+  font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700;
+  color: var(--text-bright); margin-bottom: 10px; letter-spacing: .5px;
+  line-height: 1.3;
+}
+.fc-category {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: auto;
+}
+.fc-hint {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text-dim); text-align: right; margin-top: 8px;
+}
+.fc-def {
+  font-size: 13px; line-height: 1.65; color: var(--text);
+}
+
+/* ── QUIZ ── */
+.quiz-header {
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 14px 18px; margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 10px;
+}
+.quiz-score-display {
+  font-family: 'Orbitron', monospace; font-size: 13px; color: var(--text-bright);
+  letter-spacing: 1px;
+}
+.quiz-score-display span { color: var(--green); font-weight: 700; }
+
+.quiz-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 20px 24px; position: relative;
+}
+.quiz-card::before {
+  content: '?'; position: absolute; top: 12px; right: 16px;
+  font-family: 'Orbitron', monospace; font-size: 32px;
+  color: var(--border); font-weight: 900;
+}
+
+.quiz-qtag {
+  display: flex; gap: 10px; align-items: center; margin-bottom: 12px;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+}
+.qtag-label {
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 3px 8px; color: var(--cyan);
+}
+
+.quiz-question {
+  font-family: 'JetBrains Mono', monospace; font-size: 15px;
+  color: var(--text-bright); margin-bottom: 18px; line-height: 1.6;
+  font-weight: 500;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+.quiz-option {
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 12px 14px; text-align: left; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  color: var(--text); transition: all .2s;
+  display: flex; align-items: center; gap: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.quiz-option:hover:not(:disabled) {
+  border-color: var(--cyan); background: rgba(0,200,255,.05);
+  transform: translateX(2px);
+}
+.quiz-option:disabled { cursor: default; }
+.quiz-option.correct {
+  border-color: var(--green); background: rgba(0,255,157,.08);
+  color: var(--text-bright);
+}
+.quiz-option.incorrect {
+  border-color: var(--red); background: rgba(255,64,96,.08);
+  color: var(--text-bright);
+}
+
+.opt-letter {
+  background: var(--bg); border: 1px solid var(--border2);
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+  color: var(--text-dim); flex-shrink: 0;
+}
+.quiz-option.correct .opt-letter {
+  background: var(--green); color: var(--bg); border-color: var(--green);
+}
+.quiz-option.incorrect .opt-letter {
+  background: var(--red); color: var(--bg); border-color: var(--red);
+}
+
+.quiz-feedback {
+  background: var(--bg3); border-left: 3px solid var(--border2);
+  padding: 12px 14px; font-size: 12px; line-height: 1.6;
+  margin-top: 14px; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { border-left-color: var(--green); color: var(--text-bright); }
+.quiz-feedback.err { border-left-color: var(--red); color: var(--text-bright); }
+
+.next-question-btn {
+  margin-top: 16px; display: none;
+}
+.next-question-btn.show { display: inline-block; }
+
+/* ── NOTAS ── */
+.notes-input-wrap {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 16px 18px; margin-bottom: 18px;
+}
+.notes-input-wrap textarea {
+  width: 100%; min-height: 100px; background: var(--bg3);
+  border: 1px solid var(--border2); padding: 10px 12px;
+  color: var(--text-bright); font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; resize: vertical; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.notes-input-wrap textarea:focus {
+  border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.15);
+}
+.notes-input-wrap textarea::placeholder { color: var(--text-dim); }
+
+.notes-actions {
+  display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;
+}
+.btn-clear {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text-dim);
+}
+.btn-clear:hover {
+  border-color: var(--red); color: var(--red); background: rgba(255,64,96,.05);
+}
+
+.note-saved-msg {
+  display: none; background: rgba(0,255,157,.1); border: 1px solid var(--green);
+  padding: 10px 14px; margin-top: 12px;
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+  color: var(--green); letter-spacing: 1px;
+}
+
+.note-item {
+  background: var(--bg3); border-left: 3px solid var(--cyan);
+  padding: 12px 14px; margin-bottom: 10px; position: relative;
+  transition: all .2s;
+}
+.note-item:hover {
+  background: var(--bg2); transform: translateX(2px);
+}
+.note-item-date {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.note-item-text {
+  font-size: 12px; line-height: 1.65; color: var(--text);
+  padding-right: 30px;
+}
+.note-item-del {
+  position: absolute; top: 10px; right: 10px;
+  background: none; border: 1px solid var(--border2);
+  color: var(--text-dim); width: 22px; height: 22px;
+  cursor: pointer; font-size: 12px;
+  transition: all .2s; -webkit-tap-highlight-color: transparent;
+}
+.note-item-del:hover {
+  border-color: var(--red); color: var(--red);
+  background: rgba(255,64,96,.05);
+}
+
+/* ── FAVORITOS ── */
+.favorite-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: none; border: 1px solid var(--border2);
+  color: var(--text-dim); width: 28px; height: 28px;
+  cursor: pointer; font-size: 14px; transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.favorite-btn:hover { border-color: var(--amber); color: var(--amber); }
+.favorite-btn.favorited {
+  border-color: var(--amber); color: var(--amber);
+  background: rgba(255,183,0,.1);
+}
+
+.favorites-tab {
+  background: var(--bg3); border: 1px solid var(--border2);
+  padding: 12px 16px; margin-bottom: 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.favorites-tab .btn {
+  font-size: 10px; padding: 6px 12px;
+}
+
+/* ── CREAR PREGUNTA ── */
+.create-question-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 20px 24px; margin-bottom: 20px;
+}
+.create-question-panel h3 {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  color: var(--cyan); text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block; font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 6px;
+}
+.form-group input, .form-group textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  padding: 8px 12px; color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  outline: none; transition: border-color .2s;
+}
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--green); box-shadow: 0 0 8px rgba(0,255,157,.15);
+}
+.form-group textarea { min-height: 60px; resize: vertical; }
+.option-input-group {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
+}
+.option-input-group input[type="radio"] {
+  width: auto; flex-shrink: 0;
+}
+.option-input-group input[type="text"] {
+  flex: 1;
+}
+.add-question-success {
+  display: none; background: rgba(0,255,157,.1); border: 1px solid var(--green);
+  padding: 10px 14px; margin-top: 12px;
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+  color: var(--green); letter-spacing: 1px;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  #sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    transform: translateX(-100%);
+  }
+  #sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,.5); }
+  #hamburger { display: flex; }
+  .topbar-breadcrumb { font-size: 10px; }
+  .page-title { font-size: 18px; }
+  .glosario-grid { grid-template-columns: 1fr; }
+  .flashcards-grid { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">AUTOMATIZACIÓN<br>& ROBÓTICA<span>_</span></div>
+    <div class="logo-sub">Inacap Chillán // 2026</div>
+  </div>
+
+  <div class="sidebar-search">
+    <input type="text" id="globalSearch" placeholder="buscar término...">
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">UNIDAD I</div>
+    <div class="nav-unit-desc">Fundamentos de la Automatización Industrial</div>
+    <div class="nav-item" data-page="intro">
+      <span class="nav-icon">▸</span> Introducción
+    </div>
+    <div class="nav-item" data-page="conceptos">
+      <span class="nav-icon">▸</span> Conceptos Clave
+    </div>
+    <div class="nav-item" data-page="componentes">
+      <span class="nav-icon">▸</span> Componentes
+    </div>
+    <div class="nav-item" data-page="tecnologias">
+      <span class="nav-icon">▸</span> Tecnologías
+    </div>
+
+    <div class="nav-section-label">RECURSOS</div>
+    <div class="nav-item" data-page="glosario">
+      <span class="nav-icon">📖</span> Glosario
+      <span class="nav-count">42</span>
+    </div>
+    <div class="nav-item" data-page="flashcards">
+      <span class="nav-icon">🎴</span> Flashcards
+      <span class="nav-count">15</span>
+    </div>
+    <div class="nav-item" data-page="quiz">
+      <span class="nav-icon">❓</span> Quiz
+      <span class="nav-count" id="quizCount">8</span>
+    </div>
+    <div class="nav-item" data-page="notas">
+      <span class="nav-icon">📝</span> Mis Notas
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <span class="status-dot"></span> SISTEMA ACTIVO
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <button id="hamburger"><span></span><span></span><span></span></button>
+    <div class="topbar-breadcrumb">
+      <span>INACAP</span>
+      <span class="sep">/</span>
+      <span class="bc-section" id="breadcrumb">INTRODUCCIÓN</span>
+    </div>
+  </div>
+
+  <div id="content">
+    
+    <!-- INTRO -->
+    <div class="page active" id="intro">
+      <div class="page-header">
+        <div class="page-title">// INTRODUCCIÓN</div>
+        <div class="page-subtitle">Automatización Industrial & Robótica</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">¿Qué es la Automatización Industrial?</div>
+        <div class="text-content">
+          La <strong>Automatización Industrial</strong> es la tecnología que permite <strong>controlar procesos o sistemas productivos con la mínima participación humana</strong>. Optimiza recursos, mejora la calidad y aumenta la seguridad en entornos industriales.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Objetivos Principales</div>
+        <ul class="list-std">
+          <li><strong>Económico:</strong> Reducir costos de producción y operación.</li>
+          <li><strong>Calidad:</strong> Mejorar la uniformidad y precisión de productos.</li>
+          <li><strong>Seguridad:</strong> Evitar que trabajadores realicen tareas peligrosas o repetitivas.</li>
+          <li><strong>Productividad:</strong> Aumentar la producción sin comprometer la calidad.</li>
+          <li><strong>Conectividad:</strong> Obtener información en tiempo real para tomar mejores decisiones.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Definiciones Clave</div>
+        <div class="text-content">
+          <strong>Sistema:</strong> Combinación de componentes que actúan juntos para lograr un objetivo. Tiene entradas, un proceso de transformación y salidas.
+        </div>
+        <div class="text-content">
+          <strong>Control Automático:</strong> Tecnología que permite regular procesos sin intervención humana continua, mediante dispositivos electrónicos, mecánicos o informáticos.
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>Nota importante:</strong> La automatización no busca reemplazar completamente al humano, sino liberar al trabajador de tareas repetitivas o peligrosas para que se enfoque en actividades de mayor valor.
+      </div>
+    </div>
+
+    <!-- CONCEPTOS -->
+    <div class="page" id="conceptos">
+      <div class="page-header">
+        <div class="page-title">// CONCEPTOS CLAVE</div>
+        <div class="page-subtitle">Fundamentos teóricos de la automatización</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Sistema de Control</div>
+          <div class="card-text">
+            Conjunto de dispositivos que regulan, dirigen o administran el comportamiento de otros dispositivos para lograr un resultado deseado.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Lazo de Control</div>
+          <div class="card-text">
+            Estructura que permite medir, comparar y ajustar continuamente una variable para mantenerla en el valor deseado.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Setpoint</div>
+          <div class="card-text">
+            Valor de referencia que se desea mantener en un sistema de control automático.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Variable Controlada</div>
+          <div class="card-text">
+            Magnitud física que se mide y regula en un proceso (temperatura, presión, nivel, caudal, etc.).
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Cadena de Control Automático</div>
+        <div class="text-content">
+          La cadena de control sigue este orden secuencial:
+        </div>
+        <ol class="list-std">
+          <li><strong>Medir:</strong> Sensores captan la variable del proceso.</li>
+          <li><strong>Transmitir:</strong> La señal se envía al controlador.</li>
+          <li><strong>Controlar:</strong> El controlador procesa y decide la acción correctiva.</li>
+          <li><strong>Actuar:</strong> Actuadores modifican el proceso según la orden del controlador.</li>
+        </ol>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Tipos de Control</div>
+        <div class="text-content">
+          <strong>Control en Lazo Abierto:</strong> No hay retroalimentación. El sistema ejecuta una acción sin verificar el resultado.
+        </div>
+        <div class="text-content">
+          <strong>Control en Lazo Cerrado:</strong> Incluye retroalimentación. El sistema mide continuamente la salida y ajusta la acción para mantener el setpoint.
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPONENTES -->
+    <div class="page" id="componentes">
+      <div class="page-header">
+        <div class="page-title">// COMPONENTES</div>
+        <div class="page-subtitle">Elementos fundamentales de un sistema automatizado</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Sensor / Transductor</div>
+        <div class="text-content">
+          Dispositivo que convierte una magnitud física (temperatura, presión, distancia) en una señal eléctrica medible. Es el "sentido" del sistema.
+        </div>
+        <div class="text-content">
+          <strong>Ejemplos:</strong> Termocupla (temperatura), sensor de presión, encoder (posición), fotocélula (luz).
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Controlador</div>
+        <div class="text-content">
+          Cerebro del sistema. Recibe señales de los sensores, las procesa según un algoritmo o programa, y envía órdenes a los actuadores.
+        </div>
+        <div class="text-content">
+          <strong>Ejemplos:</strong> PLC (Controlador Lógico Programable), microcontrolador, sistema SCADA.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Actuador</div>
+        <div class="text-content">
+          Elemento que ejecuta la acción física ordenada por el controlador. Transforma señales eléctricas en movimiento, calor, presión, etc.
+        </div>
+        <div class="text-content">
+          <strong>Ejemplos:</strong> Motor eléctrico, electroválvula, cilindro neumático, resistencia de calentamiento.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Interfaz Hombre-Máquina (HMI)</div>
+        <div class="text-content">
+          Pantalla o panel que permite al operador visualizar el estado del proceso e interactuar con el sistema (cambiar parámetros, iniciar/detener procesos).
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Componente</th>
+              <th>Función</th>
+              <th>Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sensor</td>
+              <td>Medir</td>
+              <td>Termocupla</td>
+            </tr>
+            <tr>
+              <td>Transmisor</td>
+              <td>Enviar señal</td>
+              <td>Cable, red industrial</td>
+            </tr>
+            <tr>
+              <td>Controlador</td>
+              <td>Procesar y decidir</td>
+              <td>PLC, microcontrolador</td>
+            </tr>
+            <tr>
+              <td>Actuador</td>
+              <td>Ejecutar acción</td>
+              <td>Motor, válvula</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TECNOLOGÍAS -->
+    <div class="page" id="tecnologias">
+      <div class="page-header">
+        <div class="page-title">// TECNOLOGÍAS</div>
+        <div class="page-subtitle">Herramientas y sistemas de automatización</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Lógica Cableada</div>
+        <div class="text-content">
+          Sistema de control basado en componentes físicos como <strong>relés, contactores y temporizadores</strong>. No utiliza software; el comportamiento se define por el cableado físico.
+        </div>
+        <div class="text-content">
+          <strong>Ventajas:</strong> Simple, robusto en ambientes sencillos.<br>
+          <strong>Desventajas:</strong> Difícil de modificar, requiere recablear para cambios.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Lógica Programable (PLC)</div>
+        <div class="text-content">
+          Controlador industrial programable que reemplaza la lógica cableada por <strong>software</strong>. Permite reprogramar el sistema sin cambios de hardware.
+        </div>
+        <div class="text-content">
+          <strong>Ventajas:</strong> Flexible, fácil de reprogramar, escalable.<br>
+          <strong>Ejemplos:</strong> Siemens S7, Allen-Bradley, Schneider Electric Modicon.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">SCADA (Supervisory Control and Data Acquisition)</div>
+        <div class="text-content">
+          Sistema de supervisión y adquisición de datos. Permite monitorear y controlar procesos industriales desde una estación central, generalmente con interfaz gráfica.
+        </div>
+        <div class="text-content">
+          <strong>Usos:</strong> Plantas de manufactura, redes eléctricas, tratamiento de aguas.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Robótica Industrial</div>
+        <div class="text-content">
+          Aplicación de robots programables para realizar tareas repetitivas con alta precisión: soldadura, pintura, ensamblaje, paletizado.
+        </div>
+        <div class="text-content">
+          <strong>Características:</strong> Alta velocidad, repetibilidad, capacidad de trabajar 24/7.
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Industria 4.0</div>
+          <div class="card-text">
+            Integración de sistemas ciber-físicos, IoT, inteligencia artificial y análisis de datos en tiempo real para crear fábricas inteligentes.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Internet de las Cosas (IoT)</div>
+          <div class="card-text">
+            Conexión de sensores y dispositivos a internet para recopilar y analizar datos en tiempo real, optimizando procesos industriales.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOSARIO -->
+    <div class="page" id="glosario">
+      <div class="page-header">
+        <div class="page-title">// GLOSARIO</div>
+        <div class="page-subtitle">Términos clave de automatización industrial</div>
+      </div>
+
+      <div class="glosario-controls">
+        <input type="text" id="glosarioSearch" class="glosario-search" placeholder="buscar término...">
+        <button class="filter-btn active" onclick="filterGlosario('all', this)">TODOS</button>
+        <button class="filter-btn" onclick="filterGlosario('Componentes', this)">COMPONENTES</button>
+        <button class="filter-btn" onclick="filterGlosario('Conceptos', this)">CONCEPTOS</button>
+        <button class="filter-btn" onclick="filterGlosario('Tecnologías', this)">TECNOLOGÍAS</button>
+        <button class="filter-btn" onclick="filterGlosario('Sistemas', this)">SISTEMAS</button>
+      </div>
+
+      <div class="favorites-tab">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;">FAVORITOS:</span>
+        <button class="btn" onclick="showOnlyFavorites()" style="border-color:var(--amber);color:var(--amber)">⭐ VER FAVORITOS</button>
+        <button class="btn" onclick="clearAllFavorites()">✕ LIMPIAR FAVORITOS</button>
+        <span id="favCount" style="margin-left:auto;font-family:'Orbitron',monospace;font-size:10px;color:var(--amber)">0 marcados</span>
+      </div>
+
+      <div class="glosario-grid" id="glosarioContainer"></div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div class="page" id="flashcards">
+      <div class="page-header">
+        <div class="page-title">// FLASHCARDS</div>
+        <div class="page-subtitle">Practica los conceptos clave</div>
+      </div>
+
+      <div class="fc-controls">
+        <button class="btn-shuffle" onclick="shuffleFC()">⇌ BARAJAR</button>
+        <button class="fc-filter active" onclick="filterFC('all', this)">TODOS</button>
+        <button class="fc-filter" onclick="filterFC('Componentes', this)">COMPONENTES</button>
+        <button class="fc-filter" onclick="filterFC('Conceptos', this)">CONCEPTOS</button>
+        <button class="fc-filter" onclick="filterFC('Tecnologías', this)">TECNOLOGÍAS</button>
+      </div>
+
+      <div class="favorites-tab">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;">FLASHCARDS DIFÍCILES:</span>
+        <button class="btn" onclick="showOnlyFavoriteFCs()" style="border-color:var(--amber);color:var(--amber)">⭐ VER MARCADAS</button>
+        <button class="btn" onclick="clearAllFCFavorites()">✕ LIMPIAR</button>
+        <span id="fcFavCount" style="margin-left:auto;font-family:'Orbitron',monospace;font-size:10px;color:var(--amber)">0 marcadas</span>
+      </div>
+
+      <div class="flashcards-grid" id="flashcardsContainer"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="page" id="quiz">
+      <div class="page-header">
+        <div class="page-title">// QUIZ</div>
+        <div class="page-subtitle">Evalúa tus conocimientos</div>
+      </div>
+
+      <div class="quiz-header">
+        <div class="quiz-score-display">
+          SCORE: <span id="quiz-score">0</span> / <span id="quiz-total">0</span>
+        </div>
+        <button class="btn" onclick="resetQuiz();startQuiz()">▷ INICIAR QUIZ</button>
+        <button class="btn" onclick="toggleCreateQuestion()" style="border-color:var(--cyan);color:var(--cyan)">+ CREAR PREGUNTA</button>
+      </div>
+
+      <div class="create-question-panel" id="createQuestionPanel" style="display:none;">
+        <h3>// CREAR PREGUNTA PERSONALIZADA</h3>
+        
+        <div class="form-group">
+          <label>Pregunta:</label>
+          <textarea id="newQ" placeholder="Escribe tu pregunta aquí..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Etiqueta (categoría):</label>
+          <input type="text" id="newTag" placeholder="ej: Conceptos, PLCs, Sensores...">
+        </div>
+
+        <div class="form-group">
+          <label>Opciones (marca la correcta):</label>
+          <div class="option-input-group">
+            <input type="radio" name="correctOpt" value="0" checked>
+            <input type="text" id="opt0" placeholder="Opción A">
+          </div>
+          <div class="option-input-group">
+            <input type="radio" name="correctOpt" value="1">
+            <input type="text" id="opt1" placeholder="Opción B">
+          </div>
+          <div class="option-input-group">
+            <input type="radio" name="correctOpt" value="2">
+            <input type="text" id="opt2" placeholder="Opción C">
+          </div>
+          <div class="option-input-group">
+            <input type="radio" name="correctOpt" value="3">
+            <input type="text" id="opt3" placeholder="Opción D">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Retroalimentación:</label>
+          <textarea id="newFeedback" placeholder="Explicación de la respuesta correcta..."></textarea>
+        </div>
+
+        <button class="btn" onclick="addCustomQuestion()">✓ AGREGAR PREGUNTA</button>
+        <button class="btn btn-clear" onclick="toggleCreateQuestion()">✕ CANCELAR</button>
+
+        <div class="add-question-success" id="addQuestionSuccess">✓ PREGUNTA AGREGADA AL BANCO</div>
+      </div>
+
+      <div id="quiz-container"></div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="page" id="notas">
+      <div class="page-header">
+        <div class="page-title">// MIS NOTAS</div>
+        <div class="page-subtitle">Apuntes personales del curso</div>
+      </div>
+
+      <div class="notes-input-wrap">
+        <textarea id="noteInput" placeholder="Escribe tu nota aquí..." oninput="autoSaveNote()"></textarea>
+        <div class="notes-actions">
+          <button class="btn" onclick="saveNote()">▷ GUARDAR NOTA</button>
+          <button class="btn btn-clear" onclick="clearNote()">✕ LIMPIAR</button>
+        </div>
+        <div class="note-saved-msg" id="noteSavedMsg">✓ NOTA GUARDADA</div>
+      </div>
+
+      <div id="notes-list"></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+// ── NAVIGATION ───────────────────────────────────────────────────
+const pages = ['intro','conceptos','componentes','tecnologias','glosario','flashcards','quiz','notas'];
+const pageNames = {
+  intro:'INTRODUCCIÓN', conceptos:'CONCEPTOS', componentes:'COMPONENTES',
+  tecnologias:'TECNOLOGÍAS', glosario:'GLOSARIO', flashcards:'FLASHCARDS',
+  quiz:'QUIZ', notas:'MIS NOTAS'
+};
+
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+  document.getElementById('breadcrumb').textContent = pageNames[page] || 'INICIO';
+  closeSidebar();
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', function(){
+    const page = this.getAttribute('data-page');
+    navigate(page, this);
+  });
+});
+
+document.getElementById('hamburger').addEventListener('click', toggleSidebar);
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+
+// ── GLOSARIO ─────────────────────────────────────────────────────
+const GLOSARIO = [
+  { term:'Automatización Industrial', cat:'Conceptos', def:'Tecnología que controla procesos con mínima participación humana.' },
+  { term:'Control Automático', cat:'Conceptos', def:'Regulación de procesos sin intervención humana continua.' },
+  { term:'Sistema', cat:'Conceptos', def:'Conjunto de componentes que actúan juntos con entradas, proceso y salidas.' },
+  { term:'Lazo de Control', cat:'Conceptos', def:'Estructura para medir, comparar y ajustar una variable continuamente.' },
+  { term:'Setpoint', cat:'Conceptos', def:'Valor de referencia deseado en un sistema de control.' },
+  { term:'Variable Controlada', cat:'Conceptos', def:'Magnitud física que se mide y regula (temp, presión, nivel).' },
+  { term:'Sensor', cat:'Componentes', def:'Convierte magnitudes físicas en señales eléctricas.' },
+  { term:'Transductor', cat:'Componentes', def:'Dispositivo que transforma un tipo de energía o señal en otro.' },
+  { term:'Controlador', cat:'Componentes', def:'Procesa señales de sensores y envía órdenes a actuadores.' },
+  { term:'Actuador', cat:'Componentes', def:'Ejecuta acciones físicas ordenadas por el controlador.' },
+  { term:'PLC', cat:'Tecnologías', def:'Controlador Lógico Programable, cerebro programable de sistemas industriales.' },
+  { term:'SCADA', cat:'Tecnologías', def:'Sistema de supervisión y adquisición de datos para monitoreo centralizado.' },
+  { term:'HMI', cat:'Tecnologías', def:'Interfaz Hombre-Máquina, pantalla de interacción con el proceso.' },
+  { term:'Lógica Cableada', cat:'Tecnologías', def:'Control con relés y contactores físicos, sin software.' },
+  { term:'Lógica Programable', cat:'Tecnologías', def:'Control basado en software, flexible y reprogramable.' },
+  { term:'Robótica Industrial', cat:'Tecnologías', def:'Uso de robots programables en tareas industriales repetitivas.' },
+  { term:'Industria 4.0', cat:'Tecnologías', def:'Integración de IoT, IA y análisis de datos en fábricas inteligentes.' },
+  { term:'IoT', cat:'Tecnologías', def:'Internet de las Cosas, conexión de dispositivos para recopilar datos en tiempo real.' },
+  { term:'Termocupla', cat:'Componentes', def:'Sensor de temperatura basado en unión de metales diferentes.' },
+  { term:'Encoder', cat:'Componentes', def:'Sensor de posición o velocidad rotacional.' },
+  { term:'Electroválvula', cat:'Componentes', def:'Válvula controlada eléctricamente para flujo de fluidos.' },
+  { term:'Motor Eléctrico', cat:'Componentes', def:'Actuador que convierte energía eléctrica en movimiento rotatorio.' },
+  { term:'Cilindro Neumático', cat:'Componentes', def:'Actuador que usa aire comprimido para generar movimiento lineal.' },
+  { term:'Retroalimentación', cat:'Conceptos', def:'Señal de salida que regresa al controlador para ajustar la acción.' },
+  { term:'Lazo Abierto', cat:'Conceptos', def:'Control sin retroalimentación, ejecuta acción sin verificar resultado.' },
+  { term:'Lazo Cerrado', cat:'Conceptos', def:'Control con retroalimentación, ajusta continuamente según medición.' },
+  { term:'Error', cat:'Conceptos', def:'Diferencia entre setpoint y valor medido en un lazo de control.' },
+  { term:'Banda Proporcional', cat:'Conceptos', def:'Rango en el que el controlador ajusta la salida proporcionalmente.' },
+  { term:'Tiempo Muerto', cat:'Conceptos', def:'Retraso entre cambio de entrada y respuesta observable del sistema.' },
+  { term:'Control PID', cat:'Tecnologías', def:'Algoritmo de control Proporcional-Integral-Derivativo.' },
+  { term:'Red Industrial', cat:'Sistemas', def:'Red de comunicación para interconectar dispositivos en planta (Profibus, Modbus).' },
+  { term:'Fieldbus', cat:'Sistemas', def:'Sistema de comunicación digital para instrumentos de campo.' },
+  { term:'Profibus', cat:'Sistemas', def:'Protocolo de comunicación industrial estándar.' },
+  { term:'Modbus', cat:'Sistemas', def:'Protocolo de comunicación serie ampliamente usado en automatización.' },
+  { term:'Ethernet/IP', cat:'Sistemas', def:'Protocolo de comunicación industrial basado en Ethernet.' },
+  { term:'Siemens S7', cat:'Tecnologías', def:'Familia de PLCs de Siemens, muy usados en industria.' },
+  { term:'Allen-Bradley', cat:'Tecnologías', def:'Marca de PLCs de Rockwell Automation.' },
+  { term:'Schneider Electric', cat:'Tecnologías', def:'Fabricante de PLCs y sistemas de automatización.' },
+  { term:'Panel de Operador', cat:'Componentes', def:'Interfaz física para monitorear y controlar procesos.' },
+  { term:'Variador de Frecuencia', cat:'Componentes', def:'Dispositivo que controla velocidad de motores eléctricos.' },
+  { term:'Contacto NA', cat:'Componentes', def:'Contacto Normalmente Abierto en lógica cableada.' },
+  { term:'Contacto NC', cat:'Componentes', def:'Contacto Normalmente Cerrado en lógica cableada.' }
+];
+
+let currentFilter = 'all';
+let favorites = JSON.parse(localStorage.getItem('glosario_favorites')||'[]');
+
+function renderGlosario(items) {
+  const html = items.map((g,idx)=>{
+    const isFav = favorites.includes(g.term);
+    return `
+    <div class="glosario-item" style="position:relative">
+      <button class="favorite-btn ${isFav?'favorited':''}" onclick="toggleFavorite('${escH(g.term).replace(/'/g,"\\'")}')">
+        ${isFav?'⭐':'☆'}
+      </button>
+      <div class="glosario-term">${escH(g.term)}</div>
+      <div class="glosario-cat">${escH(g.cat)}</div>
+      <div class="glosario-def">${escH(g.def)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('glosarioContainer').innerHTML = html || '<p style="padding:20px;color:var(--text-dim)">// Sin resultados.</p>';
+  updateFavCount();
+}
+
+function filterGlosario(cat, btn) {
+  if (btn) {
+    document.querySelectorAll('.glosario-controls .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  currentFilter = cat;
+  applyGlosarioFilters();
+}
+
+function applyGlosarioFilters() {
+  const searchTerm = document.getElementById('glosarioSearch').value.toLowerCase().trim();
+  let filtered = currentFilter === 'all' ? GLOSARIO : GLOSARIO.filter(g=>g.cat===currentFilter);
+  if (searchTerm) filtered = filtered.filter(g=>g.term.toLowerCase().includes(searchTerm) || g.def.toLowerCase().includes(searchTerm));
+  renderGlosario(filtered);
+}
+
+document.getElementById('glosarioSearch').addEventListener('input', applyGlosarioFilters);
+renderGlosario(GLOSARIO);
+
+function toggleFavorite(term) {
+  const idx = favorites.indexOf(term);
+  if (idx > -1) favorites.splice(idx, 1);
+  else favorites.push(term);
+  localStorage.setItem('glosario_favorites', JSON.stringify(favorites));
+  applyGlosarioFilters();
+}
+
+function updateFavCount() {
+  document.getElementById('favCount').textContent = favorites.length + ' marcados';
+}
+
+function showOnlyFavorites() {
+  if (favorites.length === 0) {
+    alert('No tienes términos favoritos marcados aún.');
+    return;
+  }
+  const favItems = GLOSARIO.filter(g => favorites.includes(g.term));
+  renderGlosario(favItems);
+}
+
+function clearAllFavorites() {
+  if (!confirm('¿Eliminar todos los favoritos del glosario?')) return;
+  favorites = [];
+  localStorage.setItem('glosario_favorites', JSON.stringify(favorites));
+  applyGlosarioFilters();
+}
+
+// ── FLASHCARDS ───────────────────────────────────────────────────
+const FC_DATA = [
+  { term:'Automatización Industrial', def:'Tecnología que controla procesos con mínima participación humana.', cat:'Conceptos', accent:'var(--cyan)' },
+  { term:'PLC', def:'Controlador Lógico Programable, cerebro programable de sistemas industriales.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Sensor', def:'Convierte magnitudes físicas en señales eléctricas.', cat:'Componentes', accent:'var(--amber)' },
+  { term:'Actuador', def:'Ejecuta acciones físicas ordenadas por el controlador.', cat:'Componentes', accent:'var(--amber)' },
+  { term:'SCADA', def:'Sistema de supervisión y adquisición de datos.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Lazo Cerrado', def:'Control con retroalimentación que ajusta según medición.', cat:'Conceptos', accent:'var(--cyan)' },
+  { term:'HMI', def:'Interfaz Hombre-Máquina para interactuar con el proceso.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Setpoint', def:'Valor de referencia deseado en un sistema de control.', cat:'Conceptos', accent:'var(--cyan)' },
+  { term:'Lógica Cableada', def:'Control con relés y contactores físicos, sin software.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Retroalimentación', def:'Señal de salida que regresa al controlador para ajustar.', cat:'Conceptos', accent:'var(--cyan)' },
+  { term:'Motor Eléctrico', def:'Actuador que convierte energía eléctrica en movimiento.', cat:'Componentes', accent:'var(--amber)' },
+  { term:'IoT', def:'Internet de las Cosas, conexión de dispositivos para datos en tiempo real.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Control PID', def:'Algoritmo Proporcional-Integral-Derivativo para control preciso.', cat:'Tecnologías', accent:'var(--green)' },
+  { term:'Encoder', def:'Sensor de posición o velocidad rotacional.', cat:'Componentes', accent:'var(--amber)' },
+  { term:'Variable Controlada', def:'Magnitud física que se mide y regula (temp, presión).', cat:'Conceptos', accent:'var(--cyan)' }
+];
+
+let currentFCFilter = 'all';
+let fcFavorites = JSON.parse(localStorage.getItem('fc_favorites')||'[]');
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1; i>0; i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function renderFlashcards(items) {
+  document.getElementById('flashcardsContainer').innerHTML = items.map(f=>{
+    const isFav = fcFavorites.includes(f.term);
+    return `
+    <div style="position:relative">
+      <button class="favorite-btn ${isFav?'favorited':''}" onclick="toggleFCFavorite('${escH(f.term).replace(/'/g,"\\'")}');event.stopPropagation();" style="z-index:10">
+        ${isFav?'⭐':'☆'}
+      </button>
+      <div class="flashcard-wrap" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard">
+          <div class="fc-front">
+            <div class="fc-label">// TÉRMINO</div>
+            <div class="fc-term">${escH(f.term)}</div>
+            <div class="fc-category" style="color:${f.accent}">${f.cat.toUpperCase()}</div>
+            <span class="fc-hint">toca →</span>
+          </div>
+          <div class="fc-back">
+            <div class="fc-label">// DEFINICIÓN</div>
+            <div class="fc-def">${escH(f.def)}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateFCFavCount();
+}
+
+function filterFC(cat, btn) {
+  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFCFilter = cat;
+  const filtered = cat === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === cat);
+  renderFlashcards(filtered);
+}
+
+function shuffleFC() {
+  const base = currentFCFilter === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === currentFCFilter);
+  renderFlashcards(shuffle(base));
+  const btn = document.querySelector('.btn-shuffle');
+  btn.textContent = '✓ BARAJADO';
+  setTimeout(() => btn.textContent = '⇌ BARAJAR', 900);
+}
+
+renderFlashcards(FC_DATA);
+
+function toggleFCFavorite(term) {
+  const idx = fcFavorites.indexOf(term);
+  if (idx > -1) fcFavorites.splice(idx, 1);
+  else fcFavorites.push(term);
+  localStorage.setItem('fc_favorites', JSON.stringify(fcFavorites));
+  const base = currentFCFilter === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === currentFCFilter);
+  renderFlashcards(base);
+}
+
+function updateFCFavCount() {
+  document.getElementById('fcFavCount').textContent = fcFavorites.length + ' marcadas';
+}
+
+function showOnlyFavoriteFCs() {
+  if (fcFavorites.length === 0) {
+    alert('No tienes flashcards marcadas como difíciles aún.');
+    return;
+  }
+  const favItems = FC_DATA.filter(f => fcFavorites.includes(f.term));
+  renderFlashcards(favItems);
+}
+
+function clearAllFCFavorites() {
+  if (!confirm('¿Eliminar todas las flashcards marcadas?')) return;
+  fcFavorites = [];
+  localStorage.setItem('fc_favorites', JSON.stringify(fcFavorites));
+  const base = currentFCFilter === 'all' ? FC_DATA : FC_DATA.filter(f => f.cat === currentFCFilter);
+  renderFlashcards(base);
+}
+
+// ── QUIZ ─────────────────────────────────────────────────────────
+let QUIZ_BANK = [
+  { q:'¿Cuál es la definición de Automatización Industrial?', tag:'Definición',
+    opts:['Tecnología que controla procesos con mínima participación humana','Sistema exclusivo de informática aplicada','Técnica de mantenimiento de maquinaria industrial','Método de contabilidad de producción'],
+    correct:0, feedback:'La automatización industrial busca controlar procesos o sistemas productivos con la mínima participación humana.' },
+  { q:'¿Cuál es el orden correcto de la cadena de control automático?', tag:'Control',
+    opts:['Controlar → Medir → Transmitir → Actuar','Medir → Transmitir → Controlar → Actuar','Actuar → Controlar → Medir → Transmitir','Transmitir → Actuar → Medir → Controlar'],
+    correct:1, feedback:'La cadena es: Medir (sensor) → Transmitir (señal) → Controlar (controlador) → Actuar (actuador).' },
+  { q:'Un sistema de control con relés y contactores sin software pertenece a:', tag:'Tecnologías',
+    opts:['Lógica Programable (PLC)','Control SCADA','Lógica Cableada','Control numérico computarizado'],
+    correct:2, feedback:'Los relés y contactores son componentes físicos propios de la Lógica Cableada.' },
+  { q:'¿Cuál es una ventaja de la Lógica Programable (PLC) sobre la Lógica Cableada?', tag:'Tecnologías',
+    opts:['Menor costo inicial','Mayor flexibilidad y facilidad de reprogramación','No requiere electricidad','Es más resistente en ambientes sencillos'],
+    correct:1, feedback:'El PLC permite reprogramar el sistema sin cambios de hardware, siendo mucho más flexible.' },
+  { q:'¿Cuál objetivo busca evitar que los trabajadores realicen tareas peligrosas?', tag:'Objetivos',
+    opts:['Económico','Calidad','Seguridad','Productividad'],
+    correct:2, feedback:'El objetivo de Seguridad busca proteger la integridad de los trabajadores eliminando tareas peligrosas o repetitivas.' },
+  { q:'Un sistema con entradas, un proceso de transformación y salidas describe:', tag:'Sistemas',
+    opts:['Una cadena de control','Un actuador','La definición de Sistema','La lógica programable'],
+    correct:2, feedback:'Un Sistema es la combinación de componentes que actúan juntos con entradas, proceso y salidas.' },
+  { q:'¿Cuál de estos es un PLC real utilizado en la industria?', tag:'PLC',
+    opts:['Arduino Mega','Siemens S7','Raspberry Pi','Intel Core i9'],
+    correct:1, feedback:'Siemens S7 es uno de los PLCs industriales más utilizados en el mundo.' },
+  { q:'El objetivo de Conectividad en automatización industrial se refiere a:', tag:'Objetivos',
+    opts:['Conectar físicamente los cables del sistema','Obtener información en tiempo real para mejores decisiones','Reducir los costos de producción','Aumentar la velocidad de la red eléctrica'],
+    correct:1, feedback:'Conectividad implica monitoreo en tiempo real del proceso productivo para facilitar la toma de decisiones.' },
+];
+
+// Cargar preguntas personalizadas
+const customQuestions = JSON.parse(localStorage.getItem('custom_questions')||'[]');
+QUIZ_BANK = [...QUIZ_BANK, ...customQuestions];
+
+let quizScore=0, quizTotal=0, usedQs=[], answered=false;
+
+function toggleCreateQuestion() {
+  const panel = document.getElementById('createQuestionPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function addCustomQuestion() {
+  const q = document.getElementById('newQ').value.trim();
+  const tag = document.getElementById('newTag').value.trim() || 'Personalizada';
+  const opts = [
+    document.getElementById('opt0').value.trim(),
+    document.getElementById('opt1').value.trim(),
+    document.getElementById('opt2').value.trim(),
+    document.getElementById('opt3').value.trim()
+  ];
+  const correct = parseInt(document.querySelector('input[name="correctOpt"]:checked').value);
+  const feedback = document.getElementById('newFeedback').value.trim();
+
+  if (!q || opts.some(o => !o) || !feedback) {
+    alert('Por favor completa todos los campos.');
+    return;
+  }
+
+  const newQuestion = { q, tag, opts, correct, feedback, custom: true };
+  customQuestions.push(newQuestion);
+  QUIZ_BANK.push(newQuestion);
+  localStorage.setItem('custom_questions', JSON.stringify(customQuestions));
+
+  // Actualizar contador en navegación
+  document.getElementById('quizCount').textContent = QUIZ_BANK.length;
+
+  // Limpiar formulario
+  document.getElementById('newQ').value = '';
+  document.getElementById('newTag').value = '';
+  document.getElementById('opt0').value = '';
+  document.getElementById('opt1').value = '';
+  document.getElementById('opt2').value = '';
+  document.getElementById('opt3').value = '';
+  document.getElementById('newFeedback').value = '';
+  document.querySelector('input[name="correctOpt"][value="0"]').checked = true;
+
+  // Mostrar mensaje de éxito
+  const msg = document.getElementById('addQuestionSuccess');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2500);
+}
+
+function resetQuiz() {
+  quizScore=0; quizTotal=0; usedQs=[]; answered=false;
+  document.getElementById('quiz-score').textContent='0';
+  document.getElementById('quiz-total').textContent='0';
+  document.getElementById('quiz-container').innerHTML='';
+}
+
+function startQuiz() {
+  if (usedQs.length >= QUIZ_BANK.length) {
+    document.getElementById('quiz-container').innerHTML=`
+      <div class="quiz-card">
+        <div class="quiz-question">// BANCO COMPLETADO. Score final: ${quizScore}/${quizTotal}</div>
+        <button class="btn" onclick="resetQuiz();startQuiz()" style="margin-top:14px">▷ REINICIAR QUIZ</button>
+      </div>`;
+    return;
+  }
+  let idx;
+  do { idx = Math.floor(Math.random()*QUIZ_BANK.length); } while (usedQs.includes(idx));
+  usedQs.push(idx);
+  const q = QUIZ_BANK[idx];
+  answered = false;
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="quiz-card">
+      <div class="quiz-qtag">
+        <span class="qtag-label">${escH(q.tag)}</span>
+        PREGUNTA ${usedQs.length} / ${QUIZ_BANK.length}
+      </div>
+      <div class="quiz-question">${escH(q.q)}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,i)=>`
+          <button class="quiz-option" onclick="answerQuiz(this,${i},${idx})">
+            <span class="opt-letter">${letters[i]}</span>${escH(o)}
+          </button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="q-feedback"></div>
+      <button class="btn next-question-btn" id="q-next" onclick="startQuiz()">▷ SIGUIENTE</button>
+    </div>`;
+}
+
+function answerQuiz(btn, idx, qIdx) {
+  if (answered) return;
+  answered=true; quizTotal++;
+  const isOk = idx === QUIZ_BANK[qIdx].correct;
+  if (isOk) quizScore++;
+  document.getElementById('quiz-score').textContent = quizScore;
+  document.getElementById('quiz-total').textContent  = quizTotal;
+  document.querySelectorAll('.quiz-option').forEach((b,i)=>{
+    b.disabled=true;
+    if (i===QUIZ_BANK[qIdx].correct) b.classList.add('correct');
+    else if (i===idx && !isOk) b.classList.add('incorrect');
+  });
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'quiz-feedback show '+(isOk?'ok':'err');
+  fb.textContent = isOk ? QUIZ_BANK[qIdx].feedback : 'Incorrecto. '+QUIZ_BANK[qIdx].feedback;
+  document.getElementById('q-next').classList.add('show');
+}
+
+// ── NOTES ────────────────────────────────────────────────────────
+let notes = JSON.parse(localStorage.getItem('auto_notes_v2')||'[]');
+let autoTimer;
+
+function renderNotes() {
+  const list = document.getElementById('notes-list');
+  if (!notes.length) {
+    list.innerHTML='<p style="font-size:12px;color:var(--text-dim);padding:12px 0;font-family:\'Share Tech Mono\',monospace">// Sin notas guardadas.</p>';
+    return;
+  }
+  list.innerHTML = notes.map((n,i)=>`
+    <div class="note-item">
+      <div class="note-item-date">// ${n.date}</div>
+      <div class="note-item-text">${escH(n.text)}</div>
+      <button class="note-item-del" onclick="deleteNote(${i})">✕</button>
+    </div>`).join('');
+}
+
+function saveNote() {
+  const text = document.getElementById('noteInput').value.trim();
+  if (!text) return;
+  const d = new Date();
+  notes.unshift({ text, date: d.toLocaleDateString('es-CL',{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) });
+  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
+  renderNotes();
+  document.getElementById('noteInput').value = '';
+  localStorage.removeItem('auto_note_draft');
+  const msg = document.getElementById('noteSavedMsg');
+  msg.style.display='block';
+  setTimeout(()=>msg.style.display='none', 2500);
+}
+
+function autoSaveNote() {
+  clearTimeout(autoTimer);
+  autoTimer = setTimeout(()=>{
+    const t = document.getElementById('noteInput').value.trim();
+    if (t) localStorage.setItem('auto_note_draft', t);
+  }, 800);
+}
+
+function clearNote() {
+  document.getElementById('noteInput').value='';
+  localStorage.removeItem('auto_note_draft');
+}
+
+function deleteNote(i) {
+  notes.splice(i,1);
+  localStorage.setItem('auto_notes_v2', JSON.stringify(notes));
+  renderNotes();
+}
+
+function escH(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── GLOBAL SEARCH ────────────────────────────────────────────────
+document.getElementById('globalSearch').addEventListener('input', function(){
+  const q = this.value.trim();
+  if (!q) return;
+  navigate('glosario', null);
+  document.getElementById('glosarioSearch').value = q;
+  filterGlosario('all', null);
+});
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderNotes();
+const draft = localStorage.getItem('auto_note_draft');
+if (draft) document.getElementById('noteInput').value = draft;
+
+// Actualizar contador de preguntas del quiz
+document.getElementById('quizCount').textContent = QUIZ_BANK.length;
+</script>
+</body>
+</html>
