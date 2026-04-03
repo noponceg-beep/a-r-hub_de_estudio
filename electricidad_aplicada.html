@@ -1780,11 +1780,23 @@ function closeSidebar() {
   document.getElementById('overlay').classList.remove('open');
 }
 
-// Collapsible subjects
+// Collapsible subjects (accordion behavior)
 document.querySelectorAll('.nav-subject-header').forEach(h => {
   h.onclick = function(e) {
     e.stopPropagation();
-    this.parentElement.classList.toggle('open');
+    
+    const parentSubject = this.parentElement;
+    const wasOpen = parentSubject.classList.contains('open');
+    
+    // Cerrar todos los grupos primero
+    document.querySelectorAll('.nav-subject').forEach(subject => {
+      subject.classList.remove('open');
+    });
+    
+    // Si el que clickeamos NO estaba abierto, ábrelo
+    if (!wasOpen) {
+      parentSubject.classList.add('open');
+    }
   };
 });
 
