@@ -701,7 +701,22 @@ body::after {
 
   <div class="sidebar-nav">
     <div class="nav-section-label">UNIDAD I</div>
-    <div class="nav-unit-desc">Fundamentos de la Automatización Industrial</div>
+    <div class="nav-unit-desc">Cableado de tableros de control eléctrico</div>
+    
+    <div class="nav-item" data-page="clase1">
+      <span class="nav-icon">1.</span> Conceptos Básicos
+    </div>
+    <div class="nav-item" data-page="clase2">
+      <span class="nav-icon">2.</span> Componentes del Sistema
+    </div>
+    <div class="nav-item" data-page="clase3">
+      <span class="nav-icon">3.</span> Tablero Electromecánico
+    </div>
+    <div class="nav-item" data-page="clase4">
+      <span class="nav-icon">4.</span> Simbología y Planos
+    </div>
+
+    <div class="nav-section-label">MATERIAL DE APOYO</div>
     <div class="nav-item" data-page="intro">
       <span class="nav-icon">▸</span> Introducción
     </div>
@@ -751,8 +766,8 @@ body::after {
 
   <div id="content">
     
-    <!-- INTRO -->
-    <div class="page active" id="intro">
+    <!-- CLASE 1: CONCEPTOS BÁSICOS -->
+    <div class="page active" id="clase1">
       <div class="page-header">
         <div class="page-title">// INTRODUCCIÓN</div>
         <div class="page-subtitle">Automatización Industrial & Robótica</div>
@@ -997,6 +1012,462 @@ body::after {
       </div>
     </div>
 
+    <!-- CLASE 1: CONCEPTOS BÁSICOS -->
+    <div class="page" id="clase1">
+      <div class="page-header">
+        <div class="page-title">// CLASE 1: CONCEPTOS BÁSICOS</div>
+        <div class="page-subtitle">Automatización tradicional e Industria 4.0</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Concepto de Automatización Industrial</div>
+        <div class="text-content">
+          Corresponde al área técnica que tiene por objetivo <strong>controlar procesos de producción</strong>, empleando para ello conocimientos eléctricos, electrónicos, mecánicos, informáticos y de proyectos. El objetivo es poder integrar equipos automáticos (también llamados "automatismos") para operar procesos industriales con <strong>mínima intervención humana</strong>, mejorando la calidad y la productividad.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Definición de Sistema de Control Automatizado</div>
+        <div class="text-content">
+          Corresponde a la integración de componentes de <strong>medición, control, transmisión, fuerza y comunicación</strong>, con el fin de interactuar con un proceso físico y modificar su comportamiento según los requerimientos del proceso productivo (temperatura, nivel, flujo, peso, etc.). Un sistema automatizado integra elementos electrónicos, eléctricos, mecánicos, hidráulicos, neumáticos e informáticos.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Objetivos de la Automatización Industrial</div>
+        <ul class="list-std">
+          <li><strong>Disminuir costos:</strong> Humanos, energéticos, materiales (El dinero manda).</li>
+          <li><strong>Mejorar la calidad:</strong> Producto acabado uniforme y consistente.</li>
+          <li><strong>Seguridad:</strong> Evitar tareas difíciles, peligrosas, rápidas o repetitivas.</li>
+          <li><strong>Conectividad:</strong> Información en tiempo real para mejores decisiones.</li>
+          <li><strong>Flexibilidad:</strong> Aumentar producción y adaptación al mercado.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Tecnologías para Automatizar</div>
+        <div class="text-content">
+          <strong>Lógica Cableada:</strong> Sistema de control basado en conexiones físicas entre componentes eléctricos (relés, contactores, temporizadores). No utiliza software; el comportamiento se define por el cableado físico. Su modificación requiere cambiar el cableado, por lo que es menos flexible.
+        </div>
+        <div class="text-content">
+          <strong>Lógica Programada (PLC):</strong> Sistema basado en programación mediante controladores electrónicos (PLC - Controladores Lógicos Programables). Permite controlar procesos mediante software, facilitando modificar o ampliar el sistema sin cambiar el cableado físico. Se utiliza en procesos automatizados más complejos.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Control Automático en Lazo Cerrado</div>
+        <div class="text-content">
+          El control automático es el mantenimiento de un <strong>valor deseado</strong> (nivel, temperatura, flujo, etc.), midiendo el valor existente, comparándolo con el valor deseado y utilizando la diferencia para corregir dicha condición. Funciona sin intervención humana y requiere:
+        </div>
+        <ul class="list-std">
+          <li><strong>Equipo de medida:</strong> Capaz de medir una variable física.</li>
+          <li><strong>Transmisor:</strong> Transforma la medición en señal eléctrica proporcional.</li>
+          <li><strong>Indicador:</strong> Pantalla que muestra el valor medido.</li>
+          <li><strong>Unidad de control:</strong> Cerebro del sistema (PLC).</li>
+          <li><strong>Actuador:</strong> Ejecuta acciones físicas.</li>
+        </ul>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Proceso a Controlar</div>
+          <div class="card-text">
+            Es la actividad que se desea controlar. Ejemplo: Controlar el llenado del estanque del sistema de agua.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Variable Controlada</div>
+          <div class="card-text">
+            Variable física específica que deseo mantener en un valor. Ejemplo: NIVEL del estanque.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Variable Manipulada</div>
+          <div class="card-text">
+            Variable sobre la cual se actúa para mantener la variable controlada. Ejemplo: FLUJO de entrada mediante bomba.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Set Point (SP)</div>
+          <div class="card-text">
+            Valor deseado donde se quiere mantener la variable controlada. Ejemplo: 500 litros (capacidad del estanque).
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Industria 4.0</div>
+        <div class="text-content">
+          La <strong>Industria 4.0</strong> o Cuarta Revolución Industrial es la transformación digital de los procesos industriales mediante la integración de tecnologías avanzadas para crear fábricas y sistemas más automatizados y conectados.
+        </div>
+        <div class="text-content">
+          <strong>Características principales:</strong>
+        </div>
+        <ul class="list-std">
+          <li><strong>Internet de las Cosas (IoT):</strong> Máquinas conectadas compartiendo datos en tiempo real.</li>
+          <li><strong>Big Data:</strong> Uso de grandes volúmenes de datos para optimizar procesos.</li>
+          <li><strong>Inteligencia Artificial (IA):</strong> Sistemas que aprenden y mejoran automáticamente.</li>
+          <li><strong>Robótica Avanzada:</strong> Robots autónomos y colaborativos (cobots).</li>
+          <li><strong>Impresión 3D:</strong> Fabricación aditiva para prototipos rápidos.</li>
+          <li><strong>Ciberseguridad:</strong> Protección de sistemas interconectados.</li>
+          <li><strong>Computación en la Nube:</strong> Acceso remoto a datos y software.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CLASE 2: COMPONENTES DEL SISTEMA -->
+    <div class="page" id="clase2">
+      <div class="page-header">
+        <div class="page-title">// CLASE 2: COMPONENTES DEL SISTEMA</div>
+        <div class="page-subtitle">Elementos de un sistema de automatización industrial</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Elementos que Conforman un Lazo de Control</div>
+        <div class="text-content">
+          Los sistemas de control de procesos productivos son <strong>"Sistemas de lazo cerrado"</strong>, ya que buscan automatizar el proceso, mantenerlo dentro de los parámetros exactos y que el sistema se autorregule.
+        </div>
+        <ul class="list-std">
+          <li><strong>Controlador:</strong> Generalmente un PLC (equipo electrónico programable).</li>
+          <li><strong>Conversores:</strong> Conversores de corriente a presión para válvulas.</li>
+          <li><strong>Actuadores:</strong> Ejecutan las acciones en el proceso productivo.</li>
+          <li><strong>Transmisor:</strong> Acondicionan las señales eléctricas a un rango estándar.</li>
+          <li><strong>Sensor:</strong> Mide la variable del proceso y genera señal eléctrica.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Sensores de Medición Electrónicos</div>
+        <div class="text-content">
+          Están en contacto con la variable física del proceso y utilizan o absorben energía del medio controlado para dar una indicación en respuesta a la variación de la variable controlada. El efecto producido puede ser un cambio de <strong>presión, fuerza, posición o medida eléctrica</strong>.
+        </div>
+        <div class="text-content">
+          <strong>Ejemplo:</strong> En los sensores de temperatura tipo termopar se presenta una variación de voltaje de salida proporcional a la temperatura medida.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Actuadores</div>
+        <div class="text-content">
+          El elemento final de control va montado dentro del proceso y recibe la señal del controlador. El actuador <strong>EJECUTA la acción de control</strong>, logrando regular y acercarse al valor deseado (set point).
+        </div>
+        <div class="text-content">
+          <strong>Tipos de actuadores:</strong> Motores eléctricos, bombas, calefactores, válvulas reguladoras de flujo, válvulas solenoides, variadores de frecuencia, pistones neumáticos o hidráulicos.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Controladores Industriales</div>
+        <div class="text-content">
+          Son equipos electrónicos avanzados con capacidad de ser <strong>"Programables"</strong>. Esto permite crear o modificar una rutina según las necesidades del proceso. Posee una entrada donde ingresa la medición de la variable controlada (enviada por transmisores), la compara con el set point y ejerce una acción correctiva según la desviación.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Estructura de Funcionamiento del PLC</div>
+        <div class="text-content">
+          El PLC necesita elementos externos para interactuar con el proceso. Solo recibe y envía señales para mantener el proceso regulado al SET POINT (SP).
+        </div>
+        <div class="text-content">
+          <strong>INPUT:</strong> Los sensores que aportan información del sistema se conectan a las ENTRADAS (I en Siemens, X en Delta).
+        </div>
+        <div class="text-content">
+          <strong>OUTPUT:</strong> Los elementos que ejecutan acciones se conectan a las SALIDAS (O en Siemens, Y en Delta).
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Elementos de Entrada Digital</div>
+          <div class="card-text">
+            Envían señales ON-OFF (TODO-NADA). Solo dos señales: ON=24Vdc (1 lógico) y OFF=0Vdc (0 lógico). Ejemplo: Contacto NA cerrado = 1 lógico.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Elementos de Entrada Analógica</div>
+          <div class="card-text">
+            Envían señales CONTINUAS en el tiempo dentro de un rango estandarizado (0-10V o 4-20mA). La señal varía según la variable censada.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Elementos de Salida Digital</div>
+          <div class="card-text">
+            Reciben señales ON-OFF del PLC. Cuando activan, el relé conmuta cerrando contactos enviando 24Vdc o 220Vac al actuador.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Elementos de Salida Analógica</div>
+          <div class="card-text">
+            Reciben señales CONTINUAS del PLC (4-20mA, 0-10V) variando proporcionalmente la acción de control. El PLC solo envía señales de baja potencia.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Tratamiento de Señales Analógicas</div>
+        <div class="text-content">
+          Las señales analógicas (continuas) son estandarizadas por el transmisor a 4-20mA típicamente y enviadas al PLC, donde se convierten internamente a valores de <strong>CUENTAS</strong>. Por ejemplo, un rango de 4-20mA se convierte a 0-26748 cuentas (según resolución). Esto dependerá del fabricante del PLC.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASE 3: TABLERO ELECTROMECÁNICO -->
+    <div class="page" id="clase3">
+      <div class="page-header">
+        <div class="page-title">// CLASE 3: TABLERO ELECTROMECÁNICO</div>
+        <div class="page-subtitle">Componentes de control de motores trifásicos</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Alimentación: Red Trifásica</div>
+        <div class="text-content">
+          Los motores eléctricos industriales son generalmente <strong>motores trifásicos</strong>. Un sistema trifásico está formado por tres corrientes alternas monofásicas de igual frecuencia y amplitud, con una diferencia de fase de 120° entre ellas. Las fases se designan como R, S y T.
+        </div>
+        <div class="text-content">
+          <strong>Voltaje Fase-Neutro:</strong> 220V AC<br>
+          <strong>Voltaje Fase-Fase:</strong> 380V AC
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Motor de Inducción Trifásico</div>
+        <div class="text-content">
+          Los motores asíncronos o de inducción son motores de corriente alterna en los que la corriente eléctrica del rotor necesaria para producir torsión es <strong>inducida por inducción electromagnética</strong> del campo magnético del estator (no usa carbones o escobillas).
+        </div>
+        <div class="text-content">
+          <strong>Historia:</strong> El primer prototipo fue desarrollado por Nikola Tesla y presentado en 1888.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Conexiones Estrella y Triángulo</div>
+        <div class="text-content">
+          Un motor eléctrico tiene tres bobinados en el estator. Cada bobinado tiene dos extremos:
+        </div>
+        <ul class="list-std">
+          <li><strong>Primer bobinado:</strong> U-X (U1-U2)</li>
+          <li><strong>Segundo bobinado:</strong> V-Y (V1-V2)</li>
+          <li><strong>Tercer bobinado:</strong> W-Z (W1-W2)</li>
+        </ul>
+        <div class="text-content">
+          Las bobinas pueden configurarse en <strong>estrella</strong> (arranque suave, menor corriente) o <strong>triángulo</strong> (mayor potencia, mayor corriente).
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Contactor Trifásico</div>
+        <div class="text-content">
+          Mecanismo cuya misión es cerrar contactos para permitir el paso de corriente cuando la bobina (A1-A2) recibe corriente eléctrica, comportándose como electroimán.
+        </div>
+        <ul class="list-std">
+          <li><strong>Contactos principales (L-T):</strong> Abren o cierran circuito de fuerza que alimenta al motor.</li>
+          <li><strong>Contactos auxiliares (13-14, 53-54):</strong> Para circuito de mando, luces y enclavamientos. Soportan menos intensidad.</li>
+          <li><strong>Bobina (A1-A2):</strong> Puede ser alimentada en continua o alterna (12V, 24V, 220V).</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Módulo de Contactos Auxiliares</div>
+        <div class="text-content">
+          Se acopla al contactor para proporcionar más contactos NO y NC. Se monta sobre el contactor con anclaje mecánico (no tiene bobina propia, el enclavamiento es mecánico).
+        </div>
+        <div class="text-content">
+          <strong>Contactos NO:</strong> Segundo número 3 y 4 (Ejemplo: 13-14)<br>
+          <strong>Contactos NC:</strong> Segundo número 1 y 2 (Ejemplo: 11-12)
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Relé de Sobrecarga (Relé Térmico)</div>
+        <div class="text-content">
+          Elemento de protección del motor que desconecta el circuito cuando la <strong>intensidad de corriente</strong> supera la nominal del motor (debe calibrarse previamente). Evita daños por sobrecorriente, fallo de fase y diferencias de carga excesivas.
+        </div>
+        <div class="text-content">
+          <strong>Contactos auxiliares:</strong> 95-96 y 97-98 cambian de estado al detectar sobrecorriente, apagando el motor y encendiendo luz de advertencia.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Disyuntor Magnetotérmico (Automático)</div>
+        <div class="text-content">
+          Dispositivo que interrumpe la corriente eléctrica cuando la intensidad sobrepasa un valor determinado o se produce un cortocircuito. Protege a todo el circuito y equipos conectados.
+        </div>
+        <div class="text-content">
+          <strong>Cortocircuito:</strong> Camino sin resistencia que genera arco eléctrico.<br>
+          <strong>Sobrecarga:</strong> Intensidad consumida supera la calibrada (demasiadas cargas).
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Protección Diferencial</div>
+        <div class="text-content">
+          Dispositivo electromagnético que interrumpe inmediatamente la corriente cuando detecta una <strong>fuga de corriente</strong>, protegiendo principalmente a las personas de descargas eléctricas. Mide corriente de entrada y salida; si hay diferencia, corta el suministro.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Puesta a Tierra</div>
+        <div class="text-content">
+          Sistema de protección que conecta partes metálicas de la instalación eléctrica a tierra mediante conductor y barra/malla de cobre. Crea un camino de baja resistencia para corrientes de fuga, protegiendo personas y equipos de daños, choques eléctricos e incendios.
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Pulsadores y Selectores</div>
+          <div class="card-text">
+            <strong>Pulsador rojo:</strong> Detener máquina (no queda enclavado).<br>
+            <strong>Pulsador verde:</strong> Activar máquina (no queda enclavado).<br>
+            <strong>Pulsador amarillo:</strong> Cambios de giro.<br>
+            <strong>Parada de emergencia:</strong> Detiene todo (con enclavamiento).
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Luces Piloto</div>
+          <div class="card-text">
+            <strong>Rojo:</strong> Máquina detenida o falla.<br>
+            <strong>Verde:</strong> Funcionamiento normal.<br>
+            <strong>Azul:</strong> Tensión de línea presente.<br>
+            <strong>Amarillo:</strong> Funcionamiento anormal o precaución.
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Sensores Industriales</div>
+        <div class="text-content">
+          <strong>Límites de carrera:</strong> Interruptor de posición por contacto físico. Tiene contactos NC (1-2) y NA (3-4). Desventajas: baja velocidad, desgaste mecánico, rebotes.
+        </div>
+        <div class="text-content">
+          <strong>Sensores inductivos:</strong> Detectan metales hasta 60mm sin contacto ni desgaste. Alta frecuencia de conmutación, resistentes a vibraciones, polvo y humedad.
+        </div>
+        <div class="text-content">
+          <strong>Sensores capacitivos:</strong> Detectan materiales conductores y no conductores (vidrio, cerámica, plástico, madera, líquidos). Se usan para identificación, conteo y control de nivel.
+        </div>
+        <div class="text-content">
+          <strong>Presostatos:</strong> Abren o cierran contactos según presión de aire, aceite o agua. Se usan en grupos de presión de agua.
+        </div>
+        <div class="text-content">
+          <strong>Sensores fotoeléctricos:</strong> Responden a cambios en intensidad de luz. Emisor y receptor; cuando el haz se interrumpe, el sensor conmuta. Para detección, clasificación y posicionado de objetos.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Grados de Protección IP</div>
+        <div class="text-content">
+          Clasificación que indica la resistencia de un equipo al polvo y agua según norma IEC.
+        </div>
+        <div class="text-content">
+          <strong>Primer dígito:</strong> Protección contra sólidos (1-6).<br>
+          <strong>Segundo dígito:</strong> Protección contra líquidos (1-8).<br>
+          Mayor número = mayor protección.
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASE 4: SIMBOLOGÍA Y PLANOS -->
+    <div class="page" id="clase4">
+      <div class="page-header">
+        <div class="page-title">// CLASE 4: SIMBOLOGÍA Y PLANOS</div>
+        <div class="page-subtitle">Interpretación de planos de control con relés</div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Simbología Normalizada</div>
+        <div class="text-content">
+          Para representar sistemas de control de motores eléctricos trifásicos existen 3 normas principales que entregan información clara y sencilla para diseño e implementación:
+        </div>
+        <ul class="list-std">
+          <li><strong>Norma IEC (Europea):</strong> Usada internacionalmente.</li>
+          <li><strong>Norma NEMA (Americana):</strong> Común en América.</li>
+          <li><strong>Norma JIS (Japonesa):</strong> Usada en Asia.</li>
+        </ul>
+        <div class="text-content">
+          Esta normalización crea un sistema de comunicación gráfico a nivel nacional e internacional.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Elementos de un Sistema de Control de Motores</div>
+        <div class="text-content">
+          Los sistemas de control se dividen en dos partes principales:
+        </div>
+        <div class="text-content">
+          <strong>Circuito de Fuerza:</strong> Línea que alimenta al motor trifásico y controla la potencia. Se compone de alimentación trifásica 380V (R, S, T), disyuntor, contactor, relé térmico y motor.
+        </div>
+        <div class="text-content">
+          <strong>Circuito de Control:</strong> Trabaja con elementos de baja potencia (220V o 24V), seguros para manipulación. Compuesto por contactos de mando: pulsadores, paradas de emergencia, sensores y contactos auxiliares.
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Consideraciones de los Equipos</div>
+        <div class="text-content">
+          <strong>Contactor:</strong> Posee 3 contactos de fuerza + contactos auxiliares + bobina. Estos actúan en el circuito de control identificados con el número del contactor (KM1, KM2, KM3).
+        </div>
+        <div class="text-content">
+          <strong>Disyuntor:</strong> Opera cuando hay exceso de corriente o cortocircuito, cortando energía en las líneas del circuito de fuerza. No participa en control con contactos auxiliares.
+        </div>
+        <div class="text-content">
+          <strong>Relé térmico:</strong> No opera directamente en fuerza, sino en control mediante contactos 95-96 (corta energía a bobina del contactor) y 97-98 (enciende luz amarilla de falla).
+        </div>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Circuito de Fuerza - Partida Directa</div>
+        <ul class="list-std">
+          <li><strong>Líneas trifásicas (R, S, T):</strong> Alimentación 380V entre fases, 220V fase-neutro.</li>
+          <li><strong>Disyuntor magnetotérmico:</strong> Protege contra sobrecorrientes y cortocircuito (obligatorio).</li>
+          <li><strong>Contactor:</strong> Abre o cierra contactos de fuerza permitiendo corriente al motor. Comandado por bobina A1-A2 en circuito de control.</li>
+          <li><strong>Relé térmico:</strong> Protege al motor de excesos de corriente mediante contactos 95-96 y 97-98 en control.</li>
+          <li><strong>Motor trifásico:</strong> Carga del circuito. Motor de inducción con 3 bobinas configuradas en estrella o triángulo.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Circuito de Control - Partida Directa</div>
+        <ul class="list-std">
+          <li><strong>Línea de alimentación:</strong> L1 y neutro, entrega 220V a bobina del contactor y luces piloto (a veces 24V).</li>
+          <li><strong>Contacto 95-96 (relé térmico):</strong> Se abre en exceso de corriente cortando energía al contactor.</li>
+          <li><strong>Contacto 97-98 (relé térmico):</strong> Se cierra encendiendo luz amarilla de falla.</li>
+          <li><strong>Pulsador rojo (21-22):</strong> Contacto cerrado; al pulsarlo corta energía a bobina deteniendo motor.</li>
+          <li><strong>Pulsador verde (13-14):</strong> Contacto abierto; al pulsarlo cierra permitiendo paso de corriente a bobina KM1.</li>
+          <li><strong>Bobina del contactor (A1-A2):</strong> Al energizarse, cierra contactos de fuerza arrancando motor.</li>
+          <li><strong>Contacto auxiliar KM1:</strong> Mantiene energizada la bobina (enclavamiento) cuando motor arranca.</li>
+          <li><strong>Luz piloto verde:</strong> Indica motor funcionando.</li>
+          <li><strong>Luz piloto roja:</strong> Indica motor detenido.</li>
+          <li><strong>Luz piloto amarilla:</strong> Indica falla térmica.</li>
+        </ul>
+      </div>
+
+      <div class="content-block">
+        <div class="block-title">Aplicaciones Básicas de Control</div>
+        <div class="text-content">
+          <strong>1. Partida directa mediante botonera START/STOP:</strong> Control básico con pulsador de partida (S2) y detención (S1). Protección con fusibles (Q1) y relé térmico (F1). Luces pilotos verde (arranque) y amarilla (falla).
+        </div>
+        <div class="text-content">
+          <strong>2. Partida con detención temporizada:</strong> Similar al anterior pero con temporizador KT1. Al energizarse cuenta hasta valor calibrado; al alcanzarlo abre contacto 55-56 desconectando motor automáticamente.
+        </div>
+        <div class="text-content">
+          <strong>3. Inversión de giro mediante pulsadores:</strong> Con un pulsador gira horario, con otro gira antihorario. IMPORTANTE: motor debe estar completamente detenido antes de cambiar giro para evitar daños.
+        </div>
+        <div class="text-content">
+          <strong>4. Arranque estrella-triángulo:</strong> Sistema complejo con 3 contactores. KM1 da partida, KM3 configura en estrella (arranque suave), luego de 10 segundos KM3 se desactiva y KM2 activa pasando a triángulo (plena potencia).
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>Nota importante:</strong> Se solicita a los estudiantes dedicar tiempo necesario a comprender el funcionamiento de cada circuito, ya que cada uno tiene una lógica de trabajo distinta y son la base para análisis y diseños futuros.
+      </div>
+    </div>
+
     <!-- GLOSARIO -->
     <div class="page" id="glosario">
       <div class="page-header">
@@ -1136,8 +1607,10 @@ body::after {
 
 <script>
 // ── NAVIGATION ───────────────────────────────────────────────────
-const pages = ['intro','conceptos','componentes','tecnologias','glosario','flashcards','quiz','notas'];
+const pages = ['clase1','clase2','clase3','clase4','intro','conceptos','componentes','tecnologias','glosario','flashcards','quiz','notas'];
 const pageNames = {
+  clase1:'CLASE 1 // CONCEPTOS BÁSICOS', clase2:'CLASE 2 // COMPONENTES DEL SISTEMA',
+  clase3:'CLASE 3 // TABLERO ELECTROMECÁNICO', clase4:'CLASE 4 // SIMBOLOGÍA Y PLANOS',
   intro:'INTRODUCCIÓN', conceptos:'CONCEPTOS', componentes:'COMPONENTES',
   tecnologias:'TECNOLOGÍAS', glosario:'GLOSARIO', flashcards:'FLASHCARDS',
   quiz:'QUIZ', notas:'MIS NOTAS'
