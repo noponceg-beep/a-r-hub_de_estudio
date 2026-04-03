@@ -163,8 +163,83 @@ tr:last-child td{border-bottom:none;}
 .glos-row .fav-marker{position:absolute;top:0.8rem;right:0.8rem;}
 
 /* MULTÍMETRO INTERACTIVO */
-.medicion-panel{display:none;}
-.medicion-panel.active{display:block;animation:fadeUp 0.3s ease;}
+.mm-mode{display:none;}
+.mm-mode.active{display:block;animation:fadeUp 0.3s ease;}
+.sim-stats,.quiz-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.simulator-container{display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;margin-top:1.5rem;}
+@media(max-width:900px){.simulator-container{grid-template-columns:1fr;}}
+
+/* Escenario */
+.sim-scenario{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;display:flex;flex-direction:column;}
+.scenario-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border);}
+.scenario-title{font-size:0.65rem;letter-spacing:3px;color:var(--cyan);font-weight:700;}
+.scenario-number{font-family:var(--mono2);color:var(--amber);font-size:0.85rem;}
+.scenario-content{flex:1;}
+.scenario-icon{font-size:3rem;text-align:center;margin:1rem 0;}
+.scenario-content h3{color:var(--green);font-size:1.1rem;margin-bottom:0.8rem;text-align:center;}
+.scenario-content p{color:var(--text);line-height:1.7;margin-bottom:1rem;}
+.scenario-hints{background:rgba(0,200,255,0.05);border-left:3px solid var(--cyan);padding:0.8rem;margin:1rem 0;}
+.hint-item{font-size:0.78rem;color:var(--text);margin:0.4rem 0;}
+.sim-check-btn,.sim-next-btn{width:100%;padding:0.8rem;background:var(--cyan);color:#000;border:none;font-family:var(--mono);font-size:0.75rem;letter-spacing:2px;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s;}
+.sim-check-btn:hover{background:#00d4ff;transform:translateY(-1px);}
+.sim-next-btn{background:var(--green);}
+.sim-next-btn:hover{background:#00ffaa;}
+.sim-feedback{margin-top:1rem;padding:1rem;font-size:0.85rem;line-height:1.6;border-left:3px solid;display:none;}
+.sim-feedback.show{display:block;}
+.sim-feedback.correct{border-color:var(--green);background:rgba(0,255,157,0.08);color:var(--green);}
+.sim-feedback.wrong{border-color:var(--red);background:rgba(255,64,96,0.08);color:#ffb0bc;}
+
+/* Multímetro simulado */
+.sim-multimeter{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;}
+.multimeter-body{background:linear-gradient(145deg,#1a1a1a,#0a0a0a);border:3px solid #333;border-radius:8px;padding:2rem 1.5rem;box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);}
+.mm-display{background:#0a0a0a;border:2px solid #222;padding:1rem;margin-bottom:1.5rem;border-radius:4px;}
+.mm-screen{background:#1a2a1a;padding:1rem;text-align:right;border:1px solid #0f0;}
+.mm-reading{font-family:var(--mono2);font-size:2.5rem;color:var(--green);text-shadow:0 0 8px rgba(0,255,0,0.6);letter-spacing:0.1em;}
+.mm-unit{font-family:var(--mono);font-size:1rem;color:var(--green);margin-top:0.3rem;}
+
+/* Selector */
+.mm-selector-area{margin-bottom:1.5rem;}
+.mm-selector-label{font-size:0.6rem;letter-spacing:2px;color:var(--cyan);margin-bottom:0.8rem;text-align:center;}
+.selector-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:0.5rem;}
+.selector-btn{background:linear-gradient(145deg,#2a2a2a,#1a1a1a);border:2px solid #333;color:var(--dim);padding:0.6rem 0.3rem;font-family:var(--mono);font-size:0.75rem;cursor:pointer;transition:all 0.2s;border-radius:4px;}
+.selector-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.selector-btn.active{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700;box-shadow:0 0 12px rgba(0,200,255,0.5);}
+
+/* Terminales */
+.mm-terminals{margin-bottom:1.5rem;}
+.terminal-group{display:flex;justify-content:space-around;gap:1rem;}
+.terminal{display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+.terminal.black .terminal-label{background:#000;color:#fff;padding:0.3rem 0.8rem;border-radius:3px;font-size:0.65rem;font-weight:700;border:1px solid #333;}
+.terminal.red .terminal-label{background:#c00;color:#fff;padding:0.3rem 0.8rem;border-radius:3px;font-size:0.65rem;font-weight:700;border:1px solid #800;}
+.cable-indicator{width:20px;height:20px;border-radius:50%;background:#222;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.3s;}
+.cable-indicator.connected-black{background:#000;border-color:#000;box-shadow:0 0 8px #000;}
+.cable-indicator.connected-red{background:#f00;border-color:#f00;box-shadow:0 0 8px #f00;}
+
+/* Controles de cables */
+.cable-controls{background:rgba(0,0,0,0.3);padding:1rem;border-radius:4px;border:1px solid #333;}
+.cable-control-title{font-size:0.6rem;letter-spacing:2px;color:var(--cyan);margin-bottom:0.8rem;text-align:center;}
+.cable-buttons{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.cable-btn-group{display:flex;flex-direction:column;gap:0.3rem;}
+.cable-label{font-size:0.65rem;color:var(--text);margin-bottom:0.3rem;font-weight:700;text-align:center;}
+.cable-btn{background:var(--panel);border:1px solid var(--border2);color:var(--text);padding:0.4rem 0.6rem;font-size:0.7rem;cursor:pointer;transition:all 0.2s;font-family:var(--mono);}
+.cable-btn:hover{background:rgba(0,200,255,0.1);border-color:var(--cyan);}
+.cable-btn.active{background:var(--green);color:#000;border-color:var(--green);}
+.cable-btn.disconn{background:rgba(255,64,96,0.1);border-color:var(--red);color:var(--red);}
+.cable-btn.disconn:hover{background:rgba(255,64,96,0.2);}
+
+/* Quiz */
+.quiz-question-panel{background:var(--panel2);border:1px solid var(--border2);padding:2rem;margin-top:1.5rem;}
+.quiz-scenario{font-size:1.1rem;color:var(--text);margin-bottom:1.5rem;line-height:1.7;}
+.quiz-options{display:grid;gap:1rem;margin-top:1.5rem;}
+.quiz-option-btn{background:var(--panel);border:2px solid var(--border2);color:var(--text);padding:1rem 1.5rem;text-align:left;font-size:0.85rem;cursor:pointer;transition:all 0.2s;line-height:1.6;}
+.quiz-option-btn:hover{border-color:var(--cyan);background:rgba(0,200,255,0.05);}
+.quiz-option-btn.correct{border-color:var(--green);background:rgba(0,255,157,0.1);color:var(--green);}
+.quiz-option-btn.wrong{border-color:var(--red);background:rgba(255,64,96,0.1);color:var(--red);}
+.quiz-option-btn.disabled{pointer-events:none;opacity:0.6;}
+.quiz-feedback-box{margin-top:1.5rem;padding:1rem;border-left:3px solid;display:none;}
+.quiz-feedback-box.show{display:block;}
+.quiz-feedback-box.correct{border-color:var(--green);background:rgba(0,255,157,0.08);color:var(--green);}
+.quiz-feedback-box.wrong{border-color:var(--red);background:rgba(255,64,96,0.08);color:#ffb0bc;}
 .mm-setup{background:var(--panel2);border:1px solid var(--border2);padding:1.2rem;margin:1rem 0;}
 .mm-step{display:flex;gap:1rem;margin-bottom:1.2rem;align-items:flex-start;}
 .mm-step:last-child{margin-bottom:0;}
@@ -187,6 +262,114 @@ tr:last-child td{border-bottom:none;}
 .error-card strong{display:block;color:var(--text);margin-bottom:0.4rem;font-size:0.85rem;}
 .error-card p{font-size:0.78rem;color:var(--dim);line-height:1.6;margin-bottom:0.6rem;}
 .error-solution{font-size:0.75rem;color:var(--green);background:rgba(0,255,157,0.05);padding:0.5rem;border-left:2px solid var(--green);}
+
+/* LABORATORIO VIRTUAL */
+.resistor-tool-panel{display:none;}
+.resistor-tool-panel.active{display:block;animation:fadeUp 0.3s ease;}
+.formglos-panel{display:none;}
+.formglos-panel.active{display:block;animation:fadeUp 0.3s ease;}
+.lab-panel{display:none;}
+.lab-panel.active{display:block;animation:fadeUp 0.3s ease;}
+.lab-objective{background:rgba(0,200,255,0.08);border-left:4px solid var(--cyan);padding:1rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1rem;}
+.obj-icon{font-size:2rem;}
+.obj-text{flex:1;font-size:0.85rem;line-height:1.7;}
+.lab-circuit-area{display:grid;grid-template-columns:380px 1fr;gap:2rem;margin-bottom:2rem;}
+@media(max-width:900px){.lab-circuit-area{grid-template-columns:1fr;}}
+.lab-controls{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;}
+.lab-section-title{font-size:0.65rem;letter-spacing:3px;color:var(--cyan);font-weight:700;margin-bottom:1.5rem;}
+.lab-control-group{margin-bottom:1.5rem;}
+.lab-control-group label{display:block;font-size:0.7rem;letter-spacing:1px;color:var(--text);margin-bottom:0.5rem;}
+.lab-control-group input[type="range"]{width:100%;height:6px;background:var(--panel);border-radius:3px;outline:none;}
+.lab-control-group input[type="range"]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;background:var(--cyan);border-radius:50%;cursor:pointer;}
+.lab-control-group input[type="number"]{width:100%;background:var(--panel);border:2px solid var(--border2);color:var(--text);padding:0.6rem;font-family:var(--mono2);font-size:1rem;}
+.lab-control-group select{width:100%;background:var(--panel);border:2px solid var(--border2);color:var(--text);padding:0.6rem;font-family:var(--mono);}
+.lab-value{text-align:center;font-family:var(--mono2);color:var(--green);font-size:1.1rem;margin-top:0.5rem;}
+.lab-switch-group{display:flex;gap:0.5rem;}
+.lab-switch-btn{flex:1;padding:0.6rem;background:var(--panel);border:2px solid var(--border2);color:var(--dim);cursor:pointer;font-family:var(--mono);font-size:0.7rem;letter-spacing:1px;transition:all 0.2s;}
+.lab-switch-btn:hover{border-color:var(--cyan);}
+.lab-switch-btn.active{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700;}
+.lab-measure-btn{width:100%;padding:0.8rem;background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:0.75rem;letter-spacing:2px;font-weight:700;cursor:pointer;margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s;}
+.lab-measure-btn:hover{background:#00ffaa;transform:translateY(-1px);}
+.lab-measure-btn svg{width:18px;height:18px;fill:#000;}
+.lab-display{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;min-height:400px;}
+.lab-circuit-diagram{min-height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;}
+.lab-results{background:var(--panel);border:1px solid var(--border);padding:1.5rem;}
+.lab-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-top:1rem;}
+.lab-result-item{text-align:center;padding:1rem;background:var(--panel2);border:1px solid var(--border2);}
+.lab-result-label{font-size:0.65rem;letter-spacing:1px;color:var(--dim);margin-bottom:0.5rem;}
+.lab-result-value{font-size:1.3rem;font-family:var(--mono2);color:var(--green);font-weight:700;}
+.lab-theory{background:rgba(0,255,157,0.05);border:1px solid rgba(0,255,157,0.15);padding:1.5rem;}
+.lab-theory h3{color:var(--green);font-size:1rem;margin-bottom:1rem;}
+.theory-points{display:flex;flex-direction:column;gap:0.8rem;}
+.theory-point{font-size:0.8rem;color:var(--text);line-height:1.7;padding-left:1.5rem;position:relative;}
+.theory-point::before{content:'→';position:absolute;left:0;color:var(--cyan);}
+
+/* LED Calculator */
+.led-calc-result{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;}
+@media(max-width:700px){.led-calc-result{grid-template-columns:1fr;}}
+.led-visual{display:flex;align-items:center;justify-content:center;min-height:200px;}
+.led-calc-data{display:flex;flex-direction:column;gap:1.5rem;}
+.calc-formula{background:var(--panel);border:1px solid var(--border);padding:1rem;}
+.formula-title{font-size:0.65rem;letter-spacing:2px;color:var(--cyan);margin-bottom:0.8rem;}
+.formula-step{font-family:var(--mono2);font-size:0.85rem;color:var(--text);margin:0.4rem 0;}
+.formula-result{font-family:var(--mono2);font-size:1.1rem;color:var(--green);margin-top:0.8rem;font-weight:700;}
+.calc-recommendation{background:rgba(0,255,157,0.08);border:2px solid var(--green);padding:1rem;text-align:center;}
+.rec-title{font-size:0.65rem;letter-spacing:2px;color:var(--green);margin-bottom:0.5rem;}
+.rec-value{font-size:1.5rem;font-family:var(--mono2);color:var(--green);font-weight:700;}
+.rec-note{font-size:0.7rem;color:var(--dim);margin-top:0.3rem;}
+.calc-power{background:var(--panel);border:1px solid var(--border);padding:0.8rem;text-align:center;}
+.power-label{font-size:0.7rem;color:var(--text);}
+.power-value{font-size:1rem;font-family:var(--mono2);color:var(--amber);margin:0.3rem 0;}
+.power-rec{font-size:0.75rem;color:var(--dim);}
+
+/* Oscilador */
+.oscilador-info{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+@media(max-width:800px){.oscilador-info{grid-template-columns:1fr;}}
+.osc-diagram{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;display:flex;align-items:center;justify-content:center;}
+.osc-formula-box{background:rgba(0,255,157,0.05);border:1px solid rgba(0,255,157,0.15);padding:1.5rem;display:flex;flex-direction:column;justify-content:center;}
+.osc-formula-title{font-size:0.7rem;letter-spacing:2px;color:var(--green);margin-bottom:1rem;text-align:center;}
+.osc-formula{font-family:var(--mono2);font-size:1.1rem;color:var(--green);text-align:center;margin-bottom:1rem;}
+.osc-note{font-size:0.75rem;color:var(--text);line-height:1.7;text-align:center;}
+.osc-calculator{background:var(--panel2);border:1px solid var(--border2);padding:2rem;}
+.osc-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.5rem;margin-bottom:1.5rem;}
+.osc-input-group{display:flex;flex-direction:column;}
+.osc-input-group label{font-size:0.7rem;letter-spacing:1px;color:var(--cyan);margin-bottom:0.5rem;}
+.osc-input-group select{background:var(--panel);border:2px solid var(--border2);color:var(--text);padding:0.6rem;font-family:var(--mono);}
+.osc-results{background:var(--panel);border:1px solid var(--border);padding:1.5rem;margin-top:1.5rem;}
+.osc-result-item{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--border);}
+.osc-result-item:last-child{border:none;}
+.osc-result-label{font-size:0.8rem;color:var(--text);}
+.osc-result-value{font-size:1.3rem;font-family:var(--mono2);color:var(--green);font-weight:700;}
+.osc-visualization{margin-top:1.5rem;min-height:80px;background:var(--panel2);border:1px solid var(--border2);padding:1rem;display:flex;align-items:center;justify-content:center;}
+
+/* COMPONENTES SEMICONDUCTORES */
+.component-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin:1.5rem 0;}
+.component-card{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;display:flex;flex-direction:column;align-items:center;transition:all 0.2s;}
+.component-card:hover{border-color:var(--cyan);background:rgba(0,200,255,0.05);}
+.component-symbol{width:100px;height:60px;margin-bottom:1rem;}
+.component-info{text-align:center;}
+.component-name{font-size:0.65rem;letter-spacing:2px;color:var(--cyan);font-weight:700;margin-bottom:0.5rem;}
+.component-desc{font-size:0.78rem;color:var(--text);line-height:1.6;}
+.polar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:1rem;}
+.polar-card{background:var(--panel2);border:2px solid var(--border2);padding:1.5rem;}
+.polar-card.ok{border-color:var(--green);}
+.polar-card.bad{border-color:var(--red);}
+.polar-title{font-size:0.75rem;letter-spacing:2px;font-weight:700;margin-bottom:1rem;text-align:center;}
+.polar-card.ok .polar-title{color:var(--green);}
+.polar-card.bad .polar-title{color:var(--red);}
+.polar-circuit{height:80px;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;}
+.polar-desc{font-size:0.78rem;color:var(--text);text-align:center;line-height:1.7;}
+.led-display{width:100px;height:80px;margin-bottom:0.5rem;}
+.transistor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:1.5rem 0;}
+.transistor-card{background:var(--panel2);border:1px solid var(--border2);padding:1.5rem;text-align:center;}
+.trans-type{font-size:0.7rem;letter-spacing:2px;color:var(--amber);font-weight:700;margin-bottom:1rem;}
+.trans-desc{font-size:0.75rem;color:var(--text);line-height:1.7;margin-top:1rem;}
+.component-list-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem;}
+.comp-list-card{background:var(--panel2);border:1px solid var(--border2);padding:1rem;transition:all 0.2s;}
+.comp-list-card:hover{border-color:var(--cyan);background:rgba(0,200,255,0.05);transform:translateY(-2px);}
+.comp-icon{font-size:2rem;margin-bottom:0.5rem;}
+.comp-name{font-size:0.7rem;letter-spacing:1px;color:var(--cyan);font-weight:700;margin-bottom:0.5rem;}
+.comp-desc{font-size:0.75rem;color:var(--text);line-height:1.6;}
 
 /* JUEGO CÓDIGO DE COLORES */
 .game-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;}
@@ -309,12 +492,10 @@ input:checked + .exam-slider::before{transform:translateX(26px);background:#000;
     <div class="sb-group-body">
       <div class="sb-item" onclick="nav('inicio')"><span class="sb-dot"></span>Inicio</div>
       <div class="sb-item" onclick="nav('multimetro')"><span class="sb-dot"></span>Guía Multímetro</div>
-      <div class="sb-item" onclick="nav('practica-colores')"><span class="sb-dot"></span>Práctica Colores<span class="sb-badge g">NEW</span></div>
-      <div class="sb-item" onclick="nav('conversor')"><span class="sb-dot"></span>Conversor Unidades</div>
-      <div class="sb-item" onclick="nav('formulas')"><span class="sb-dot"></span>Fórmulas</div>
-      <div class="sb-item" onclick="nav('glosario')"><span class="sb-dot"></span>Glosario</div>
+      <div class="sb-item" onclick="nav('practica-colores')"><span class="sb-dot"></span>Calculadora Resistencia</div>
+      <div class="sb-item" onclick="nav('formulas')"><span class="sb-dot"></span>Fórmulas y Glosario</div>
+      <div class="sb-item" onclick="nav('laboratorio')"><span class="sb-dot"></span>Laboratorio Virtual<span class="sb-badge g">NEW</span></div>
       <div class="sb-item" onclick="nav('flashcards')"><span class="sb-dot"></span>Flashcards</div>
-      <div class="sb-item" onclick="nav('u1calc')"><span class="sb-dot"></span>Calculadora Bandas</div>
       <div class="sb-item" onclick="nav('notas')"><span class="sb-dot"></span>Notas</div>
     </div>
   </div>
@@ -325,8 +506,9 @@ input:checked + .exam-slider::before{transform:translateX(26px);background:#000;
       <span class="sb-arrow">▶</span>
     </div>
     <div class="sb-group-body">
-      <div class="sb-item" onclick="nav('u1c1')"><span class="sb-dot"></span>Electricidad Básica<span class="sb-badge g">NEW</span></div>
-      <div class="sb-item" onclick="nav('u1ej')"><span class="sb-dot"></span>Ejercicios<span class="sb-badge a">TODO</span></div>
+      <div class="sb-item" onclick="nav('u1c1')"><span class="sb-dot"></span>Electricidad Básica</div>
+      <div class="sb-item" onclick="nav('componentes')"><span class="sb-dot"></span>Semiconductores<span class="sb-badge g">NEW</span></div>
+      <div class="sb-item" onclick="nav('u1ej')"><span class="sb-dot"></span>Ejercicios</div>
     </div>
   </div>
 </div>
@@ -356,10 +538,24 @@ Este cuaderno digital es tu espacio de trabajo para el ramo de Fundamentos del M
 
       <div class="theory-section">
         <h2>Navegación Rápida</h2>
-        <p><strong>Unidad 1 · Clase 1</strong> — Conceptos básicos de electricidad, magnitudes, prefijos, multímetro, código de colores de resistencias.</p>
+        
+        <p><strong>Guía Multímetro</strong> — Simulador interactivo 3D para aprender a usar el multímetro. Incluye quiz práctico y teoría.</p>
+        
+        <p><strong>Práctica de Colores</strong> — Juego interactivo para dominar el código de colores de resistencias. ¡Acumula rachas!</p>
+        
+        <p><strong>Conversor de Unidades</strong> — Convierte entre Ω, kΩ, MΩ, mA, μA, V, mV, kV y más. Tiempo real.</p>
+        
+        <p><strong>Electricidad Básica</strong> — Conceptos fundamentales: magnitudes, prefijos SI, Ley de Ohm, código de colores.</p>
+        
+        <p><strong>Semiconductores</strong> — Teoría de diodos, LEDs y transistores. Polarización, identificación de pines.</p>
+        
+        <p><strong>Laboratorio Virtual</strong> — Simuladores de circuitos: prueba de diodos, calculadora LED, oscilador astable.</p>
+        
         <p><strong>Calculadora de Bandas</strong> — Calcula el valor de resistencias usando el código de colores.</p>
-        <p><strong>Ejercicios</strong> — Preguntas prácticas y teóricas con retroalimentación.</p>
-        <p><strong>Recursos</strong> — Fórmulas de referencia rápida, glosario de términos técnicos, flashcards para estudio, y un bloc de notas persistente.</p>
+        
+        <p><strong>Ejercicios</strong> — Preguntas prácticas con modo examen. Calificación automática.</p>
+        
+        <p><strong>Recursos</strong> — Fórmulas de referencia rápida, glosario con favoritos, flashcards, bloc de notas.</p>
       </div>
 
       <div class="theory-section">
@@ -377,423 +573,211 @@ Las notas que escribas se guardan automáticamente en tu navegador. Revisa la se
     <div class="page" id="page-multimetro">
       <div class="pg-header">
         <div class="pg-sup">GUÍA INTERACTIVA</div>
-        <h1 class="pg-title">Uso del <span>Multímetro</span></h1>
-        <div class="pg-sub">Aprende a usar correctamente el multímetro digital</div>
+        <h1 class="pg-title">Simulador de <span>Multímetro</span></h1>
+        <div class="pg-sub">Aprende a usar el multímetro con práctica interactiva</div>
       </div>
 
-      <div class="box-info">
-Selecciona el tipo de medición que deseas realizar para ver las instrucciones detalladas y la configuración correcta del multímetro.</div>
-
-      <div class="action-bar" style="margin-top:1.5rem;">
-        <button class="action-btn active" onclick="showMedicion('voltaje')">
-          <svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 4.08-3.05 7.44-7 7.93v2.02c5.05-.5 9-4.76 9-9.95s-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-          VOLTAJE
-        </button>
-        <button class="action-btn" onclick="showMedicion('corriente')">
-          <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-          CORRIENTE
-        </button>
-        <button class="action-btn" onclick="showMedicion('resistencia')">
+      <div class="action-bar">
+        <button class="action-btn active" onclick="switchMultimeterMode('simulador')">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-          RESISTENCIA
+          SIMULADOR
         </button>
-        <button class="action-btn" onclick="showMedicion('continuidad')">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-          CONTINUIDAD
+        <button class="action-btn" onclick="switchMultimeterMode('quiz')">
+          <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+          QUIZ PRÁCTICO
+        </button>
+        <button class="action-btn" onclick="switchMultimeterMode('teoria')">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          TEORÍA
         </button>
       </div>
 
-      <!-- MEDICIÓN VOLTAJE -->
-      <div class="medicion-panel active" id="med-voltaje">
+      <div class="box-info" style="text-align:center;background:rgba(0,200,255,0.08);border-color:var(--cyan);">
+👆 <strong>HAZ CLIC en los botones de arriba</strong> para cambiar entre Simulador, Quiz y Teoría</div>
+
+      <!-- MODO SIMULADOR -->
+      <div class="mm-mode active" id="mode-simulador">
+        <div class="sim-stats">
+          <div class="stat-card">
+            <div class="stat-label">CONFIGURACIONES CORRECTAS</div>
+            <div class="stat-value c-ok" id="sim-correct">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">ERRORES EVITADOS</div>
+            <div class="stat-value c-bad" id="sim-errors">0</div>
+          </div>
+        </div>
+
+        <div class="simulator-container">
+          <!-- Panel izquierdo: Escenario -->
+          <div class="sim-scenario">
+            <div class="scenario-header">
+              <div class="scenario-title">ESCENARIO ACTUAL</div>
+              <div class="scenario-number" id="scenario-num">1 / 8</div>
+            </div>
+            <div class="scenario-content" id="scenario-content">
+              <div class="scenario-icon">🔋</div>
+              <h3 id="scenario-title">Medir Voltaje de Batería</h3>
+              <p id="scenario-description">Necesitas medir el voltaje de una batería de 9V (DC). Configura el multímetro correctamente.</p>
+              <div class="scenario-hints" id="scenario-hints">
+                <div class="hint-item">💡 Es corriente continua (DC)</div>
+                <div class="hint-item">💡 La batería tiene ~9 voltios</div>
+              </div>
+            </div>
+            <button class="sim-check-btn" onclick="checkSimulatorConfig()">✓ VERIFICAR CONFIGURACIÓN</button>
+            <button class="sim-next-btn" onclick="nextScenario()" style="display:none;">SIGUIENTE ESCENARIO →</button>
+            <div class="sim-feedback" id="sim-feedback"></div>
+          </div>
+
+          <!-- Panel derecho: Multímetro -->
+          <div class="sim-multimeter">
+            <div class="multimeter-body">
+              <!-- Pantalla -->
+              <div class="mm-display">
+                <div class="mm-screen">
+                  <div class="mm-reading" id="mm-reading">---</div>
+                  <div class="mm-unit" id="mm-unit">--</div>
+                </div>
+              </div>
+
+              <!-- Selector rotatorio -->
+              <div class="mm-selector-area">
+                <div class="mm-selector-label">SELECTOR</div>
+                <div class="selector-options">
+                  <button class="selector-btn" onclick="setSelector('off')" data-mode="off">OFF</button>
+                  <button class="selector-btn" onclick="setSelector('vdc')" data-mode="vdc">V⎓</button>
+                  <button class="selector-btn active" onclick="setSelector('vac')" data-mode="vac">V~</button>
+                  <button class="selector-btn" onclick="setSelector('adc')" data-mode="adc">A⎓</button>
+                  <button class="selector-btn" onclick="setSelector('aac')" data-mode="aac">A~</button>
+                  <button class="selector-btn" onclick="setSelector('ohm')" data-mode="ohm">Ω</button>
+                  <button class="selector-btn" onclick="setSelector('cont')" data-mode="cont">))))</button>
+                </div>
+              </div>
+
+              <!-- Terminales -->
+              <div class="mm-terminals">
+                <div class="terminal-group">
+                  <div class="terminal black" id="term-com">
+                    <div class="terminal-label">COM</div>
+                    <div class="cable-indicator" id="cable-com">○</div>
+                  </div>
+                  <div class="terminal red" id="term-vohm">
+                    <div class="terminal-label">VΩmA</div>
+                    <div class="cable-indicator" id="cable-vohm">○</div>
+                  </div>
+                  <div class="terminal red" id="term-10a">
+                    <div class="terminal-label">10A</div>
+                    <div class="cable-indicator" id="cable-10a">○</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controles de cables -->
+              <div class="cable-controls">
+                <div class="cable-control-title">CONECTAR CABLES</div>
+                <div class="cable-buttons">
+                  <div class="cable-btn-group">
+                    <div class="cable-label">Cable NEGRO</div>
+                    <button class="cable-btn" onclick="connectCable('black', 'com')">→ COM</button>
+                    <button class="cable-btn" onclick="connectCable('black', 'vohm')">→ VΩmA</button>
+                    <button class="cable-btn" onclick="connectCable('black', '10a')">→ 10A</button>
+                    <button class="cable-btn disconn" onclick="connectCable('black', 'none')">Desconectar</button>
+                  </div>
+                  <div class="cable-btn-group">
+                    <div class="cable-label">Cable ROJO</div>
+                    <button class="cable-btn" onclick="connectCable('red', 'com')">→ COM</button>
+                    <button class="cable-btn" onclick="connectCable('red', 'vohm')">→ VΩmA</button>
+                    <button class="cable-btn" onclick="connectCable('red', '10a')">→ 10A</button>
+                    <button class="cable-btn disconn" onclick="connectCable('red', 'none')">Desconectar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-top:1.5rem;">
+<strong>Instrucciones:</strong> Configura el selector y conecta los cables según el escenario. Luego presiona "VERIFICAR CONFIGURACIÓN" para comprobar si está correcto.</div>
+      </div>
+
+      <!-- MODO QUIZ -->
+      <div class="mm-mode" id="mode-quiz">
+        <div class="quiz-stats">
+          <div class="stat-card">
+            <div class="stat-label">RACHA</div>
+            <div class="stat-value" id="quiz-streak">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CORRECTAS</div>
+            <div class="stat-value c-ok" id="quiz-correct">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">INCORRECTAS</div>
+            <div class="stat-value c-bad" id="quiz-incorrect">0</div>
+          </div>
+        </div>
+
+        <div class="quiz-question-panel" id="quiz-panel">
+          <!-- Se genera dinámicamente -->
+        </div>
+
+        <button class="action-btn" onclick="generateQuizQuestion()" style="margin-top:1rem;">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          NUEVA PREGUNTA
+        </button>
+      </div>
+
+      <!-- MODO TEORÍA -->
+      <div class="mm-mode" id="mode-teoria">
         <div class="theory-section">
           <h2>Medición de Voltaje (V)</h2>
-          <p>El voltaje es la diferencia de potencial eléctrico entre dos puntos. Puede ser de corriente alterna (AC) o continua (DC).</p>
-          
-          <h3>Configuración del Multímetro</h3>
-          <div class="mm-setup">
-            <div class="mm-step">
-              <div class="mm-step-num">1</div>
-              <div class="mm-step-content">
-                <strong>Selector de función:</strong>
-                <ul>
-                  <li><span class="c-ok">V~</span> para voltaje de corriente alterna (AC) - Red eléctrica 220V</li>
-                  <li><span class="c-ok">V—</span> para voltaje de corriente continua (DC) - Baterías, fuentes</li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">2</div>
-              <div class="mm-step-content">
-                <strong>Conexión de cables:</strong>
-                <ul>
-                  <li>Cable <span class="c-bad">ROJO</span> → Terminal <strong>VΩmA</strong></li>
-                  <li>Cable <span style="color:#888">NEGRO</span> → Terminal <strong>COM</strong></li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">3</div>
-              <div class="mm-step-content">
-                <strong>Rango de medición:</strong>
-                <p>Si tu multímetro es manual, selecciona un rango mayor al voltaje esperado. Si es autoranging, lo ajustará automáticamente.</p>
-              </div>
-            </div>
-          </div>
-
-          <h3>Procedimiento de Medición</h3>
-          <div class="box-ok">
-<strong>Conexión en PARALELO:</strong> Coloca las puntas del multímetro en paralelo con el componente o fuente a medir. Punta roja al punto positivo (+), punta negra al negativo (-) o tierra.</div>
-          
-          <div class="mm-diagram">
-            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-              <!-- Batería -->
-              <rect x="50" y="70" width="80" height="60" fill="none" stroke="var(--cyan)" stroke-width="2"/>
-              <text x="90" y="105" fill="var(--cyan)" font-size="14" text-anchor="middle">Fuente</text>
-              <text x="130" y="65" fill="var(--red)" font-size="18">+</text>
-              <text x="50" y="65" fill="#888" font-size="18">−</text>
-              
-              <!-- Cables de conexión -->
-              <line x1="130" y1="100" x2="180" y2="100" stroke="var(--red)" stroke-width="2"/>
-              <line x1="50" y1="100" x2="20" y2="100" stroke="#888" stroke-width="2"/>
-              <line x1="20" y1="100" x2="20" y2="150" stroke="#888" stroke-width="2"/>
-              <line x1="20" y1="150" x2="180" y2="150" stroke="#888" stroke-width="2"/>
-              
-              <!-- Multímetro -->
-              <rect x="180" y="80" width="100" height="90" fill="var(--panel2)" stroke="var(--green)" stroke-width="2"/>
-              <text x="230" y="110" fill="var(--green)" font-size="12" text-anchor="middle">MULTÍMETRO</text>
-              <text x="230" y="130" fill="var(--amber)" font-size="20" text-anchor="middle" font-family="var(--mono2)">12.5V</text>
-              
-              <!-- Terminales multímetro -->
-              <circle cx="200" cy="165" r="5" fill="var(--red)"/>
-              <text x="200" y="180" fill="var(--red)" font-size="10" text-anchor="middle">VΩmA</text>
-              <circle cx="260" cy="165" r="5" fill="#888"/>
-              <text x="260" y="180" fill="#888" font-size="10" text-anchor="middle">COM</text>
-              
-              <!-- Puntas -->
-              <line x1="180" y1="100" x2="200" y2="165" stroke="var(--red)" stroke-width="2"/>
-              <line x1="180" y1="150" x2="260" y2="165" stroke="#888" stroke-width="2"/>
-              
-              <!-- Etiquetas -->
-              <text x="320" y="70" fill="var(--text)" font-size="12">Conexión en</text>
-              <text x="320" y="85" fill="var(--cyan)" font-size="14" font-weight="bold">PARALELO</text>
-            </svg>
-          </div>
-
-          <h3>Ejemplos Prácticos</h3>
-          <table>
-            <thead>
-              <tr><th>Medición</th><th>Selector</th><th>Valor Esperado</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Red eléctrica Chile</td><td class="c-ok">V~ (220V)</td><td>~220V AC</td></tr>
-              <tr><td>Batería de auto</td><td class="c-ok">V— (20V)</td><td>~12V DC</td></tr>
-              <tr><td>Pila AA</td><td class="c-ok">V— (2V)</td><td>~1.5V DC</td></tr>
-              <tr><td>USB</td><td class="c-ok">V— (20V)</td><td>~5V DC</td></tr>
-            </tbody>
-          </table>
-
-          <div class="box-warn">
-<strong>¡PRECAUCIÓN!</strong> Al medir voltaje AC de red (220V), asegúrate de que las puntas estén en buenas condiciones y mantén los dedos alejados de las partes metálicas.</div>
+          <p><strong>Configuración:</strong> Selector en V~ (AC) o V⎓ (DC). Cables: NEGRO→COM, ROJO→VΩmA</p>
+          <p><strong>Conexión:</strong> EN PARALELO con el circuito. No interrumpas el flujo.</p>
+          <div class="box-ok">Red Chile (220V) = V~ • Batería (9V) = V⎓</div>
         </div>
-      </div>
 
-      <!-- MEDICIÓN CORRIENTE -->
-      <div class="medicion-panel" id="med-corriente">
         <div class="theory-section">
           <h2>Medición de Corriente (A)</h2>
-          <p>La corriente eléctrica es el flujo de electrones a través de un conductor. Se mide en Amperios (A).</p>
-          
-          <h3>Configuración del Multímetro</h3>
-          <div class="mm-setup">
-            <div class="mm-step">
-              <div class="mm-step-num">1</div>
-              <div class="mm-step-content">
-                <strong>Selector de función:</strong>
-                <ul>
-                  <li><span class="c-ok">A~</span> o <span class="c-ok">mA~</span> para corriente alterna (AC)</li>
-                  <li><span class="c-ok">A—</span> o <span class="c-ok">mA—</span> para corriente continua (DC)</li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">2</div>
-              <div class="mm-step-content">
-                <strong>Conexión de cables:</strong>
-                <ul>
-                  <li>Para corrientes <strong>&lt; 200mA</strong>: Cable ROJO → <strong>mA</strong></li>
-                  <li>Para corrientes <strong>&gt; 200mA</strong>: Cable ROJO → <strong>10A</strong> o <strong>20A</strong></li>
-                  <li>Cable NEGRO → siempre en <strong>COM</strong></li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">3</div>
-              <div class="mm-step-content">
-                <strong>¡IMPORTANTE!</strong>
-                <p>Si no sabes la corriente esperada, empieza en el rango más alto (10A) y baja gradualmente.</p>
-              </div>
-            </div>
-          </div>
-
-          <h3>Procedimiento de Medición</h3>
-          <div class="box-warn">
-<strong>Conexión en SERIE:</strong> Debes ABRIR el circuito e insertar el multímetro en la trayectoria de la corriente. El multímetro debe formar parte del camino por donde fluye la corriente.</div>
-          
-          <div class="mm-diagram">
-            <svg viewBox="0 0 450 200" xmlns="http://www.w3.org/2000/svg">
-              <!-- Fuente -->
-              <rect x="30" y="70" width="60" height="60" fill="none" stroke="var(--cyan)" stroke-width="2"/>
-              <text x="60" y="105" fill="var(--cyan)" font-size="12" text-anchor="middle">12V</text>
-              <line x1="90" y1="100" x2="130" y2="100" stroke="var(--red)" stroke-width="2"/>
-              
-              <!-- Multímetro en serie -->
-              <rect x="130" y="70" width="90" height="60" fill="var(--panel2)" stroke="var(--green)" stroke-width="2"/>
-              <text x="175" y="95" fill="var(--green)" font-size="10" text-anchor="middle">MULTÍMETRO</text>
-              <text x="175" y="115" fill="var(--amber)" font-size="16" text-anchor="middle" font-family="var(--mono2)">0.5A</text>
-              
-              <!-- Carga (LED) -->
-              <line x1="220" y1="100" x2="270" y2="100" stroke="var(--red)" stroke-width="2"/>
-              <circle cx="290" cy="100" r="15" fill="none" stroke="var(--amber)" stroke-width="2"/>
-              <text x="290" y="105" fill="var(--amber)" font-size="12" text-anchor="middle">💡</text>
-              
-              <!-- Retorno -->
-              <line x1="310" y1="100" x2="350" y2="100" stroke="#888" stroke-width="2"/>
-              <line x1="350" y1="100" x2="350" y2="150" stroke="#888" stroke-width="2"/>
-              <line x1="350" y1="150" x2="30" y2="150" stroke="#888" stroke-width="2"/>
-              <line x1="30" y1="150" x2="30" y2="130" stroke="#888" stroke-width="2"/>
-              
-              <!-- Etiquetas -->
-              <text x="360" y="70" fill="var(--text)" font-size="12">Conexión en</text>
-              <text x="360" y="85" fill="var(--red)" font-size="14" font-weight="bold">SERIE</text>
-              <text x="360" y="105" fill="var(--dim)" font-size="10">(Circuito abierto)</text>
-            </svg>
-          </div>
-
-          <h3>Pasos para Medir Corriente</h3>
-          <ol style="line-height:1.8; margin-left:1.2rem;">
-            <li><strong>Desenergiza</strong> el circuito completamente</li>
-            <li><strong>Abre</strong> el circuito en el punto donde quieres medir</li>
-            <li>Conecta el multímetro <strong>en serie</strong> (formando parte del circuito)</li>
-            <li>Selecciona el rango adecuado (empieza en el más alto)</li>
-            <li>Energiza el circuito y lee la medición</li>
-            <li>Desenergiza antes de desconectar el multímetro</li>
-          </ol>
-
-          <div class="box-warn">
-<strong>¡ADVERTENCIA!</strong> Si conectas el multímetro en paralelo mientras está en modo amperímetro, puedes crear un cortocircuito y quemar el fusible interno del multímetro.</div>
+          <p><strong>Configuración:</strong> Selector en A~ o A⎓. Cables: NEGRO→COM, ROJO→10A (si &gt;200mA) o VΩmA (si &lt;200mA)</p>
+          <p><strong>Conexión:</strong> EN SERIE. Debes ABRIR el circuito e insertar el multímetro.</p>
+          <div class="box-warn">¡NUNCA en paralelo! Quemarás el fusible.</div>
         </div>
-      </div>
 
-      <!-- MEDICIÓN RESISTENCIA -->
-      <div class="medicion-panel" id="med-resistencia">
         <div class="theory-section">
           <h2>Medición de Resistencia (Ω)</h2>
-          <p>La resistencia es la oposición al flujo de corriente eléctrica. Se mide en Ohmios (Ω).</p>
-          
-          <h3>Configuración del Multímetro</h3>
-          <div class="mm-setup">
-            <div class="mm-step">
-              <div class="mm-step-num">1</div>
-              <div class="mm-step-content">
-                <strong>Selector de función:</strong>
-                <ul>
-                  <li><span class="c-ok">Ω</span> (símbolo de Omega)</li>
-                  <li>Selecciona el rango apropiado o usa autoranging</li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">2</div>
-              <div class="mm-step-content">
-                <strong>Conexión de cables:</strong>
-                <ul>
-                  <li>Cable <span class="c-bad">ROJO</span> → Terminal <strong>VΩmA</strong></li>
-                  <li>Cable <span style="color:#888">NEGRO</span> → Terminal <strong>COM</strong></li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">3</div>
-              <div class="mm-step-content">
-                <strong>¡CRÍTICO!</strong>
-                <p class="c-bad">El circuito debe estar completamente DESENERGIZADO. Desconecta fuentes de alimentación y descarga capacitores.</p>
-              </div>
-            </div>
-          </div>
-
-          <h3>Procedimiento de Medición</h3>
-          <div class="box-warn">
-<strong>NUNCA midas resistencia en un circuito energizado.</strong> El multímetro inyecta una pequeña corriente para medir la resistencia. Si hay voltaje externo, dañarás el multímetro.</div>
-          
-          <ol style="line-height:1.8; margin-left:1.2rem; margin-top:1rem;">
-            <li><strong>Desenergiza</strong> completamente el circuito</li>
-            <li><strong>Descarga</strong> los capacitores si los hay</li>
-            <li>Para mayor precisión, <strong>desuelda</strong> al menos una pata del componente</li>
-            <li>Coloca las puntas en los extremos de la resistencia</li>
-            <li>Lee el valor en pantalla</li>
-          </ol>
-
-          <h3>Interpretación de Valores</h3>
-          <table>
-            <thead>
-              <tr><th>Lectura</th><th>Significado</th><th>Estado</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="c-ok">Valor numérico</td><td>Resistencia medida</td><td class="c-ok">Normal</td></tr>
-              <tr><td class="c-warn">OL o 1</td><td>Sobrerango / Circuito abierto</td><td class="c-warn">Revisar</td></tr>
-              <tr><td class="c-ok">0 o muy bajo</td><td>Cortocircuito / Buena continuidad</td><td class="c-ok">Depende</td></tr>
-            </tbody>
-          </table>
-
-          <h3>Verificación de Código de Colores</h3>
-          <div class="box-info">
-Usa el multímetro para <strong>verificar</strong> el valor real de una resistencia comparándolo con el código de colores. Recuerda que las resistencias tienen tolerancia (±5%, ±10%, etc.).</div>
+          <p><strong>Configuración:</strong> Selector en Ω. Cables: NEGRO→COM, ROJO→VΩmA</p>
+          <p><strong>CRÍTICO:</strong> Circuito DESENERGIZADO completamente antes de medir.</p>
+          <div class="box-warn">Medir resistencia con voltaje dañará el multímetro.</div>
         </div>
-      </div>
 
-      <!-- MEDICIÓN CONTINUIDAD -->
-      <div class="medicion-panel" id="med-continuidad">
         <div class="theory-section">
-          <h2>Prueba de Continuidad</h2>
-          <p>La prueba de continuidad verifica si hay un camino conductor entre dos puntos. Es útil para detectar cables rotos, fusibles quemados o cortocircuitos.</p>
-          
-          <h3>Configuración del Multímetro</h3>
-          <div class="mm-setup">
-            <div class="mm-step">
-              <div class="mm-step-num">1</div>
-              <div class="mm-step-content">
-                <strong>Selector de función:</strong>
-                <ul>
-                  <li><span class="c-ok">))) o 🔊</span> (símbolo de continuidad/sonido)</li>
-                  <li>Algunos multímetros comparten este modo con diodos</li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">2</div>
-              <div class="mm-step-content">
-                <strong>Conexión de cables:</strong>
-                <ul>
-                  <li>Cable <span class="c-bad">ROJO</span> → Terminal <strong>VΩmA</strong></li>
-                  <li>Cable <span style="color:#888">NEGRO</span> → Terminal <strong>COM</strong></li>
-                </ul>
-              </div>
-            </div>
-            <div class="mm-step">
-              <div class="mm-step-num">3</div>
-              <div class="mm-step-content">
-                <strong>Prueba inicial:</strong>
-                <p>Toca ambas puntas entre sí. Debes escuchar un <strong>BEEP</strong> continuo. Esto confirma que el multímetro funciona correctamente.</p>
-              </div>
-            </div>
-          </div>
-
-          <h3>Aplicaciones Comunes</h3>
-          <div class="mm-app-grid">
-            <div class="mm-app-card">
-              <div class="mm-app-icon">🔌</div>
-              <div class="mm-app-title">Cables</div>
-              <p>Verifica que un cable no esté roto internamente. Beep = cable bueno.</p>
-            </div>
-            <div class="mm-app-card">
-              <div class="mm-app-icon">⚡</div>
-              <div class="mm-app-title">Fusibles</div>
-              <p>Comprueba si un fusible está quemado. Beep = fusible OK, sin beep = quemado.</p>
-            </div>
-            <div class="mm-app-card">
-              <div class="mm-app-icon">🔧</div>
-              <div class="mm-app-title">Conexiones</div>
-              <p>Verifica soldaduras, conectores o empalmes. Beep = buena conexión.</p>
-            </div>
-            <div class="mm-app-card">
-              <div class="mm-app-icon">⚠️</div>
-              <div class="mm-app-title">Cortocircuitos</div>
-              <p>Detecta cortocircuitos no deseados entre pistas o cables. Beep = hay corto.</p>
-            </div>
-          </div>
-
-          <h3>Interpretación de Resultados</h3>
-          <table>
-            <thead>
-              <tr><th>Resultado</th><th>Significado</th><th>Resistencia Típica</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="c-ok">BEEP continuo</td><td>Continuidad perfecta</td><td>&lt; 30Ω</td></tr>
-              <tr><td class="c-warn">BEEP intermitente</td><td>Contacto deficiente</td><td>Variable</td></tr>
-              <tr><td>Sin sonido</td><td>Circuito abierto</td><td>&gt; 100Ω</td></tr>
-            </tbody>
-          </table>
-
-          <div class="box-ok">
-<strong>VENTAJA:</strong> La prueba de continuidad es más rápida que medir resistencia cuando solo necesitas saber si hay conexión o no.</div>
-
-          <div class="box-warn">
-<strong>¡IMPORTANTE!</strong> Al igual que con resistencia, el circuito debe estar completamente desenergizado antes de hacer pruebas de continuidad.</div>
+          <h2>Prueba de Continuidad (♪)</h2>
+          <p><strong>Configuración:</strong> Selector en )))) (sonido). Cables: NEGRO→COM, ROJO→VΩmA</p>
+          <p><strong>Uso:</strong> Verifica cables, fusibles, conexiones. BEEP = continuidad OK.</p>
+          <p>Aplicaciones: cables rotos, fusibles quemados, cortocircuitos</p>
         </div>
-      </div>
 
-      <!-- ERRORES COMUNES -->
-      <div class="theory-section" style="margin-top:2rem;">
-        <h2>❌ Errores Comunes y Cómo Evitarlos</h2>
-        
-        <div class="error-grid">
+        <div class="error-grid" style="margin-top:2rem;">
           <div class="error-card">
             <div class="error-title c-bad">Error Fatal</div>
             <strong>Medir corriente en paralelo</strong>
-            <p>Conectar el multímetro en modo amperímetro en paralelo crea un cortocircuito.</p>
-            <div class="error-solution"><strong>Solución:</strong> Siempre verifica que estás en el modo correcto antes de conectar.</div>
+            <p>Crea cortocircuito y quema el fusible.</p>
           </div>
-
           <div class="error-card">
             <div class="error-title c-bad">Error Fatal</div>
-            <strong>Medir resistencia con circuito energizado</strong>
-            <p>Puede dañar permanentemente el multímetro.</p>
-            <div class="error-solution"><strong>Solución:</strong> Desconecta TODA fuente de alimentación y descarga capacitores.</div>
+            <strong>Medir resistencia energizado</strong>
+            <p>Puede destruir el multímetro.</p>
           </div>
-
           <div class="error-card">
             <div class="error-title c-warn">Error Común</div>
-            <strong>Selector en posición incorrecta</strong>
-            <p>Medir voltaje AC en un circuito DC o viceversa da lecturas incorrectas.</p>
-            <div class="error-solution"><strong>Solución:</strong> Verifica si el voltaje es AC o DC antes de medir.</div>
+            <strong>Selector incorrecto AC/DC</strong>
+            <p>Lecturas erróneas o cero.</p>
           </div>
-
           <div class="error-card">
             <div class="error-title c-warn">Error Común</div>
-            <strong>Puntas en mal estado</strong>
-            <p>Cables pelados o puntas oxidadas dan lecturas erróneas.</p>
-            <div class="error-solution"><strong>Solución:</strong> Inspecciona las puntas antes de cada uso. Reemplaza si están dañadas.</div>
+            <strong>Cables en terminales incorrectos</strong>
+            <p>No medirá o dará error.</p>
           </div>
-
-          <div class="error-card">
-            <div class="error-title c-warn">Error Común</div>
-            <strong>No usar el rango correcto</strong>
-            <p>Empezar en un rango muy bajo puede dañar el fusible.</p>
-            <div class="error-solution"><strong>Solución:</strong> Cuando no sepas el valor, empieza en el rango MÁS ALTO.</div>
-          </div>
-
-          <div class="error-card">
-            <div class="error-title c-warn">Error Común</div>
-            <strong>Tocar las partes metálicas de las puntas</strong>
-            <p>Al medir voltaje AC alto (220V) puedes recibir una descarga.</p>
-            <div class="error-solution"><strong>Solución:</strong> Sostén las puntas solo por la parte aislada.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MANTENIMIENTO -->
-      <div class="theory-section" style="margin-top:2rem;">
-        <h2>🔧 Mantenimiento del Multímetro</h2>
-        
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:1rem;">
-          <div class="box-info">
-<strong>Batería:</strong> Reemplaza cuando la pantalla se vea tenue o parpadee. Usa el tipo correcto (generalmente 9V).</div>
-          <div class="box-info">
-<strong>Fusibles:</strong> Si el multímetro no mide corriente, revisa el fusible interno. Usa uno del mismo amperaje.</div>
-          <div class="box-info">
-<strong>Limpieza:</strong> Limpia las puntas con alcohol isopropílico. No uses agua.</div>
-          <div class="box-info">
-<strong>Almacenamiento:</strong> Guarda en un lugar seco. Desconecta los cables cuando no lo uses.</div>
         </div>
       </div>
     </div>
@@ -801,10 +785,31 @@ Usa el multímetro para <strong>verificar</strong> el valor real de una resisten
     <!-- PÁGINA: PRÁCTICA CÓDIGO DE COLORES -->
     <div class="page" id="page-practica-colores">
       <div class="pg-header">
-        <div class="pg-sup">JUEGO INTERACTIVO</div>
-        <h1 class="pg-title">Práctica de <span>Código de Colores</span></h1>
-        <div class="pg-sub">Mejora tu velocidad identificando resistencias</div>
+        <div class="pg-sup">HERRAMIENTAS INTERACTIVAS</div>
+        <h1 class="pg-title">Calculadora de <span>Resistencias</span></h1>
+        <div class="pg-sub">Práctica, calculadora y conversor de unidades</div>
       </div>
+
+      <div class="action-bar">
+        <button class="action-btn active" onclick="switchResistorTool('practica')">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          PRÁCTICA
+        </button>
+        <button class="action-btn" onclick="switchResistorTool('calculadora')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.97 4.06L14.09 6l1.41 1.41L16.91 6l1.06 1.06-1.41 1.41 1.41 1.41-1.06 1.06-1.41-1.4-1.41 1.41-1.06-1.06 1.41-1.41-1.41-1.42zm-6.78.66h5v1.5h-5v-1.5zM11.5 16h-2v2H8v-2H6v-1.5h2v-2h1.5v2h2V16zm6.5 1.25h-5v-1.5h5v1.5zm0-2.5h-5v-1.5h5v1.5z"/></svg>
+          CALCULADORA
+        </button>
+        <button class="action-btn" onclick="switchResistorTool('conversor')">
+          <svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg>
+          CONVERSOR
+        </button>
+      </div>
+
+      <div class="box-info" style="text-align:center;background:rgba(0,200,255,0.08);border-color:var(--cyan);">
+👆 <strong>Cambia entre herramientas</strong> usando los botones de arriba</div>
+
+      <!-- PANEL: PRÁCTICA -->
+      <div class="resistor-tool-panel active" id="tool-practica">
 
       <div class="game-stats">
         <div class="stat-card">
@@ -858,163 +863,236 @@ Usa el multímetro para <strong>verificar</strong> el valor real de una resisten
         <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
         REINICIAR ESTADÍSTICAS
       </button>
+      </div>
+
+      <!-- PANEL: CALCULADORA -->
+      <div class="resistor-tool-panel" id="tool-calculadora">
+        <div class="calc-panel">
+          <div class="calc-bands">
+            <div class="band-grp">
+              <label>BANDA 1</label>
+              <select id="s1" onchange="calcR()">
+                <option value="0" data-c="#000">Negro (0)</option>
+                <option value="1" data-c="#8B4513">Café (1)</option>
+                <option value="2" data-c="#f00">Rojo (2)</option>
+                <option value="3" data-c="#ff8c00">Naranja (3)</option>
+                <option value="4" data-c="#ff0">Amarillo (4)</option>
+                <option value="5" data-c="#0f0">Verde (5)</option>
+                <option value="6" data-c="#00f">Azul (6)</option>
+                <option value="7" data-c="#8b00ff">Violeta (7)</option>
+                <option value="8" data-c="#888">Gris (8)</option>
+                <option value="9" data-c="#fff">Blanco (9)</option>
+              </select>
+            </div>
+            <div class="band-grp">
+              <label>BANDA 2</label>
+              <select id="s2" onchange="calcR()">
+                <option value="0" data-c="#000">Negro (0)</option>
+                <option value="1" data-c="#8B4513">Café (1)</option>
+                <option value="2" data-c="#f00">Rojo (2)</option>
+                <option value="3" data-c="#ff8c00">Naranja (3)</option>
+                <option value="4" data-c="#ff0">Amarillo (4)</option>
+                <option value="5" data-c="#0f0">Verde (5)</option>
+                <option value="6" data-c="#00f">Azul (6)</option>
+                <option value="7" data-c="#8b00ff">Violeta (7)</option>
+                <option value="8" data-c="#888">Gris (8)</option>
+                <option value="9" data-c="#fff">Blanco (9)</option>
+              </select>
+            </div>
+            <div class="band-grp">
+              <label>MULTIPLICADOR</label>
+              <select id="s3" onchange="calcR()">
+                <option value="1" data-c="#000">Negro (×1)</option>
+                <option value="10" data-c="#8B4513">Café (×10)</option>
+                <option value="100" data-c="#f00" selected>Rojo (×100)</option>
+                <option value="1000" data-c="#ff8c00">Naranja (×1k)</option>
+                <option value="10000" data-c="#ff0">Amarillo (×10k)</option>
+                <option value="100000" data-c="#0f0">Verde (×100k)</option>
+                <option value="1000000" data-c="#00f">Azul (×1M)</option>
+                <option value="10000000" data-c="#8b00ff">Violeta (×10M)</option>
+                <option value="0.1" data-c="#ffd700">Dorado (×0.1)</option>
+                <option value="0.01" data-c="#c0c0c0">Plateado (×0.01)</option>
+              </select>
+            </div>
+            <div class="band-grp">
+              <label>TOLERANCIA</label>
+              <select id="s4" onchange="calcR()">
+                <option value="1" data-c="#8B4513" data-tol="±1%">Café (±1%)</option>
+                <option value="2" data-c="#f00" data-tol="±2%">Rojo (±2%)</option>
+                <option value="5" data-c="#ffd700" data-tol="±5%" selected>Dorado (±5%)</option>
+                <option value="10" data-c="#c0c0c0" data-tol="±10%">Plateado (±10%)</option>
+                <option value="0.5" data-c="#0f0" data-tol="±0.5%">Verde (±0.5%)</option>
+                <option value="0.25" data-c="#00f" data-tol="±0.25%">Azul (±0.25%)</option>
+                <option value="0.1" data-c="#8b00ff" data-tol="±0.1%">Violeta (±0.1%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="prev-r">
+            <div class="r-lead"></div>
+            <div class="r-body">
+              <div class="r-band" id="pv1"></div>
+              <div class="r-band" id="pv2"></div>
+              <div class="r-sp"></div>
+              <div class="r-band" id="pv3"></div>
+              <div class="r-band" id="pv4"></div>
+            </div>
+            <div class="r-lead"></div>
+          </div>
+
+          <div class="result-display">
+            <div class="res-label">VALOR:</div>
+            <div class="res-val" id="rval">—</div>
+            <div class="res-label">TOLERANCIA:</div>
+            <div class="res-info" id="rtol">—</div>
+          </div>
+          <div class="result-display" style="margin-top:0.5rem;">
+            <div class="res-info" id="rrange">—</div>
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-top:1.5rem;">
+Esta calculadora te permite seleccionar los colores de cada banda y calcula automáticamente el valor de la resistencia y su tolerancia.</div>
+      </div>
+
+      <!-- PANEL: CONVERSOR -->
+      <div class="resistor-tool-panel" id="tool-conversor">
+        <div class="action-bar" style="margin-bottom:1.5rem;">
+          <button class="action-btn active" onclick="showConverter('resistencia')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            RESISTENCIA
+          </button>
+          <button class="action-btn" onclick="showConverter('corriente')">
+            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            CORRIENTE
+          </button>
+          <button class="action-btn" onclick="showConverter('voltaje')">
+            <svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 4.08-3.05 7.44-7 7.93v2.02c5.05-.5 9-4.76 9-9.95s-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+            VOLTAJE
+          </button>
+          <button class="action-btn" onclick="showConverter('potencia')">
+            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            POTENCIA
+          </button>
+        </div>
+
+        <!-- CONVERSOR RESISTENCIA -->
+        <div class="converter-panel active" id="conv-resistencia">
+          <div class="converter-grid-full">
+            <div class="conv-input-group">
+              <label>MEGA-OHMIOS (MΩ)</label>
+              <input type="number" id="r-mohm" class="conv-input" oninput="convertResistance('mohm')" placeholder="0">
+              <div class="conv-helper">1 MΩ = 1,000,000 Ω</div>
+            </div>
+            <div class="conv-input-group">
+              <label>KILO-OHMIOS (kΩ)</label>
+              <input type="number" id="r-kohm" class="conv-input" oninput="convertResistance('kohm')" placeholder="0">
+              <div class="conv-helper">1 kΩ = 1,000 Ω</div>
+            </div>
+            <div class="conv-input-group">
+              <label>OHMIOS (Ω)</label>
+              <input type="number" id="r-ohm" class="conv-input" oninput="convertResistance('ohm')" placeholder="0">
+              <div class="conv-helper">Unidad base</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MILI-OHMIOS (mΩ)</label>
+              <input type="number" id="r-mohm-milli" class="conv-input" oninput="convertResistance('mohm-milli')" placeholder="0">
+              <div class="conv-helper">1 Ω = 1,000 mΩ</div>
+            </div>
+          </div>
+          <div class="box-info" style="margin-top:1.5rem;">
+<strong>Ejemplos:</strong> Resistencia pull-up típica = 10kΩ = 10,000Ω • Resistencia de cable corto ≈ 0.1Ω = 100mΩ</div>
+        </div>
+
+        <!-- CONVERSOR CORRIENTE -->
+        <div class="converter-panel" id="conv-corriente">
+          <div class="converter-grid-full">
+            <div class="conv-input-group">
+              <label>KILO-AMPERIOS (kA)</label>
+              <input type="number" id="c-ka" class="conv-input" oninput="convertCurrent('ka')" placeholder="0">
+              <div class="conv-helper">1 kA = 1,000 A</div>
+            </div>
+            <div class="conv-input-group">
+              <label>AMPERIOS (A)</label>
+              <input type="number" id="c-a" class="conv-input" oninput="convertCurrent('a')" placeholder="0">
+              <div class="conv-helper">Unidad base</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MILI-AMPERIOS (mA)</label>
+              <input type="number" id="c-ma" class="conv-input" oninput="convertCurrent('ma')" placeholder="0">
+              <div class="conv-helper">1 A = 1,000 mA</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MICRO-AMPERIOS (μA)</label>
+              <input type="number" id="c-ua" class="conv-input" oninput="convertCurrent('ua')" placeholder="0">
+              <div class="conv-helper">1 mA = 1,000 μA</div>
+            </div>
+          </div>
+          <div class="box-info" style="margin-top:1.5rem;">
+<strong>Ejemplos:</strong> LED típico = 20mA = 0.02A • Microcontrolador en sleep = 50μA = 0.05mA • Fusible casa = 10A</div>
+        </div>
+
+        <!-- CONVERSOR VOLTAJE -->
+        <div class="converter-panel" id="conv-voltaje">
+          <div class="converter-grid-full">
+            <div class="conv-input-group">
+              <label>KILO-VOLTIOS (kV)</label>
+              <input type="number" id="v-kv" class="conv-input" oninput="convertVoltage('kv')" placeholder="0">
+              <div class="conv-helper">1 kV = 1,000 V</div>
+            </div>
+            <div class="conv-input-group">
+              <label>VOLTIOS (V)</label>
+              <input type="number" id="v-v" class="conv-input" oninput="convertVoltage('v')" placeholder="0">
+              <div class="conv-helper">Unidad base</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MILI-VOLTIOS (mV)</label>
+              <input type="number" id="v-mv" class="conv-input" oninput="convertVoltage('mv')" placeholder="0">
+              <div class="conv-helper">1 V = 1,000 mV</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MICRO-VOLTIOS (μV)</label>
+              <input type="number" id="v-uv" class="conv-input" oninput="convertVoltage('uv')" placeholder="0">
+              <div class="conv-helper">1 mV = 1,000 μV</div>
+            </div>
+          </div>
+          <div class="box-info" style="margin-top:1.5rem;">
+<strong>Ejemplos:</strong> Red Chile = 220V = 0.22kV • USB = 5V = 5,000mV • Señal sensor = 100mV = 100,000μV</div>
+        </div>
+
+        <!-- CONVERSOR POTENCIA -->
+        <div class="converter-panel" id="conv-potencia">
+          <div class="converter-grid-full">
+            <div class="conv-input-group">
+              <label>MEGA-WATTS (MW)</label>
+              <input type="number" id="p-mw-mega" class="conv-input" oninput="convertPower('mw-mega')" placeholder="0">
+              <div class="conv-helper">1 MW = 1,000,000 W</div>
+            </div>
+            <div class="conv-input-group">
+              <label>KILO-WATTS (kW)</label>
+              <input type="number" id="p-kw" class="conv-input" oninput="convertPower('kw')" placeholder="0">
+              <div class="conv-helper">1 kW = 1,000 W</div>
+            </div>
+            <div class="conv-input-group">
+              <label>WATTS (W)</label>
+              <input type="number" id="p-w" class="conv-input" oninput="convertPower('w')" placeholder="0">
+              <div class="conv-helper">Unidad base</div>
+            </div>
+            <div class="conv-input-group">
+              <label>MILI-WATTS (mW)</label>
+              <input type="number" id="p-mw" class="conv-input" oninput="convertPower('mw')" placeholder="0">
+              <div class="conv-helper">1 W = 1,000 mW</div>
+            </div>
+          </div>
+          <div class="box-info" style="margin-top:1.5rem;">
+<strong>Ejemplos:</strong> Ampolleta LED = 10W = 0.01kW • Resistencia típica = 250mW = 0.25W • Casa completa ≈ 2kW promedio</div>
+        </div>
+      </div>
     </div>
 
-    <!-- PÁGINA: CONVERSOR DE UNIDADES -->
-    <div class="page" id="page-conversor">
-      <div class="pg-header">
-        <div class="pg-sup">HERRAMIENTA</div>
-        <h1 class="pg-title">Conversor de <span>Unidades</span></h1>
-        <div class="pg-sub">Convierte entre diferentes magnitudes eléctricas</div>
-      </div>
-
-      <div class="action-bar">
-        <button class="action-btn active" onclick="showConverter('resistencia')">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-          RESISTENCIA
-        </button>
-        <button class="action-btn" onclick="showConverter('corriente')">
-          <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-          CORRIENTE
-        </button>
-        <button class="action-btn" onclick="showConverter('voltaje')">
-          <svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 4.08-3.05 7.44-7 7.93v2.02c5.05-.5 9-4.76 9-9.95s-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-          VOLTAJE
-        </button>
-        <button class="action-btn" onclick="showConverter('potencia')">
-          <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-          POTENCIA
-        </button>
-      </div>
-
-      <!-- CONVERSOR RESISTENCIA -->
-      <div class="converter-panel active" id="conv-resistencia">
-        <div class="converter-grid-full">
-          <div class="conv-input-group">
-            <label>MEGA-OHMIOS (MΩ)</label>
-            <input type="number" id="r-mohm" class="conv-input" oninput="convertResistance('mohm')" placeholder="0">
-            <div class="conv-helper">1 MΩ = 1,000,000 Ω</div>
-          </div>
-          <div class="conv-input-group">
-            <label>KILO-OHMIOS (kΩ)</label>
-            <input type="number" id="r-kohm" class="conv-input" oninput="convertResistance('kohm')" placeholder="0">
-            <div class="conv-helper">1 kΩ = 1,000 Ω</div>
-          </div>
-          <div class="conv-input-group">
-            <label>OHMIOS (Ω)</label>
-            <input type="number" id="r-ohm" class="conv-input" oninput="convertResistance('ohm')" placeholder="0">
-            <div class="conv-helper">Unidad base</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MILI-OHMIOS (mΩ)</label>
-            <input type="number" id="r-mohm-milli" class="conv-input" oninput="convertResistance('mohm-milli')" placeholder="0">
-            <div class="conv-helper">1 Ω = 1,000 mΩ</div>
-          </div>
-        </div>
-        <div class="box-info" style="margin-top:1.5rem;">
-<strong>Ejemplos:</strong> Resistencia pull-up típica = 10kΩ = 10,000Ω • Resistencia de cable corto ≈ 0.1Ω = 100mΩ</div>
-      </div>
-
-      <!-- CONVERSOR CORRIENTE -->
-      <div class="converter-panel" id="conv-corriente">
-        <div class="converter-grid-full">
-          <div class="conv-input-group">
-            <label>KILO-AMPERIOS (kA)</label>
-            <input type="number" id="c-ka" class="conv-input" oninput="convertCurrent('ka')" placeholder="0">
-            <div class="conv-helper">1 kA = 1,000 A</div>
-          </div>
-          <div class="conv-input-group">
-            <label>AMPERIOS (A)</label>
-            <input type="number" id="c-a" class="conv-input" oninput="convertCurrent('a')" placeholder="0">
-            <div class="conv-helper">Unidad base</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MILI-AMPERIOS (mA)</label>
-            <input type="number" id="c-ma" class="conv-input" oninput="convertCurrent('ma')" placeholder="0">
-            <div class="conv-helper">1 A = 1,000 mA</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MICRO-AMPERIOS (μA)</label>
-            <input type="number" id="c-ua" class="conv-input" oninput="convertCurrent('ua')" placeholder="0">
-            <div class="conv-helper">1 mA = 1,000 μA</div>
-          </div>
-        </div>
-        <div class="box-info" style="margin-top:1.5rem;">
-<strong>Ejemplos:</strong> LED típico = 20mA = 0.02A • Microcontrolador en sleep = 50μA = 0.05mA • Fusible casa = 10A</div>
-      </div>
-
-      <!-- CONVERSOR VOLTAJE -->
-      <div class="converter-panel" id="conv-voltaje">
-        <div class="converter-grid-full">
-          <div class="conv-input-group">
-            <label>KILO-VOLTIOS (kV)</label>
-            <input type="number" id="v-kv" class="conv-input" oninput="convertVoltage('kv')" placeholder="0">
-            <div class="conv-helper">1 kV = 1,000 V</div>
-          </div>
-          <div class="conv-input-group">
-            <label>VOLTIOS (V)</label>
-            <input type="number" id="v-v" class="conv-input" oninput="convertVoltage('v')" placeholder="0">
-            <div class="conv-helper">Unidad base</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MILI-VOLTIOS (mV)</label>
-            <input type="number" id="v-mv" class="conv-input" oninput="convertVoltage('mv')" placeholder="0">
-            <div class="conv-helper">1 V = 1,000 mV</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MICRO-VOLTIOS (μV)</label>
-            <input type="number" id="v-uv" class="conv-input" oninput="convertVoltage('uv')" placeholder="0">
-            <div class="conv-helper">1 mV = 1,000 μV</div>
-          </div>
-        </div>
-        <div class="box-info" style="margin-top:1.5rem;">
-<strong>Ejemplos:</strong> Red Chile = 220V = 0.22kV • USB = 5V = 5,000mV • Señal sensor = 100mV = 100,000μV</div>
-      </div>
-
-      <!-- CONVERSOR POTENCIA -->
-      <div class="converter-panel" id="conv-potencia">
-        <div class="converter-grid-full">
-          <div class="conv-input-group">
-            <label>MEGA-WATTS (MW)</label>
-            <input type="number" id="p-mw-mega" class="conv-input" oninput="convertPower('mw-mega')" placeholder="0">
-            <div class="conv-helper">1 MW = 1,000,000 W</div>
-          </div>
-          <div class="conv-input-group">
-            <label>KILO-WATTS (kW)</label>
-            <input type="number" id="p-kw" class="conv-input" oninput="convertPower('kw')" placeholder="0">
-            <div class="conv-helper">1 kW = 1,000 W</div>
-          </div>
-          <div class="conv-input-group">
-            <label>WATTS (W)</label>
-            <input type="number" id="p-w" class="conv-input" oninput="convertPower('w')" placeholder="0">
-            <div class="conv-helper">Unidad base</div>
-          </div>
-          <div class="conv-input-group">
-            <label>MILI-WATTS (mW)</label>
-            <input type="number" id="p-mw" class="conv-input" oninput="convertPower('mw')" placeholder="0">
-            <div class="conv-helper">1 W = 1,000 mW</div>
-          </div>
-        </div>
-        <div class="box-info" style="margin-top:1.5rem;">
-<strong>Ejemplos:</strong> Ampolleta LED = 10W = 0.01kW • Resistencia típica = 250mW = 0.25W • Casa completa ≈ 2kW promedio</div>
-      </div>
-
-      <div class="theory-section" style="margin-top:2rem;">
-        <h2>Tabla de Conversión Rápida</h2>
-        <div class="tbl-wrap">
-          <table>
-            <thead>
-              <tr><th>Magnitud</th><th>Mili (m)</th><th>Base</th><th>Kilo (k)</th><th>Mega (M)</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Resistencia</td><td>—</td><td>Ω</td><td>kΩ (×1000)</td><td>MΩ (×10⁶)</td></tr>
-              <tr><td>Corriente</td><td>mA (÷1000)</td><td>A</td><td>—</td><td>—</td></tr>
-              <tr><td>Voltaje</td><td>mV (÷1000)</td><td>V</td><td>kV (×1000)</td><td>—</td></tr>
-              <tr><td>Potencia</td><td>mW (÷1000)</td><td>W</td><td>kW (×1000)</td><td>MW (×10⁶)</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <!-- PÁGINA: CONVERSOR DE UNIDADES (ELIMINADA - AHORA ESTÁ DENTRO DE CALCULADORA RESISTENCIA) -->
+    <div class="page" id="page-conversor" style="display:none;">
+      <!-- Página antigua eliminada - todo el contenido está ahora en Calculadora Resistencia -->
     </div>
 
     <!-- PÁGINA: U1 CLASE 1 -->
@@ -1152,100 +1230,515 @@ Nunca midas resistencia en un circuito energizado. Desconecta la alimentación y
       </div>
     </div>
 
-    <!-- PÁGINA: CALCULADORA -->
-    <div class="page" id="page-u1calc">
+    <!-- PÁGINA: COMPONENTES SEMICONDUCTORES -->
+    <div class="page" id="page-componentes">
       <div class="pg-header">
-        <div class="pg-sup">HERRAMIENTA INTERACTIVA</div>
-        <h1 class="pg-title">Calculadora de <span>Código de Colores</span></h1>
-        <div class="pg-sub">Resistencias de 4 bandas</div>
+        <div class="pg-sup">UNIDAD 1 · TEORÍA</div>
+        <h1 class="pg-title">Componentes <span>Semiconductores</span></h1>
+        <div class="pg-sub">Diodos, LEDs, Transistores y sus aplicaciones</div>
       </div>
 
-      <div class="calc-panel">
-        <div class="calc-bands">
-          <div class="band-grp">
-            <label>BANDA 1</label>
-            <select id="s1" onchange="calcR()">
-              <option value="0" data-c="#000">Negro (0)</option>
-              <option value="1" data-c="#8B4513">Café (1)</option>
-              <option value="2" data-c="#f00">Rojo (2)</option>
-              <option value="3" data-c="#ff8c00">Naranja (3)</option>
-              <option value="4" data-c="#ff0">Amarillo (4)</option>
-              <option value="5" data-c="#0f0">Verde (5)</option>
-              <option value="6" data-c="#00f">Azul (6)</option>
-              <option value="7" data-c="#8b00ff">Violeta (7)</option>
-              <option value="8" data-c="#888">Gris (8)</option>
-              <option value="9" data-c="#fff">Blanco (9)</option>
-            </select>
+      <div class="theory-section">
+        <h2>🔴 Diodo Rectificador</h2>
+        <p>El diodo es un componente semiconductor que <strong>permite el paso de corriente en un solo sentido</strong>: desde el ánodo (+) hacia el cátodo (-).</p>
+        
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-symbol">
+              <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                <line x1="10" y1="30" x2="40" y2="30" stroke="var(--text)" stroke-width="2"/>
+                <polygon points="40,15 40,45 60,30" fill="var(--cyan)"/>
+                <line x1="60" y1="15" x2="60" y2="45" stroke="var(--cyan)" stroke-width="3"/>
+                <line x1="60" y1="30" x2="90" y2="30" stroke="var(--text)" stroke-width="2"/>
+                <text x="20" y="50" fill="var(--green)" font-size="10">Ánodo</text>
+                <text x="65" y="50" fill="var(--red)" font-size="10">Cátodo</text>
+              </svg>
+            </div>
+            <div class="component-info">
+              <div class="component-name">SÍMBOLO</div>
+              <div class="component-desc">La flecha indica el sentido de conducción (de + a -)</div>
+            </div>
           </div>
-          <div class="band-grp">
-            <label>BANDA 2</label>
-            <select id="s2" onchange="calcR()">
-              <option value="0" data-c="#000">Negro (0)</option>
-              <option value="1" data-c="#8B4513">Café (1)</option>
-              <option value="2" data-c="#f00">Rojo (2)</option>
-              <option value="3" data-c="#ff8c00">Naranja (3)</option>
-              <option value="4" data-c="#ff0">Amarillo (4)</option>
-              <option value="5" data-c="#0f0">Verde (5)</option>
-              <option value="6" data-c="#00f">Azul (6)</option>
-              <option value="7" data-c="#8b00ff">Violeta (7)</option>
-              <option value="8" data-c="#888">Gris (8)</option>
-              <option value="9" data-c="#fff">Blanco (9)</option>
-            </select>
-          </div>
-          <div class="band-grp">
-            <label>MULTIPLICADOR</label>
-            <select id="s3" onchange="calcR()">
-              <option value="1" data-c="#000">Negro (×1)</option>
-              <option value="10" data-c="#8B4513">Café (×10)</option>
-              <option value="100" data-c="#f00" selected>Rojo (×100)</option>
-              <option value="1000" data-c="#ff8c00">Naranja (×1k)</option>
-              <option value="10000" data-c="#ff0">Amarillo (×10k)</option>
-              <option value="100000" data-c="#0f0">Verde (×100k)</option>
-              <option value="1000000" data-c="#00f">Azul (×1M)</option>
-              <option value="10000000" data-c="#8b00ff">Violeta (×10M)</option>
-              <option value="0.1" data-c="#ffd700">Dorado (×0.1)</option>
-              <option value="0.01" data-c="#c0c0c0">Plateado (×0.01)</option>
-            </select>
-          </div>
-          <div class="band-grp">
-            <label>TOLERANCIA</label>
-            <select id="s4" onchange="calcR()">
-              <option value="1" data-c="#8B4513" data-tol="±1%">Café (±1%)</option>
-              <option value="2" data-c="#f00" data-tol="±2%">Rojo (±2%)</option>
-              <option value="5" data-c="#ffd700" data-tol="±5%" selected>Dorado (±5%)</option>
-              <option value="10" data-c="#c0c0c0" data-tol="±10%">Plateado (±10%)</option>
-              <option value="0.5" data-c="#0f0" data-tol="±0.5%">Verde (±0.5%)</option>
-              <option value="0.25" data-c="#00f" data-tol="±0.25%">Azul (±0.25%)</option>
-              <option value="0.1" data-c="#8b00ff" data-tol="±0.1%">Violeta (±0.1%)</option>
-            </select>
+
+          <div class="component-card">
+            <div class="component-symbol">
+              <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                <rect x="25" y="15" width="50" height="30" fill="#333" stroke="var(--text)" stroke-width="2"/>
+                <circle cx="35" cy="30" r="3" fill="var(--red)"/>
+                <line x1="35" y1="30" x2="35" y2="50" stroke="var(--text)" stroke-width="1"/>
+                <line x1="65" y1="30" x2="65" y2="50" stroke="var(--text)" stroke-width="1"/>
+                <text x="30" y="58" fill="var(--green)" font-size="8">Ánodo</text>
+                <text x="60" y="58" fill="var(--red)" font-size="8">Cátodo</text>
+              </svg>
+            </div>
+            <div class="component-info">
+              <div class="component-name">FÍSICO</div>
+              <div class="component-desc">Banda indica el cátodo (-)</div>
+            </div>
           </div>
         </div>
 
-        <div class="prev-r">
-          <div class="r-lead"></div>
-          <div class="r-body">
-            <div class="r-band" id="pv1"></div>
-            <div class="r-band" id="pv2"></div>
-            <div class="r-sp"></div>
-            <div class="r-band" id="pv3"></div>
-            <div class="r-band" id="pv4"></div>
-          </div>
-          <div class="r-lead"></div>
-        </div>
+        <div class="box-ok" style="margin-top:1rem;">
+<strong>Modelo común:</strong> 1N4007 (soporta hasta 1000V inverso, 1A continua)</div>
 
-        <div class="result-display">
-          <div class="res-label">VALOR:</div>
-          <div class="res-val" id="rval">—</div>
-          <div class="res-label">TOLERANCIA:</div>
-          <div class="res-info" id="rtol">—</div>
-        </div>
-        <div class="result-display" style="margin-top:0.5rem;">
-          <div class="res-info" id="rrange">—</div>
+        <h3 style="margin-top:1.5rem;">Polarización del Diodo</h3>
+        <div class="polar-grid">
+          <div class="polar-card ok">
+            <div class="polar-title">✅ POLARIZACIÓN DIRECTA</div>
+            <div class="polar-circuit">
+              <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                <text x="10" y="15" fill="var(--green)" font-size="10">+</text>
+                <line x1="15" y1="40" x2="35" y2="40" stroke="var(--text)" stroke-width="2"/>
+                <polygon points="35,30 35,50 50,40" fill="var(--green)"/>
+                <line x1="50" y1="30" x2="50" y2="50" stroke="var(--green)" stroke-width="3"/>
+                <line x1="50" y1="40" x2="70" y2="40" stroke="var(--text)" stroke-width="2"/>
+                <path d="M 75 35 L 80 40 L 75 45" fill="none" stroke="var(--green)" stroke-width="2"/>
+                <text x="85" y="45" fill="var(--green)" font-size="10">Corriente</text>
+              </svg>
+            </div>
+            <div class="polar-desc">+ en ánodo, - en cátodo<br><strong>→ Conduce corriente</strong></div>
+          </div>
+
+          <div class="polar-card bad">
+            <div class="polar-title">❌ POLARIZACIÓN INVERSA</div>
+            <div class="polar-circuit">
+              <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                <text x="10" y="15" fill="var(--red)" font-size="10">-</text>
+                <line x1="15" y1="40" x2="35" y2="40" stroke="var(--text)" stroke-width="2"/>
+                <!-- Diodo invertido: barra a la izquierda, flecha a la derecha -->
+                <line x1="35" y1="30" x2="35" y2="50" stroke="var(--red)" stroke-width="3"/>
+                <polygon points="35,40 50,30 50,50" fill="var(--red)"/>
+                <line x1="50" y1="40" x2="70" y2="40" stroke="var(--text)" stroke-width="2"/>
+                <text x="75" y="45" fill="var(--red)" font-size="10">✗ Bloqueado</text>
+              </svg>
+            </div>
+            <div class="polar-desc">- en ánodo, + en cátodo<br><strong>→ NO conduce</strong></div>
+          </div>
         </div>
       </div>
 
-      <div class="box-info">
-Esta calculadora te permite seleccionar los colores de cada banda y calcula automáticamente el valor de la resistencia y su tolerancia.</div>
+      <div class="theory-section">
+        <h2>💡 Diodo LED</h2>
+        <p>LED = Light Emitting Diode (Diodo Emisor de Luz). Emite luz al conducir corriente.</p>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="led-display">
+              <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+                <line x1="30" y1="60" x2="30" y2="25" stroke="var(--text)" stroke-width="2"/>
+                <line x1="70" y1="60" x2="70" y2="35" stroke="var(--text)" stroke-width="2"/>
+                <circle cx="50" cy="30" r="15" fill="none" stroke="var(--cyan)" stroke-width="2"/>
+                <circle cx="50" cy="30" r="5" fill="var(--cyan)" opacity="0.6"/>
+                <path d="M 55 20 L 60 15 L 57 15 L 62 10" stroke="var(--amber)" stroke-width="2" fill="none"/>
+                <path d="M 60 25 L 65 20 L 62 20 L 67 15" stroke="var(--amber)" stroke-width="2" fill="none"/>
+                <text x="25" y="75" fill="var(--green)" font-size="9">+</text>
+                <text x="67" y="75" fill="var(--text)" font-size="9">-</text>
+              </svg>
+            </div>
+            <div class="component-info">
+              <div class="component-name">IDENTIFICACIÓN</div>
+              <div class="component-desc">Patilla larga = Ánodo (+)<br>Patilla corta = Cátodo (-)</div>
+            </div>
+          </div>
+
+          <div class="component-card">
+            <div class="component-info" style="padding:1rem;">
+              <div class="component-name">⚠️ REGLA CRÍTICA</div>
+              <div class="component-desc" style="color:var(--amber);">
+                <strong>SIEMPRE usar resistencia limitadora</strong><br>
+                Corriente máxima: <strong>20-30 mA</strong><br>
+                Sin resistencia → LED quemado
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box-warn" style="margin-top:1rem;">
+<strong>Cálculo de resistencia limitadora:</strong> R = (Vfuente - VLED) / ILED<br>
+Ejemplo: Fuente 5V, LED rojo (2V, 20mA) → R = (5-2)/0.02 = 150Ω (usar 220Ω estándar)</div>
+      </div>
+
+      <div class="theory-section">
+        <h2>⚡ Transistor BJT (2N2222)</h2>
+        <p>Transistor Bipolar de Unión. <strong>Controla corriente entre Colector-Emisor mediante corriente de Base</strong>.</p>
+
+        <div class="transistor-grid">
+          <div class="transistor-card">
+            <div class="trans-type">NPN (2N2222)</div>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <line x1="30" y1="50" x2="50" y2="50" stroke="var(--text)" stroke-width="2"/>
+              <line x1="50" y1="30" x2="50" y2="70" stroke="var(--cyan)" stroke-width="3"/>
+              <line x1="50" y1="35" x2="70" y2="20" stroke="var(--text)" stroke-width="2"/>
+              <line x1="50" y1="65" x2="70" y2="80" stroke="var(--text)" stroke-width="2"/>
+              <polygon points="65,75 70,80 68,70" fill="var(--text)"/>
+              <text x="5" y="55" fill="var(--cyan)" font-size="10">Base</text>
+              <text x="73" y="20" fill="var(--green)" font-size="10">Colector</text>
+              <text x="73" y="85" fill="var(--text)" font-size="10">Emisor</text>
+            </svg>
+            <div class="trans-desc">
+              <strong>Funcionamiento:</strong><br>
+              Corriente Base (μA) → Activa<br>
+              Corriente Colector-Emisor (mA)
+            </div>
+          </div>
+
+          <div class="transistor-card">
+            <div class="trans-type">PINOUT 2N2222</div>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="25" fill="#333" stroke="var(--text)" stroke-width="2"/>
+              <line x1="35" y1="75" x2="35" y2="90" stroke="var(--text)" stroke-width="2"/>
+              <line x1="50" y1="75" x2="50" y2="90" stroke="var(--text)" stroke-width="2"/>
+              <line x1="65" y1="75" x2="65" y2="90" stroke="var(--text)" stroke-width="2"/>
+              <text x="28" y="100" fill="var(--green)" font-size="9">E</text>
+              <text x="46" y="100" fill="var(--cyan)" font-size="9">B</text>
+              <text x="62" y="100" fill="var(--amber)" font-size="9">C</text>
+              <path d="M 50 35 L 50 15 L 55 20 L 50 15 L 45 20" stroke="var(--amber)" stroke-width="1" fill="none"/>
+              <text x="30" y="15" fill="var(--dim)" font-size="8">Vista inferior</text>
+            </svg>
+            <div class="trans-desc">
+              <strong>Pines (vista inferior):</strong><br>
+              1=Emisor, 2=Base, 3=Colector
+            </div>
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-top:1rem;">
+<strong>Especificaciones 2N2222:</strong> Vceo=40V, Ic(max)=800mA, Ptot=500mW, hFE=100-300 (ganancia típica)</div>
+      </div>
+
+      <div class="theory-section">
+        <h2>📦 Otros Componentes Importantes</h2>
+
+        <div class="component-list-grid">
+          <div class="comp-list-card">
+            <div class="comp-icon">🌉</div>
+            <div class="comp-name">Puente Rectificador</div>
+            <div class="comp-desc">4 diodos integrados. Convierte AC → DC pulsante (onda completa)</div>
+          </div>
+
+          <div class="comp-list-card">
+            <div class="comp-icon">📏</div>
+            <div class="comp-name">Diodo Zener</div>
+            <div class="comp-desc">Polarización inversa → Mantiene voltaje constante (regulador)</div>
+          </div>
+
+          <div class="comp-list-card">
+            <div class="comp-icon">🌡️</div>
+            <div class="comp-name">LDR (Fotoresistor)</div>
+            <div class="comp-desc">Resistencia varía con luz. Luz↑ → R↓ (hasta 50Ω). Oscuro → MΩ</div>
+          </div>
+
+          <div class="comp-list-card">
+            <div class="comp-icon">⚙️</div>
+            <div class="comp-name">Potenciómetro</div>
+            <div class="comp-desc">Resistencia variable manual. 3 terminales (extremos + cursor)</div>
+          </div>
+
+          <div class="comp-list-card">
+            <div class="comp-icon">🔋</div>
+            <div class="comp-name">Condensador Electrolítico</div>
+            <div class="comp-desc">Almacena energía. CON polaridad (+/-). Al revés → EXPLOTA ⚠️</div>
+          </div>
+
+          <div class="comp-list-card">
+            <div class="comp-icon">🧲</div>
+            <div class="comp-name">Relé</div>
+            <div class="comp-desc">Interruptor electromagnético. Circuito bajo controla circuito alto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PÁGINA: LABORATORIO VIRTUAL -->
+    <div class="page" id="page-laboratorio">
+      <div class="pg-header">
+        <div class="pg-sup">PRÁCTICA INTERACTIVA</div>
+        <h1 class="pg-title">Laboratorio <span>Virtual</span></h1>
+        <div class="pg-sub">Simuladores de circuitos electrónicos</div>
+      </div>
+
+      <div class="action-bar">
+        <button class="action-btn active" onclick="switchLab('diodo')">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          DIODO
+        </button>
+        <button class="action-btn" onclick="switchLab('led')">
+          <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+          LED
+        </button>
+        <button class="action-btn" onclick="switchLab('oscilador')">
+          <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+          OSCILADOR
+        </button>
+      </div>
+
+      <!-- LAB 1: PRUEBA DE DIODO -->
+      <div class="lab-panel active" id="lab-diodo">
+        <div class="lab-objective">
+          <div class="obj-icon">🎯</div>
+          <div class="obj-text">
+            <strong>Objetivo:</strong> Verificar el estado de un diodo mediante polarización directa e inversa
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-bottom:1.5rem;">
+<strong>¿Qué vamos a hacer?</strong> Vamos a simular un circuito básico con un diodo para entender cómo funciona. Podrás cambiar el voltaje de la fuente, elegir diferentes resistencias, y lo más importante: <strong>cambiar la polarización del diodo (directa o inversa)</strong>. Esto te ayudará a ver cuándo el diodo conduce corriente y cuándo la bloquea. Al hacer clic en "MEDIR CIRCUITO", verás los voltajes y corrientes que se producen en cada configuración.</div>
+
+        <div class="lab-circuit-area">
+          <div class="lab-controls">
+            <div class="lab-section-title">CONFIGURACIÓN DEL CIRCUITO</div>
+            
+            <div class="lab-control-group">
+              <label>Voltaje de Fuente (V)</label>
+              <input type="range" id="diodo-voltage" min="0" max="15" value="5" step="0.5" oninput="updateDiodoCircuit()">
+              <div class="lab-value" id="diodo-v-display">5.0 V</div>
+            </div>
+
+            <div class="lab-control-group">
+              <label>Resistencia Limitadora (kΩ)</label>
+              <select id="diodo-r" onchange="updateDiodoCircuit()">
+                <option value="470">470 Ω</option>
+                <option value="1000" selected>1 kΩ</option>
+                <option value="4700">4.7 kΩ</option>
+                <option value="10000">10 kΩ</option>
+              </select>
+            </div>
+
+            <div class="lab-control-group">
+              <label>Polarización del Diodo</label>
+              <div class="lab-switch-group">
+                <button class="lab-switch-btn active" onclick="setDiodoPolarization('directa')">DIRECTA</button>
+                <button class="lab-switch-btn" onclick="setDiodoPolarization('inversa')">INVERSA</button>
+              </div>
+            </div>
+
+            <button class="lab-measure-btn" onclick="measureDiodo()">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+              MEDIR CIRCUITO
+            </button>
+          </div>
+
+          <div class="lab-display">
+            <div class="lab-circuit-diagram" id="diodo-diagram">
+              <!-- Se actualiza dinámicamente con JavaScript -->
+            </div>
+
+            <div class="lab-results" id="diodo-results" style="display:none;">
+              <div class="lab-section-title">RESULTADOS</div>
+              <div class="lab-result-grid">
+                <div class="lab-result-item">
+                  <div class="lab-result-label">Voltaje Diodo (VD)</div>
+                  <div class="lab-result-value" id="diodo-vd">--</div>
+                </div>
+                <div class="lab-result-item">
+                  <div class="lab-result-label">Voltaje Resistencia (VR)</div>
+                  <div class="lab-result-value" id="diodo-vr">--</div>
+                </div>
+                <div class="lab-result-item">
+                  <div class="lab-result-label">Corriente (I)</div>
+                  <div class="lab-result-value" id="diodo-i">--</div>
+                </div>
+                <div class="lab-result-item">
+                  <div class="lab-result-label">Estado</div>
+                  <div class="lab-result-value" id="diodo-estado">--</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-theory">
+          <h3>💡 Teoría</h3>
+          <div class="theory-points">
+            <div class="theory-point">
+              <strong>Polarización Directa:</strong> + en ánodo, - en cátodo → Diodo conduce (~0.7V caída)
+            </div>
+            <div class="theory-point">
+              <strong>Polarización Inversa:</strong> - en ánodo, + en cátodo → Diodo bloquea (corriente ≈ 0)
+            </div>
+            <div class="theory-point">
+              <strong>Prueba con multímetro:</strong> Modo diodo debe marcar ~0.6-0.7V en directa, "OL" en inversa
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 2: CIRCUITO CON LED -->
+      <div class="lab-panel" id="lab-led">
+        <div class="lab-objective">
+          <div class="obj-icon">💡</div>
+          <div class="obj-text">
+            <strong>Objetivo:</strong> Calcular resistencia limitadora para LED y observar su funcionamiento
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-bottom:1.5rem;">
+<strong>¿Qué vamos a hacer?</strong> Un LED nunca se conecta directamente a una fuente de voltaje, ¡se quemaría al instante! Necesita una resistencia que limite la corriente. Esta calculadora te ayuda a encontrar el <strong>valor correcto de resistencia</strong> según el voltaje de tu fuente, el color del LED (cada color tiene diferente voltaje), y la corriente que quieres usar. Te mostrará tanto el cálculo teórico como la resistencia comercial más cercana que debes comprar.</div>
+
+        <div class="lab-circuit-area">
+          <div class="lab-controls">
+            <div class="lab-section-title">CALCULADORA LED</div>
+            
+            <div class="lab-control-group">
+              <label>Voltaje de Fuente (V)</label>
+              <input type="number" id="led-vsource" value="9" min="3" max="24" step="0.1" oninput="calculateLED()">
+            </div>
+
+            <div class="lab-control-group">
+              <label>Color del LED</label>
+              <select id="led-color" onchange="calculateLED()">
+                <option value="1.8">Rojo (1.8V)</option>
+                <option value="2.0">Verde (2.0V)</option>
+                <option value="2.1">Amarillo (2.1V)</option>
+                <option value="3.2">Azul (3.2V)</option>
+                <option value="3.3">Blanco (3.3V)</option>
+              </select>
+            </div>
+
+            <div class="lab-control-group">
+              <label>Corriente Deseada (mA)</label>
+              <input type="number" id="led-current" value="20" min="5" max="30" step="1" oninput="calculateLED()">
+            </div>
+
+            <button class="lab-measure-btn" onclick="calculateLED()">
+              <svg viewBox="0 0 24 24"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14H3v3c0 1.66 1.34 3 3 3h12c1.66 0 3-1.34 3-3V2l-1.5 1.5z"/></svg>
+              CALCULAR
+            </button>
+          </div>
+
+          <div class="lab-display">
+            <div class="led-calc-result" id="led-calc-result" style="display:none;">
+              <div class="led-visual" id="led-visual">
+                <!-- SVG del LED se genera aquí -->
+              </div>
+              
+              <div class="led-calc-data">
+                <div class="calc-formula">
+                  <div class="formula-title">CÁLCULO</div>
+                  <div class="formula-step">R = (Vfuente - VLED) / ILED</div>
+                  <div class="formula-step" id="led-formula-values">--</div>
+                  <div class="formula-result" id="led-r-calculated">R = -- Ω</div>
+                </div>
+
+                <div class="calc-recommendation">
+                  <div class="rec-title">RESISTENCIA RECOMENDADA</div>
+                  <div class="rec-value" id="led-r-standard">--</div>
+                  <div class="rec-note">(Valor comercial más cercano)</div>
+                </div>
+
+                <div class="calc-power">
+                  <div class="power-label">Potencia disipada:</div>
+                  <div class="power-value" id="led-power">--</div>
+                  <div class="power-rec">Usar resistencia de <strong>¼ W</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box-warn" style="margin-top:1.5rem;">
+<strong>⚠️ NUNCA conectes un LED directamente a la fuente sin resistencia.</strong> Aunque el voltaje sea bajo, la corriente no está limitada y quemará el LED instantáneamente.</div>
+      </div>
+
+      <!-- LAB 3: OSCILADOR ASTABLE -->
+      <div class="lab-panel" id="lab-oscilador">
+        <div class="lab-objective">
+          <div class="obj-icon">📊</div>
+          <div class="obj-text">
+            <strong>Objetivo:</strong> Calcular frecuencia de oscilación de circuito astable con transistores BJT
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-bottom:1.5rem;">
+<strong>¿Qué vamos a hacer?</strong> Un circuito astable es un oscilador que hace <strong>parpadear LEDs de forma alternada</strong>, como las luces intermitentes de un auto o alarma. Este simulador te ayuda a calcular la <strong>frecuencia de parpadeo</strong> (cuántas veces por segundo cambian los LEDs) según los valores de las resistencias y condensadores que uses. Puedes experimentar con diferentes combinaciones para ver cómo afectan la velocidad de oscilación. ¡Útil para diseñar circuitos de señalización!</div>
+
+        <div class="oscilador-info">
+          <div class="osc-diagram">
+            <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+              <text x="150" y="20" fill="var(--cyan)" font-size="12" text-anchor="middle">CIRCUITO ASTABLE</text>
+              <rect x="50" y="40" width="200" height="140" fill="none" stroke="var(--border2)" stroke-width="1" stroke-dasharray="5,5"/>
+              <text x="150" y="60" fill="var(--text)" font-size="10" text-anchor="middle">2 Transistores BJT 2N2222</text>
+              <text x="150" y="80" fill="var(--text)" font-size="10" text-anchor="middle">2 Condensadores (C1, C2)</text>
+              <text x="150" y="100" fill="var(--text)" font-size="10" text-anchor="middle">Resistencias de carga y base</text>
+              <circle cx="100" cy="130" r="8" fill="var(--red)" opacity="0.5"/>
+              <circle cx="200" cy="130" r="8" fill="var(--red)" opacity="0.5"/>
+              <text x="100" y="155" fill="var(--red)" font-size="8" text-anchor="middle">LED1</text>
+              <text x="200" y="155" fill="var(--red)" font-size="8" text-anchor="middle">LED2</text>
+            </svg>
+          </div>
+
+          <div class="osc-formula-box">
+            <div class="osc-formula-title">FÓRMULA DE FRECUENCIA</div>
+            <div class="osc-formula">F(Hz) = 1 / [0.69 × (R3×C1 + R4×C2)]</div>
+            <div class="osc-note">
+              R3, R4 = Resistencias de base (Ω)<br>
+              C1, C2 = Condensadores (F)
+            </div>
+          </div>
+        </div>
+
+        <div class="osc-calculator">
+          <div class="osc-inputs">
+            <div class="osc-input-group">
+              <label>R3 (kΩ)</label>
+              <select id="osc-r3" onchange="calculateOscillator()">
+                <option value="4.7">4.7 kΩ</option>
+                <option value="10">10 kΩ</option>
+                <option value="50" selected>50 kΩ</option>
+              </select>
+            </div>
+
+            <div class="osc-input-group">
+              <label>R4 (kΩ)</label>
+              <select id="osc-r4" onchange="calculateOscillator()">
+                <option value="4.7">4.7 kΩ</option>
+                <option value="10">10 kΩ</option>
+                <option value="50" selected>50 kΩ</option>
+              </select>
+            </div>
+
+            <div class="osc-input-group">
+              <label>C1 (μF)</label>
+              <select id="osc-c1" onchange="calculateOscillator()">
+                <option value="4.7">4.7 μF</option>
+                <option value="100" selected>100 μF</option>
+              </select>
+            </div>
+
+            <div class="osc-input-group">
+              <label>C2 (μF)</label>
+              <select id="osc-c2" onchange="calculateOscillator()">
+                <option value="4.7">4.7 μF</option>
+                <option value="100" selected>100 μF</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="lab-measure-btn" onclick="calculateOscillator()">CALCULAR FRECUENCIA</button>
+
+          <div class="osc-results" id="osc-results" style="display:none;">
+            <div class="osc-result-item">
+              <div class="osc-result-label">Frecuencia calculada:</div>
+              <div class="osc-result-value" id="osc-freq">-- Hz</div>
+            </div>
+            <div class="osc-result-item">
+              <div class="osc-result-label">Período:</div>
+              <div class="osc-result-value" id="osc-period">-- ms</div>
+            </div>
+            <div class="osc-visualization" id="osc-viz">
+              <!-- Visualización de pulsos -->
+            </div>
+          </div>
+        </div>
+
+        <div class="box-info" style="margin-top:1.5rem;">
+<strong>Aplicación:</strong> Este circuito genera pulsos alternados que hacen parpadear los LEDs. Se usa en luces intermitentes, alarmas, indicadores visuales, etc.</div>
+      </div>
+    </div>
+
+    <!-- PÁGINA: CALCULADORA (ELIMINADA - AHORA ESTÁ DENTRO DE CALCULADORA RESISTENCIA) -->
+    <div class="page" id="page-u1calc" style="display:none;">
+      <!-- Página antigua eliminada - todo el contenido está ahora en Calculadora Resistencia -->
     </div>
 
     <!-- PÁGINA: EJERCICIOS -->
@@ -1328,9 +1821,22 @@ Esta calculadora te permite seleccionar los colores de cada banda y calcula auto
     <div class="page" id="page-formulas">
       <div class="pg-header">
         <div class="pg-sup">REFERENCIA RÁPIDA</div>
-        <h1 class="pg-title">Fórmulas <span>Esenciales</span></h1>
-        <div class="pg-sub">Electricidad básica y análisis de circuitos</div>
+        <h1 class="pg-title">Fórmulas y <span>Glosario</span></h1>
+        <div class="pg-sub">Ecuaciones esenciales y términos técnicos</div>
       </div>
+
+      <div class="action-bar">
+        <button class="action-btn active" onclick="switchFormulaGlos('formulas')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5.97 4.06L14.09 6l1.41 1.41L16.91 6l1.06 1.06-1.41 1.41 1.41 1.41-1.06 1.06-1.41-1.4-1.41 1.41-1.06-1.06 1.41-1.41-1.41-1.42zm-6.78.66h5v1.5h-5v-1.5zM11.5 16h-2v2H8v-2H6v-1.5h2v-2h1.5v2h2V16zm6.5 1.25h-5v-1.5h5v1.5zm0-2.5h-5v-1.5h5v1.5z"/></svg>
+          FÓRMULAS
+        </button>
+        <button class="action-btn" onclick="switchFormulaGlos('glosario')">
+          <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+          GLOSARIO
+        </button>
+      </div>
+
+      <div class="formglos-panel active" id="panel-formulas">
 
       <div id="formulas-container">
         <div class="theory-section">
@@ -1391,87 +1897,87 @@ Esta calculadora te permite seleccionar los colores de cada banda y calcula auto
           </div>
         </div>
       </div>
+      </div>
+
+      <!-- PANEL: GLOSARIO -->
+      <div class="formglos-panel" id="panel-glosario">
+        <div class="action-bar">
+          <button class="action-btn" id="show-fav-glosario" onclick="toggleGlosarioFavorites()">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            SOLO FAVORITAS
+          </button>
+        </div>
+
+        <input type="text" class="glos-search" placeholder="Buscar término..." oninput="filterGlosario(this.value)">
+
+        <div id="glosario-list">
+          <div class="glos-row" data-term="amperio" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Amperio (A)</div>
+            <div class="glos-def">Unidad de medida de la corriente eléctrica. Un amperio equivale a un coulomb de carga por segundo.</div>
+          </div>
+          <div class="glos-row" data-term="voltio" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Voltio (V)</div>
+            <div class="glos-def">Unidad de medida del voltaje o diferencia de potencial eléctrico.</div>
+          </div>
+          <div class="glos-row" data-term="ohmio" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Ohmio (Ω)</div>
+            <div class="glos-def">Unidad de medida de la resistencia eléctrica. Representa la oposición al flujo de corriente.</div>
+          </div>
+          <div class="glos-row" data-term="resistencia" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Resistencia</div>
+            <div class="glos-def">Componente pasivo que limita el flujo de corriente en un circuito. Su valor se expresa en ohmios (Ω).</div>
+          </div>
+          <div class="glos-row" data-term="multimetro" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Multímetro</div>
+            <div class="glos-def">Instrumento de medición que combina voltímetro, amperímetro y óhmetro. Permite medir voltaje, corriente y resistencia.</div>
+          </div>
+          <div class="glos-row" data-term="ley de ohm" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Ley de Ohm</div>
+            <div class="glos-def">Relación fundamental entre voltaje, corriente y resistencia: V = I × R.</div>
+          </div>
+          <div class="glos-row" data-term="corriente alterna" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Corriente Alterna (AC)</div>
+            <div class="glos-def">Tipo de corriente eléctrica en la que los electrones cambian de dirección periódicamente. Es la forma de energía distribuida en la red eléctrica (220V 50Hz en Chile).</div>
+          </div>
+          <div class="glos-row" data-term="corriente continua" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Corriente Continua (DC)</div>
+            <div class="glos-def">Tipo de corriente eléctrica en la que los electrones fluyen en una sola dirección. Común en baterías y circuitos electrónicos.</div>
+          </div>
+          <div class="glos-row" data-term="tolerancia" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Tolerancia</div>
+            <div class="glos-def">Variación permitida en el valor de un componente, expresada como porcentaje. Por ejemplo, ±5% en una resistencia de 1kΩ significa que su valor real puede estar entre 950Ω y 1050Ω.</div>
+          </div>
+          <div class="glos-row" data-term="potencia" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Potencia (P)</div>
+            <div class="glos-def">Cantidad de energía eléctrica consumida o generada por unidad de tiempo. Se mide en watts (W). P = V × I.</div>
+          </div>
+          <div class="glos-row" data-term="circuito serie" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Circuito Serie</div>
+            <div class="glos-def">Configuración en la que los componentes están conectados uno después del otro, formando un solo camino para la corriente.</div>
+          </div>
+          <div class="glos-row" data-term="circuito paralelo" data-fav="false">
+            <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
+            <div class="glos-term">Circuito Paralelo</div>
+            <div class="glos-def">Configuración en la que los componentes están conectados en múltiples ramas, ofreciendo varios caminos para la corriente.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- PÁGINA: GLOSARIO -->
-    <div class="page" id="page-glosario">
-      <div class="pg-header">
-        <div class="pg-sup">TÉRMINOS TÉCNICOS</div>
-        <h1 class="pg-title">Glosario de <span>Mantenimiento</span></h1>
-        <div class="pg-sub">Definiciones clave en electricidad y automatización</div>
-      </div>
-
-      <div class="action-bar">
-        <button class="action-btn" id="show-fav-glosario" onclick="toggleGlosarioFavorites()">
-          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          SOLO FAVORITAS
-        </button>
-      </div>
-
-      <input type="text" class="glos-search" placeholder="Buscar término..." oninput="filterGlosario(this.value)">
-
-      <div id="glosario-list">
-        <div class="glos-row" data-term="amperio" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Amperio (A)</div>
-          <div class="glos-def">Unidad de medida de la corriente eléctrica. Un amperio equivale a un coulomb de carga por segundo.</div>
-        </div>
-        <div class="glos-row" data-term="voltio" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Voltio (V)</div>
-          <div class="glos-def">Unidad de medida del voltaje o diferencia de potencial eléctrico.</div>
-        </div>
-        <div class="glos-row" data-term="ohmio" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Ohmio (Ω)</div>
-          <div class="glos-def">Unidad de medida de la resistencia eléctrica. Representa la oposición al flujo de corriente.</div>
-        </div>
-        <div class="glos-row" data-term="resistencia" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Resistencia</div>
-          <div class="glos-def">Componente pasivo que limita el flujo de corriente en un circuito. Su valor se expresa en ohmios (Ω).</div>
-        </div>
-        <div class="glos-row" data-term="multimetro" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Multímetro</div>
-          <div class="glos-def">Instrumento de medición que combina voltímetro, amperímetro y óhmetro. Permite medir voltaje, corriente y resistencia.</div>
-        </div>
-        <div class="glos-row" data-term="ley de ohm" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Ley de Ohm</div>
-          <div class="glos-def">Relación fundamental entre voltaje, corriente y resistencia: V = I × R.</div>
-        </div>
-        <div class="glos-row" data-term="corriente alterna" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Corriente Alterna (AC)</div>
-          <div class="glos-def">Tipo de corriente eléctrica en la que los electrones cambian de dirección periódicamente. Es la forma de energía distribuida en la red eléctrica (220V 50Hz en Chile).</div>
-        </div>
-        <div class="glos-row" data-term="corriente continua" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Corriente Continua (DC)</div>
-          <div class="glos-def">Tipo de corriente eléctrica en la que los electrones fluyen en una sola dirección. Común en baterías y circuitos electrónicos.</div>
-        </div>
-        <div class="glos-row" data-term="tolerancia" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Tolerancia</div>
-          <div class="glos-def">Variación permitida en el valor de un componente, expresada como porcentaje. Por ejemplo, ±5% en una resistencia de 1kΩ significa que su valor real puede estar entre 950Ω y 1050Ω.</div>
-        </div>
-        <div class="glos-row" data-term="potencia" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Potencia (P)</div>
-          <div class="glos-def">Cantidad de energía eléctrica consumida o generada por unidad de tiempo. Se mide en watts (W). P = V × I.</div>
-        </div>
-        <div class="glos-row" data-term="circuito serie" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Circuito Serie</div>
-          <div class="glos-def">Configuración en la que los componentes están conectados uno después del otro, formando un solo camino para la corriente.</div>
-        </div>
-        <div class="glos-row" data-term="circuito paralelo" data-fav="false">
-          <span class="fav-marker" onclick="toggleGlosarioFav(this)">★</span>
-          <div class="glos-term">Circuito Paralelo</div>
-          <div class="glos-def">Configuración en la que los componentes están conectados en múltiples ramas, ofreciendo varios caminos para la corriente.</div>
-        </div>
-      </div>
+    <!-- PÁGINA: GLOSARIO (ELIMINADA - AHORA ESTÁ DENTRO DE FÓRMULAS) -->
+    <div class="page" id="page-glosario" style="display:none;">
+      <!-- Página antigua mantenida para compatibilidad pero oculta -->
     </div>
 
     <!-- PÁGINA: FLASHCARDS -->
@@ -1585,6 +2091,54 @@ Esta calculadora te permite seleccionar los colores de cada banda y calcula auto
             </div>
           </div>
         </div>
+
+        <div class="fc-card" data-cat="concepto">
+          <div class="fc-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="fc-front">
+              <div class="fc-front-term">¿Qué es un diodo?</div>
+              <div class="fc-front-cat">SEMICONDUCTORES</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-back-def">Componente que permite el paso de corriente en UN SOLO SENTIDO: de ánodo (+) a cátodo (-). En inversa bloquea.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fc-card" data-cat="practica">
+          <div class="fc-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="fc-front">
+              <div class="fc-front-term">¿Cómo identificar un LED?</div>
+              <div class="fc-front-cat">SEMICONDUCTORES</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-back-def">Patilla LARGA = Ánodo (+)<br>Patilla CORTA = Cátodo (-)<br><br>SIEMPRE usar resistencia limitadora (20-30mA máx)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fc-card" data-cat="concepto">
+          <div class="fc-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="fc-front">
+              <div class="fc-front-term">¿Qué es un transistor BJT?</div>
+              <div class="fc-front-cat">SEMICONDUCTORES</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-back-def">Dispositivo de 3 pines (Emisor-Base-Colector) que controla corriente entre C-E mediante pequeña corriente en la Base.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fc-card" data-cat="practica">
+          <div class="fc-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="fc-front">
+              <div class="fc-front-term">Cálculo resistencia LED</div>
+              <div class="fc-front-cat">FÓRMULA</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-back-def">R = (Vfuente - VLED) / ILED<br><br>Ejemplo: 5V, LED rojo 2V, 20mA<br>R = (5-2)/0.02 = 150Ω → Usar 220Ω</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1627,7 +2181,7 @@ Las notas se guardan en el almacenamiento local de tu navegador. No compartas tu
 </div>
 
 <script>
-const pageNames={inicio:'Inicio',multimetro:'Guía Multímetro','practica-colores':'Práctica Colores',conversor:'Conversor',u1c1:'U1 / Electricidad Básica',u1calc:'U1 / Calculadora',u1ej:'U1 / Ejercicios',formulas:'Fórmulas',glosario:'Glosario',flashcards:'Flashcards',notas:'Notas'};
+const pageNames={inicio:'Inicio',multimetro:'Guía Multímetro','practica-colores':'Calculadora Resistencia',conversor:'Conversor',u1c1:'U1 / Electricidad Básica',componentes:'U1 / Semiconductores',laboratorio:'Laboratorio Virtual',u1calc:'Calculadora',u1ej:'U1 / Ejercicios',formulas:'Fórmulas y Glosario',glosario:'Glosario',flashcards:'Flashcards',notas:'Notas'};
 function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
@@ -1794,6 +2348,364 @@ function submitExam(){
 
 // FAVORITOS GLOSARIO
 let showingFavGlosario = false;
+
+// ==========================================
+// SIMULADOR DE MULTÍMETRO
+// ==========================================
+
+// Estado del simulador
+let simState = {
+  selector: 'vac',
+  cableBlack: 'none',
+  cableRed: 'none',
+  currentScenario: 0,
+  stats: JSON.parse(localStorage.getItem('sim-stats') || '{"correct":0,"errors":0}')
+};
+
+// Escenarios de práctica
+const scenarios = [
+  {
+    icon: '🔋',
+    title: 'Medir Voltaje de Batería',
+    description: 'Necesitas medir el voltaje de una batería de 9V (DC). Configura el multímetro correctamente.',
+    hints: ['💡 Es corriente continua (DC)', '💡 La batería tiene ~9 voltios'],
+    correct: { selector: 'vdc', black: 'com', red: 'vohm' },
+    reading: '9.12',
+    unit: 'V DC',
+    explanation: '✓ Perfecto! Selector en V⎓ (DC), cable negro en COM, cable rojo en VΩmA. La conexión es en paralelo.'
+  },
+  {
+    icon: '🔌',
+    title: 'Medir Voltaje de Red (220V)',
+    description: 'Debes medir el voltaje de un tomacorriente (220V AC). Configura el multímetro.',
+    hints: ['💡 Es corriente alterna (AC)', '💡 Red eléctrica chilena = 220V'],
+    correct: { selector: 'vac', black: 'com', red: 'vohm' },
+    reading: '221.3',
+    unit: 'V AC',
+    explanation: '✓ Excelente! Selector en V~ (AC), cable negro en COM, cable rojo en VΩmA. Ten cuidado con los 220V.'
+  },
+  {
+    icon: '🎨',
+    title: 'Medir Resistencia',
+    description: 'Tienes una resistencia física y necesitas verificar su valor real. El circuito está apagado.',
+    hints: ['💡 El circuito debe estar SIN energía', '💡 Usa el modo Ohmios'],
+    correct: { selector: 'ohm', black: 'com', red: 'vohm' },
+    reading: '10.02',
+    unit: 'kΩ',
+    explanation: '✓ Correcto! Selector en Ω, cables en COM y VΩmA. NUNCA midas resistencia con el circuito energizado.'
+  },
+  {
+    icon: '💡',
+    title: 'Medir Corriente LED (20mA)',
+    description: 'Quieres medir la corriente que consume un LED en un circuito. Corriente esperada: ~20mA.',
+    hints: ['💡 Corriente DC menor a 200mA', '💡 Debes ABRIR el circuito e insertar el multímetro'],
+    correct: { selector: 'adc', black: 'com', red: 'vohm' },
+    reading: '19.8',
+    unit: 'mA',
+    explanation: '✓ Perfecto! Selector en A⎓, cables en COM y VΩmA (porque es menos de 200mA). Conexión en SERIE.'
+  },
+  {
+    icon: '⚡',
+    title: 'Medir Alta Corriente (5A)',
+    description: 'Necesitas medir la corriente de un motor que consume aproximadamente 5 amperios DC.',
+    hints: ['💡 Corriente mayor a 200mA = usa terminal 10A', '💡 Conexión en serie con el circuito'],
+    correct: { selector: 'adc', black: 'com', red: '10a' },
+    reading: '4.87',
+    unit: 'A',
+    explanation: '✓ Excelente! Para corrientes mayores a 200mA, usa el terminal 10A. Selector en A⎓, cables en COM y 10A.'
+  },
+  {
+    icon: '🔌',
+    title: 'Verificar Cable',
+    description: 'Tienes un cable que podría estar roto internamente. Verifica si hay continuidad.',
+    hints: ['💡 Modo continuidad (sonido)', '💡 Debe hacer BEEP si el cable está bueno'],
+    correct: { selector: 'cont', black: 'com', red: 'vohm' },
+    reading: 'BEEP',
+    unit: '♪',
+    explanation: '✓ Correcto! Modo continuidad ())))), cables en COM y VΩmA. El BEEP indica que el cable está OK.'
+  },
+  {
+    icon: '⚠️',
+    title: 'Verificar Fusible',
+    description: 'Un fusible podría estar quemado. Verifica si conduce electricidad (circuito apagado).',
+    hints: ['💡 Usa modo continuidad', '💡 Sin BEEP = fusible quemado'],
+    correct: { selector: 'cont', black: 'com', red: 'vohm' },
+    reading: '---',
+    unit: 'X',
+    explanation: '✓ Bien! Sin BEEP significa que el fusible está abierto (quemado). Modo )))), cables en COM y VΩmA.'
+  },
+  {
+    icon: '🏠',
+    title: 'Medir Voltaje Transformador AC',
+    description: 'Verificar el voltaje de salida de un transformador de 12V AC.',
+    hints: ['💡 Es corriente alterna (AC)', '💡 Transformadores típicos son AC'],
+    correct: { selector: 'vac', black: 'com', red: 'vohm' },
+    reading: '11.94',
+    unit: 'V AC',
+    explanation: '✓ Perfecto! Selector en V~ (AC), cables en COM y VΩmA. Los transformadores entregan AC.'
+  }
+];
+
+// Cambiar modo del multímetro
+function switchMultimeterMode(mode) {
+  document.querySelectorAll('.mm-mode').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('#page-multimetro .action-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+  event.target.closest('.action-btn').classList.add('active');
+  
+  if(mode === 'quiz') generateQuizQuestion();
+}
+
+// Configurar selector
+function setSelector(mode) {
+  simState.selector = mode;
+  document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateDisplay();
+}
+
+// Conectar cables
+function connectCable(color, terminal) {
+  if(color === 'black') {
+    // Limpiar todas las conexiones negras
+    document.querySelectorAll('.cable-indicator').forEach(ind => {
+      if(ind.classList.contains('connected-black')) ind.classList.remove('connected-black');
+    });
+    document.querySelectorAll('.cable-btn-group:first-child .cable-btn').forEach(b => b.classList.remove('active'));
+    
+    simState.cableBlack = terminal;
+    if(terminal !== 'none') {
+      document.getElementById('cable-' + terminal).classList.add('connected-black');
+      event.target.classList.add('active');
+    }
+  } else {
+    // Limpiar todas las conexiones rojas
+    document.querySelectorAll('.cable-indicator').forEach(ind => {
+      if(ind.classList.contains('connected-red')) ind.classList.remove('connected-red');
+    });
+    document.querySelectorAll('.cable-btn-group:last-child .cable-btn').forEach(b => b.classList.remove('active'));
+    
+    simState.cableRed = terminal;
+    if(terminal !== 'none') {
+      document.getElementById('cable-' + terminal).classList.add('connected-red');
+      event.target.classList.add('active');
+    }
+  }
+  updateDisplay();
+}
+
+// Actualizar pantalla del multímetro
+function updateDisplay() {
+  const reading = document.getElementById('mm-reading');
+  const unit = document.getElementById('mm-unit');
+  
+  if(simState.selector === 'off' || simState.cableBlack === 'none' || simState.cableRed === 'none') {
+    reading.textContent = '---';
+    unit.textContent = '--';
+  } else {
+    reading.textContent = '...';
+    unit.textContent = simState.selector.toUpperCase();
+  }
+}
+
+// Verificar configuración del simulador
+function checkSimulatorConfig() {
+  const scenario = scenarios[simState.currentScenario];
+  const correct = scenario.correct;
+  const feedback = document.getElementById('sim-feedback');
+  
+  const isCorrect = 
+    simState.selector === correct.selector &&
+    simState.cableBlack === correct.black &&
+    simState.cableRed === correct.red;
+  
+  if(isCorrect) {
+    feedback.className = 'sim-feedback show correct';
+    feedback.innerHTML = `<strong>¡CORRECTO! ✓</strong><br>${scenario.explanation}`;
+    document.getElementById('mm-reading').textContent = scenario.reading;
+    document.getElementById('mm-unit').textContent = scenario.unit;
+    document.querySelector('.sim-check-btn').style.display = 'none';
+    document.querySelector('.sim-next-btn').style.display = 'block';
+    simState.stats.correct++;
+  } else {
+    feedback.className = 'sim-feedback show wrong';
+    let errors = [];
+    if(simState.selector !== correct.selector) errors.push('Selector incorrecto');
+    if(simState.cableBlack !== correct.black) errors.push('Cable negro mal conectado');
+    if(simState.cableRed !== correct.red) errors.push('Cable rojo mal conectado');
+    feedback.innerHTML = `<strong>INCORRECTO ✗</strong><br>Errores: ${errors.join(', ')}. Intenta de nuevo.`;
+    simState.stats.errors++;
+  }
+  
+  localStorage.setItem('sim-stats', JSON.stringify(simState.stats));
+  updateSimStats();
+}
+
+// Siguiente escenario
+function nextScenario() {
+  simState.currentScenario = (simState.currentScenario + 1) % scenarios.length;
+  loadScenario();
+}
+
+// Cargar escenario
+function loadScenario() {
+  const scenario = scenarios[simState.currentScenario];
+  document.getElementById('scenario-num').textContent = `${simState.currentScenario + 1} / ${scenarios.length}`;
+  document.querySelector('.scenario-icon').textContent = scenario.icon;
+  document.getElementById('scenario-title').textContent = scenario.title;
+  document.getElementById('scenario-description').textContent = scenario.description;
+  document.getElementById('scenario-hints').innerHTML = scenario.hints.map(h => `<div class="hint-item">${h}</div>`).join('');
+  
+  // Reset configuración
+  simState.selector = 'vac';
+  simState.cableBlack = 'none';
+  simState.cableRed = 'none';
+  
+  document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-mode="vac"]').classList.add('active');
+  document.querySelectorAll('.cable-indicator').forEach(ind => {
+    ind.classList.remove('connected-black', 'connected-red');
+  });
+  document.querySelectorAll('.cable-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('mm-reading').textContent = '---';
+  document.getElementById('mm-unit').textContent = '--';
+  
+  document.getElementById('sim-feedback').className = 'sim-feedback';
+  document.querySelector('.sim-check-btn').style.display = 'block';
+  document.querySelector('.sim-next-btn').style.display = 'none';
+}
+
+// Actualizar estadísticas
+function updateSimStats() {
+  document.getElementById('sim-correct').textContent = simState.stats.correct;
+  document.getElementById('sim-errors').textContent = simState.stats.errors;
+}
+
+// ==========================================
+// QUIZ DE MULTÍMETRO
+// ==========================================
+
+let quizStats = JSON.parse(localStorage.getItem('quiz-stats') || '{"streak":0,"correct":0,"incorrect":0}');
+
+const quizQuestions = [
+  {
+    scenario: '¿Qué selector y cables usas para medir una batería de 9V?',
+    options: [
+      { text: 'Selector: V⎓, Negro→COM, Rojo→VΩmA', correct: true },
+      { text: 'Selector: V~, Negro→COM, Rojo→VΩmA', correct: false },
+      { text: 'Selector: V⎓, Negro→VΩmA, Rojo→COM', correct: false },
+      { text: 'Selector: Ω, Negro→COM, Rojo→VΩmA', correct: false }
+    ],
+    explanation: 'Las baterías son DC (corriente continua), usa V⎓. Cables siempre: negro en COM, rojo en VΩmA para voltaje.'
+  },
+  {
+    scenario: '¿Cómo mides la corriente de un LED que consume 20mA?',
+    options: [
+      { text: 'Selector: A⎓, en SERIE, Negro→COM, Rojo→VΩmA', correct: true },
+      { text: 'Selector: A⎓, en PARALELO, Negro→COM, Rojo→10A', correct: false },
+      { text: 'Selector: V⎓, en SERIE, Negro→COM, Rojo→VΩmA', correct: false },
+      { text: 'Selector: A⎓, en SERIE, Negro→COM, Rojo→10A', correct: false }
+    ],
+    explanation: 'Corriente se mide en SERIE. 20mA < 200mA, usa VΩmA. Si fuera >200mA usarías 10A.'
+  },
+  {
+    scenario: 'Antes de medir una resistencia en un circuito, ¿qué DEBES hacer?',
+    options: [
+      { text: 'Desenergizar completamente el circuito', correct: true },
+      { text: 'Poner el selector en V~', correct: false },
+      { text: 'Conectar en paralelo', correct: false },
+      { text: 'Usar el terminal 10A', correct: false }
+    ],
+    explanation: 'NUNCA midas resistencia con voltaje presente. Primero apaga todo y descarga capacitores.'
+  },
+  {
+    scenario: '¿Cuál es el ERROR FATAL más común que quema el fusible?',
+    options: [
+      { text: 'Medir corriente en PARALELO en lugar de SERIE', correct: true },
+      { text: 'Usar V~ en lugar de V⎓', correct: false },
+      { text: 'Olvidar cambiar el selector', correct: false },
+      { text: 'Medir con el cable rojo en COM', correct: false }
+    ],
+    explanation: 'Conectar el amperímetro en paralelo crea un cortocircuito directo que quema el fusible instantáneamente.'
+  },
+  {
+    scenario: 'Quieres medir 220V de la red eléctrica. ¿Configuración correcta?',
+    options: [
+      { text: 'Selector: V~, Negro→COM, Rojo→VΩmA', correct: true },
+      { text: 'Selector: V⎓, Negro→COM, Rojo→VΩmA', correct: false },
+      { text: 'Selector: V~, Negro→COM, Rojo→10A', correct: false },
+      { text: 'Selector: A~, Negro→COM, Rojo→VΩmA', correct: false }
+    ],
+    explanation: 'Red eléctrica = AC (alterna), usa V~. Nunca uses A (amperios) para medir voltaje.'
+  }
+];
+
+function generateQuizQuestion() {
+  const question = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+  const shuffled = [...question.options].sort(() => Math.random() - 0.5);
+  
+  const panel = document.getElementById('quiz-panel');
+  panel.innerHTML = `
+    <div class="quiz-scenario">${question.scenario}</div>
+    <div class="quiz-options" id="quiz-options">
+      ${shuffled.map((opt, i) => `
+        <button class="quiz-option-btn" onclick="checkQuizAnswer(${opt.correct}, '${question.explanation}', ${i})">${opt.text}</button>
+      `).join('')}
+    </div>
+    <div class="quiz-feedback-box" id="quiz-feedback-box"></div>
+  `;
+  
+  updateQuizStats();
+}
+
+function checkQuizAnswer(isCorrect, explanation, btnIndex) {
+  const buttons = document.querySelectorAll('.quiz-option-btn');
+  const feedback = document.getElementById('quiz-feedback-box');
+  
+  buttons.forEach(b => b.classList.add('disabled'));
+  
+  if(isCorrect) {
+    buttons[btnIndex].classList.add('correct');
+    feedback.className = 'quiz-feedback-box show correct';
+    feedback.innerHTML = `<strong>¡CORRECTO! ✓</strong><br>${explanation}`;
+    quizStats.correct++;
+    quizStats.streak++;
+  } else {
+    buttons[btnIndex].classList.add('wrong');
+    buttons.forEach((b, i) => {
+      if(b.textContent.includes('Negro→COM') && (b.textContent.includes('V⎓') || b.textContent.includes('V~') || b.textContent.includes('A⎓') || b.textContent.includes('Ω'))) {
+        if(!b.classList.contains('wrong')) b.classList.add('correct');
+      }
+    });
+    feedback.className = 'quiz-feedback-box show wrong';
+    feedback.innerHTML = `<strong>INCORRECTO ✗</strong><br>${explanation}`;
+    quizStats.incorrect++;
+    quizStats.streak = 0;
+  }
+  
+  localStorage.setItem('quiz-stats', JSON.stringify(quizStats));
+  updateQuizStats();
+}
+
+function updateQuizStats() {
+  document.getElementById('quiz-streak').textContent = quizStats.streak;
+  document.getElementById('quiz-correct').textContent = quizStats.correct;
+  document.getElementById('quiz-incorrect').textContent = quizStats.incorrect;
+}
+
+// Inicializar simulador
+document.addEventListener('DOMContentLoaded', function() {
+  if(document.getElementById('mode-simulador')) {
+    loadScenario();
+    updateSimStats();
+  }
+  if(document.getElementById('mode-quiz')) {
+    generateQuizQuestion();
+  }
+});
+
+// FAVORITOS GLOSARIO
 function toggleGlosarioFav(star){
   const row = star.closest('.glos-row');
   const isFav = row.dataset.fav === 'true';
@@ -2058,6 +2970,198 @@ function convertPower(from){
   if(from !== 'w') inputs.w.value = watts.toFixed(3).replace(/\.?0+$/, '');
   if(from !== 'mw') inputs.mw.value = (watts * 1000).toFixed(3).replace(/\.?0+$/, '');
 }
+
+// ==========================================
+// LABORATORIO VIRTUAL
+// ==========================================
+
+// Estado del laboratorio
+let labState = {
+  diodo: {
+    voltage: 5,
+    resistance: 1000,
+    polarization: 'directa'
+  },
+  led: {},
+  oscilador: {}
+};
+
+// Cambiar laboratorio
+function switchLab(lab) {
+  document.querySelectorAll('.lab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#page-laboratorio .action-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('lab-' + lab).classList.add('active');
+  event.target.closest('.action-btn').classList.add('active');
+}
+
+// LAB 1: DIODO
+function updateDiodoCircuit() {
+  const voltage = parseFloat(document.getElementById('diodo-voltage').value);
+  labState.diodo.voltage = voltage;
+  labState.diodo.resistance = parseFloat(document.getElementById('diodo-r').value);
+  document.getElementById('diodo-v-display').textContent = voltage.toFixed(1) + ' V';
+}
+
+function setDiodoPolarization(type) {
+  labState.diodo.polarization = type;
+  document.querySelectorAll('.lab-switch-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function measureDiodo() {
+  const V = labState.diodo.voltage;
+  const R = labState.diodo.resistance;
+  const isPolarDirecta = labState.diodo.polarization === 'directa';
+  
+  let VD, VR, I, estado;
+  
+  if (isPolarDirecta && V > 0.7) {
+    // Polarización directa - diodo conduce
+    VD = 0.7; // Caída típica del diodo
+    VR = V - VD;
+    I = VR / R * 1000; // en mA
+    estado = '✅ CONDUCIENDO';
+  } else if (isPolarDirecta && V <= 0.7) {
+    // Voltaje insuficiente
+    VD = V;
+    VR = 0;
+    I = 0;
+    estado = '⚠️ VOLTAJE BAJO';
+  } else {
+    // Polarización inversa - diodo bloquea
+    VD = V;
+    VR = 0;
+    I = 0;
+    estado = '❌ BLOQUEADO';
+  }
+  
+  document.getElementById('diodo-results').style.display = 'block';
+  document.getElementById('diodo-vd').textContent = VD.toFixed(2) + ' V';
+  document.getElementById('diodo-vd').style.color = isPolarDirecta ? 'var(--green)' : 'var(--red)';
+  document.getElementById('diodo-vr').textContent = VR.toFixed(2) + ' V';
+  document.getElementById('diodo-i').textContent = I.toFixed(2) + ' mA';
+  document.getElementById('diodo-estado').textContent = estado;
+  document.getElementById('diodo-estado').style.color = isPolarDirecta ? 'var(--green)' : 'var(--red)';
+}
+
+// LAB 2: LED
+const standardResistors = [100, 150, 220, 270, 330, 390, 470, 560, 680, 820, 1000, 1200, 1500, 1800, 2200, 2700, 3300, 3900, 4700, 5600, 6800, 8200, 10000];
+
+function findNearestResistor(calculated) {
+  return standardResistors.reduce((prev, curr) => 
+    Math.abs(curr - calculated) < Math.abs(prev - calculated) ? curr : prev
+  );
+}
+
+function calculateLED() {
+  const Vsource = parseFloat(document.getElementById('led-vsource').value);
+  const VLED = parseFloat(document.getElementById('led-color').value);
+  const ILED = parseFloat(document.getElementById('led-current').value) / 1000; // Convertir a A
+  
+  if (Vsource <= VLED) {
+    alert('⚠️ El voltaje de fuente debe ser mayor al voltaje del LED');
+    return;
+  }
+  
+  const Rcalc = (Vsource - VLED) / ILED;
+  const Rstandard = findNearestResistor(Rcalc);
+  const power = Math.pow(ILED, 2) * Rstandard;
+  
+  // Mostrar resultados
+  document.getElementById('led-calc-result').style.display = 'grid';
+  document.getElementById('led-formula-values').textContent = 
+    `R = (${Vsource}V - ${VLED}V) / ${(ILED*1000).toFixed(0)}mA`;
+  document.getElementById('led-r-calculated').textContent = `R = ${Rcalc.toFixed(1)} Ω`;
+  document.getElementById('led-r-standard').textContent = `${Rstandard} Ω`;
+  document.getElementById('led-power').textContent = `${(power * 1000).toFixed(1)} mW`;
+  
+  // Generar visual del LED
+  const color = getLEDColor(VLED);
+  document.getElementById('led-visual').innerHTML = `
+    <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+      <line x1="40" y1="140" x2="40" y2="60" stroke="var(--text)" stroke-width="3"/>
+      <line x1="80" y1="140" x2="80" y2="70" stroke="var(--text)" stroke-width="3"/>
+      <circle cx="60" cy="50" r="25" fill="none" stroke="${color}" stroke-width="2"/>
+      <circle cx="60" cy="50" r="15" fill="${color}" opacity="0.4"/>
+      <circle cx="60" cy="50" r="5" fill="${color}"/>
+      <path d="M 70 35 L 80 25 L 77 25 L 87 15" stroke="var(--amber)" stroke-width="2" fill="none"/>
+      <path d="M 75 40 L 85 30 L 82 30 L 92 20" stroke="var(--amber)" stroke-width="2" fill="none"/>
+      <text x="35" y="155" fill="var(--green)" font-size="10">+</text>
+      <text x="77" y="155" fill="var(--text)" font-size="10">-</text>
+    </svg>
+  `;
+}
+
+function getLEDColor(voltage) {
+  if (voltage <= 2.0) return '#ff3030';      // Rojo
+  if (voltage <= 2.1) return '#00ff00';      // Verde
+  if (voltage <= 2.2) return '#ffff00';      // Amarillo
+  if (voltage <= 3.3) return '#3030ff';      // Azul
+  return '#ffffff';                          // Blanco
+}
+
+// LAB 3: OSCILADOR
+function calculateOscillator() {
+  const R3 = parseFloat(document.getElementById('osc-r3').value) * 1000; // Convertir a Ohm
+  const R4 = parseFloat(document.getElementById('osc-r4').value) * 1000;
+  const C1 = parseFloat(document.getElementById('osc-c1').value) / 1000000; // Convertir a F
+  const C2 = parseFloat(document.getElementById('osc-c2').value) / 1000000;
+  
+  const freq = 1 / (0.69 * (R3 * C1 + R4 * C2));
+  const period = 1 / freq * 1000; // en ms
+  
+  document.getElementById('osc-results').style.display = 'block';
+  document.getElementById('osc-freq').textContent = freq.toFixed(2) + ' Hz';
+  document.getElementById('osc-period').textContent = period.toFixed(1) + ' ms';
+  
+  // Generar visualización de pulsos
+  generatePulseVisualization(freq, period);
+}
+
+function generatePulseVisualization(freq, period) {
+  const numPulses = Math.min(Math.floor(1000 / period), 10); // Máximo 10 pulsos
+  let pulses = '';
+  const pulseWidth = 25;
+  const gap = 5;
+  
+  for (let i = 0; i < numPulses; i++) {
+    const x = i * (pulseWidth + gap) + 10;
+    pulses += `<rect x="${x}" y="20" width="${pulseWidth}" height="40" fill="var(--green)" opacity="0.6"/>`;
+  }
+  
+  document.getElementById('osc-viz').innerHTML = `
+    <svg viewBox="0 0 ${(pulseWidth + gap) * numPulses + 20} 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px;">
+      <line x1="10" y1="60" x2="${(pulseWidth + gap) * numPulses + 10}" y2="60" stroke="var(--dim)" stroke-width="1"/>
+      ${pulses}
+      <text x="50%" y="75" fill="var(--dim)" font-size="10" text-anchor="middle">
+        ${numPulses} pulsos en ${(numPulses * period).toFixed(0)}ms
+      </text>
+    </svg>
+  `;
+}
+
+// Cambiar herramientas de resistencia
+function switchResistorTool(tool) {
+  document.querySelectorAll('.resistor-tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#page-practica-colores .action-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tool-' + tool).classList.add('active');
+  event.target.closest('.action-btn').classList.add('active');
+}
+
+// Cambiar entre fórmulas y glosario
+function switchFormulaGlos(panel) {
+  document.querySelectorAll('.formglos-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#page-formulas .action-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + panel).classList.add('active');
+  event.target.closest('.action-btn').classList.add('active');
+}
+
+// Inicializar laboratorios cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('lab-diodo')) {
+    updateDiodoCircuit();
+  }
+});
 </script>
 </body>
 </html>
