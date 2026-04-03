@@ -376,6 +376,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
       </div>
       <div class="sb-subs">
         <div class="sb-si active" onclick="showPage('u1a',this)">› &nbsp;Accidentabilidad</div>
+        <div class="sb-si" onclick="showPage('u1l',this)">› &nbsp;Ley 16.744</div>
         <div class="sb-si" onclick="showPage('u1r',this)">› &nbsp;Conceptos Eléctricos</div>
         <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
         <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
@@ -383,10 +384,15 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     </div>
 
     <div class="sb-unit" id="uu2">
-      <div class="sb-uh sb-uh-locked">
+      <div class="sb-uh sb-uh-locked" onclick="toggleUnit('u2')">
         <span class="sb-ico-unit" style="opacity:.35">◈</span>
-        <span style="opacity:.4">U2 · Por agregar</span>
+        <span style="opacity:.4">U2 · Accidentabilidad</span>
         <span class="sb-lock">🔒</span>
+      </div>
+      <div class="sb-subs">
+        <div class="sb-si" onclick="showPage('u2r',this)">› &nbsp;Resúmenes</div>
+        <div class="sb-si" onclick="showPage('ej',this)">› &nbsp;Ejercicios</div>
+        <div class="sb-si" onclick="showPage('no',this)">› &nbsp;Notas</div>
       </div>
     </div>
 
@@ -427,7 +433,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     <div id="home-ov">
       <div class="sec-hdr"><span class="sec-tag">ÍNDICE</span><span class="sec-title">Contenido del Semestre</span></div>
       <div class="cards">
-        <div class="card" style="cursor:pointer" onclick="showPage('u1r',null)"><div class="c-lbl">Unidad 1</div><div class="c-val">Fundamentos de Seguridad</div><div class="c-desc">Electricidad, magnitudes, Ley de Ohm, dispositivos de protección, accidentabilidad eléctrica.</div></div>
+        <div class="card" style="cursor:pointer" onclick="showPage('u1r',null)"><div class="c-lbl">Unidad 1</div><div class="c-val">Conceptos Eléctricos</div><div class="c-desc">Electricidad, magnitudes, Ley de Ohm, dispositivos de protección.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('u2r',null)"><div class="c-lbl">Unidad 2</div><div class="c-val">Accidentabilidad</div><div class="c-desc">Riesgo, peligro, accidente vs incidente, costos, factores y causas.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('ej',null)"><div class="c-lbl">Práctica</div><div class="c-val">Ejercicios</div><div class="c-desc">7 ejercicios con solución + banco de preguntas interactivo.</div></div>
         <div class="card" style="cursor:pointer" onclick="showPage('fc',null)"><div class="c-lbl">Repaso</div><div class="c-val">Flashcards</div><div class="c-desc">16 tarjetas con flip 3D, filtradas por categoría.</div></div>
@@ -448,7 +454,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     <div class="unit-section">
       <div class="sec-hdr">
         <span class="sec-tag">U-01</span>
-        <span class="sec-title">Riesgos Eléctricos - Aplicación de Accidentabilidad</span>
+        <span class="sec-title">Fundamentos de Prevención de Riesgos Eléctricos</span>
         <span class="sec-status s-done">✓ COMPLETADO</span>
       </div>
 
@@ -491,147 +497,238 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
     </div>
   </div>
 </div>
-
 <!-- U1 ACCIDENTABILIDAD -->
 <div class="page" id="page-u1a">
   <div class="hero" style="padding:26px 46px 22px">
     <div class="hero-tag">// Unidad 1</div>
-    <h1 style="font-size:22px"><em>Accidentabilidad</em></h1>
+    <h1 style="font-size:22px"><em>Accidentabilidad</em> Laboral</h1>
   </div>
   <div class="content">
     <div class="unit-section">
       <div class="sec-hdr">
         <span class="sec-tag">U-01</span>
-        <span class="sec-title">¿Por qué ocurren los accidentes?</span>
+        <span class="sec-title">¿Por Qué Ocurren los Accidentes?</span>
         <span class="sec-status s-done">✓ COMPLETADO</span>
       </div>
 
       <div class="ts searchable">
         <h2>1.1 · Conceptos Fundamentales</h2>
-        <div class="cards">
-          <div class="card"><div class="c-lbl">Peligro</div><div class="c-val">Potencial de Daño</div><div class="c-desc">Cualquier fuente o situación que PODRÍA causar daño. Existe independientemente de si hay contacto.</div></div>
-          <div class="card"><div class="c-lbl">Riesgo</div><div class="c-val">Probabilidad</div><div class="c-desc">La posibilidad de que el peligro te afecte. Depende de controles, comportamiento, ambiente.</div></div>
-          <div class="card"><div class="c-lbl">Accidente</div><div class="c-val">Evento No Deseado</div><div class="c-desc">Suceso imprevisto que causa lesión, enfermedad o daño material.</div></div>
-          <div class="card"><div class="c-lbl">Incidente</div><div class="c-val">Sin Daño</div><div class="c-desc">Evento que PUDO haber causado daño pero no lo causó (casi-accidente).</div></div>
-        </div>
+        <p><strong>Peligro:</strong> Probabilidad cierta de que ocurra un evento no deseado. Existe en el lugar.</p>
+        <p><strong>Riesgo:</strong> Probabilidad de que el peligro cause daño. Depende de nuestras acciones.</p>
+        <p><strong>Accidente:</strong> Acontecimiento no deseado que causa daño físico, lesión o enfermedad.</p>
+        <p><strong>Incidente:</strong> "Casi-accidente" que pudo causar daño pero NO lo hizo (sin lesión).</p>
       </div>
 
       <div class="ts searchable">
         <h2>1.2 · Causas de Accidentes: Los Tres Factores</h2>
-        <h3>Factor Humano (85% de accidentes)</h3>
-        <p>La mayoría de accidentes se deben a comportamiento humano o error:</p>
-        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
-          <li>Falta de atención o concentración</li>
-          <li>Prisa, impaciencia o estrés</li>
-          <li>Cansancio o fatiga</li>
-          <li>Falta de capacitación o desconocimiento</li>
-          <li>No usar equipo de protección personal (EPP)</li>
-          <li>Ignorar advertencias o procedimientos</li>
-          <li>Confianza excesiva ("no me pasará")</li>
-        </ul>
-        
-        <h3>Factor Técnico (10% de accidentes)</h3>
-        <p>Problemas con máquinas, equipos o instalaciones:</p>
-        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
-          <li>Equipos sin mantenimiento preventivo</li>
-          <li>Protecciones deficientes o ausentes</li>
-          <li>Diseño inadecuado de equipos</li>
-          <li>Falla mecánica, eléctrica o de estructura</li>
-        </ul>
-        
-        <h3>Factor Ambiental (5% de accidentes)</h3>
-        <p>Condiciones del lugar de trabajo:</p>
-        <ul style="margin-left:20px;font-size:12px;color:var(--text);line-height:1.7">
-          <li>Pisos resbaladizos, mojados u obstaculizados</li>
-          <li>Iluminación insuficiente</li>
-          <li>Ruido excesivo</li>
-          <li>Orden y limpieza deficiente</li>
-          <li>Temperatura extrema</li>
-        </ul>
-        <div class="box ok"><div class="box-lbl">[OK] conclusión importante</div>Los peligros siempre existen en la industria. Lo que varía es el RIESGO. Puedes controlar los tres factores para reducir riesgo.</div>
+        <p><strong>Factor Humano (85%):</strong> Falta de conocimiento, actitudes indebidas, incapacidad física/mental.</p>
+        <p><strong>Factor Técnico (10%):</strong> Equipos sin mantenimiento, protecciones deficientes, falla mecánica.</p>
+        <p><strong>Factor Ambiental (5%):</strong> Pisos resbaladizos, iluminación insuficiente, ruido, temperatura extrema.</p>
       </div>
 
       <div class="ts searchable">
-        <h2>1.3 · Costos de los Accidentes</h2>
-        <h3>Costos Directos (Lo que se ve)</h3>
-        <ul style="margin-left:20px;margin-bottom:14px;font-size:12px;color:var(--text);line-height:1.7">
-          <li>Atención médica, hospital, ambulancia</li>
-          <li>Medicamentos y rehabilitación</li>
-          <li>Pólizas de seguros laborales</li>
-        </ul>
-        
-        <h3>Costos Indirectos (Lo que NO se ve - MÁS GRANDES)</h3>
-        <ul style="margin-left:20px;font-size:12px;color:var(--text);line-height:1.7">
-          <li>Tiempo perdido de producción</li>
-          <li>Entrenamiento de trabajador de reemplazo</li>
-          <li>Investigación y documentación del accidente</li>
-          <li>Reparación de equipos/instalaciones dañadas</li>
-          <li>Baja moral y estrés del equipo</li>
-          <li>Multas y sanciones legales</li>
-          <li>Daño a reputación empresarial</li>
-        </ul>
-        <div class="box wn"><div class="box-lbl">[WARN] la realidad económica</div>Estudios muestran que costos indirectos son 4 a 6 veces mayores que directos. Un accidente "leve" puede costar decenas de miles de dólares.</div>
+        <h2>1.3 · Acciones Inseguras</h2>
+        <p>Conducta del trabajador que lo expone al riesgo. Decisión consciente. Causas: falta de conocimiento, actitudes indebidas, incapacidad.</p>
+        <p><strong>Ejemplos:</strong> Retirar protecciones, no usar EPP, trabajar con circuitos energizados, descuido, improvisaciones.</p>
       </div>
 
       <div class="ts searchable">
-        <h2>1.4 · Medición de la Accidentabilidad</h2>
-        <p>Las empresas miden qué tan seguras son usando estos indicadores:</p>
-        <div class="tw">
-          <table>
-            <thead><tr><th>Indicador</th><th>Fórmula / Definición</th><th>Interpretación</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Índice de Frecuencia</strong></td><td>Accidentes × 1.000.000 / Horas trabajadas</td><td>Cuántos accidentes ocurren por millón de horas. ↓ = mejor</td></tr>
-              <tr><td><strong>Índice de Gravedad</strong></td><td>Días perdidos × 1.000 / Horas trabajadas</td><td>Cuántos días de incapacidad deja cada accidente. ↓ = mejor</td></tr>
-              <tr><td><strong>Tasa de Accidentabilidad</strong></td><td>% de trabajadores accidentados en período</td><td>Proporción del equipo afectado. ↓ = mejor</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="box inf"><div class="box-lbl">[INFO] para ti</div>Una empresa con accidentabilidad alta tiene problemas de seguridad. Una empresa con accidentabilidad baja tiene CULTURA DE PREVENCIÓN consolidada.</div>
+        <h2>1.4 · Condiciones Inseguras</h2>
+        <p>Situación peligrosa del ambiente. Responsabilidad del EMPLEADOR reparar. Causas: equipos en mal estado, mantenimiento inadecuado, diseño deficiente, normas inadecuadas.</p>
+        <p><strong>Ejemplos eléctricos:</strong> Piso mojado, uniones sin aislación, enchufes en mal estado, falta de tierra, circuitos sobrecargados, conexiones ilegales, fusibles puenteados.</p>
       </div>
 
       <div class="ts searchable">
-        <h2>1.5 · Ciclo de Prevención de Riesgos</h2>
-        <p>La prevención no es un evento, es un ciclo continuo que se repite:</p>
-        <div class="fw"><div class="formula">IDENTIFICAR → EVALUAR → CONTROLAR → MONITOREAR → MEJORAR</div></div>
-        
-        <h3>Identificar</h3>
-        <p>Reconocer peligros. ¿Qué puede salir mal? (máquinas, cables, pisos mojados, comportamientos riesgosos)</p>
-        
-        <h3>Evaluar</h3>
-        <p>¿Cuál es el riesgo? ¿Qué tan probable es que cause daño? ¿Cuál sería la gravedad?</p>
-        
-        <h3>Controlar</h3>
-        <p>Aplicar medidas: eliminar peligro, sustituir, usar protecciones, capacitar, mantener.</p>
-        
-        <h3>Monitorear</h3>
-        <p>Verificar que las medidas funcionan. Inspecciones regulares. ¿Se está cumpliendo?</p>
-        
-        <h3>Mejorar</h3>
-        <p>Si algo falla, ajustar. Si ocurre un incidente, aprender y cambiar procedimientos.</p>
-        
-        <div class="box ok"><div class="box-lbl">[OK] tu rol en este ciclo</div>Como estudiante de Automatización y Robótica, participarás en TODOS estos pasos: identificando riesgos eléctricos y mecánicos, evaluando, aplicando controles en tus proyectos, y aprendiendo de cualquier problema.</div>
+        <h2>1.5 · Costos del Accidente</h2>
+        <p><strong>Directos:</strong> Atención médica, hospitalización, medicinas, subsidios, indemnización, pensiones.</p>
+        <p><strong>Indirectos (4-6 veces mayores):</strong> Daños a equipos, producción parada, contratación de personal nuevo, daños a infraestructura.</p>
+        <p><strong>Invisible (Psicosocial):</strong> Dolor, angustia, problemas morales/familiares, impacto a largo plazo en la vida del trabajador.</p>
       </div>
 
       <div class="ts searchable">
-        <h2>1.6 · Jerarquía de Controles (Lo más importante)</h2>
-        <p>No todos los controles son iguales. Algunos funcionan mejor que otros:</p>
-        <div class="tw">
-          <table>
-            <thead><tr><th>Nivel</th><th>Método</th><th>Efectividad</th><th>Ejemplo</th></tr></thead>
-            <tbody>
-              <tr><td><strong style="color:var(--green)">1</strong></td><td>ELIMINACIÓN</td><td>Máxima ✓✓✓</td><td>No usar electricidad (usar batería)</td></tr>
-              <tr><td><strong style="color:var(--green)">2</strong></td><td>SUSTITUCIÓN</td><td>Muy alta ✓✓✓</td><td>Usar 24V en lugar de 220V</td></tr>
-              <tr><td><strong style="color:var(--amber)">3</strong></td><td>INGENIERÍA</td><td>Alta ✓✓</td><td>Instalar diferencial, disyuntor, aislamiento</td></tr>
-              <tr><td><strong style="color:var(--amber)">4</strong></td><td>ADMINISTRATIVA</td><td>Media ✓</td><td>Capacitación, inspecciones, procedimientos</td></tr>
-              <tr><td><strong style="color:var(--red)">5</strong></td><td>EPP</td><td>Baja (última línea)</td><td>Guantes, casco, gafas</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="box wn"><div class="box-lbl">[WARN] no confundir</div>El EPP (nivel 5) es importante pero es la ÚLTIMA línea de defensa. Nunca depender solo de guantes o casco. Primero deben fallar todos los otros controles para que el EPP sea lo único.</div>
+        <h2>1.6 · Medidas de Prevención</h2>
+        <p>NO hacer acciones inseguras, NO trabajar en condiciones inseguras, CONTROLAR o ELIMINAR fuentes de accidentes.</p>
+        <p><strong>En práctica:</strong> Identificar peligros, usar EPP, reportar condiciones inseguras, no trabajar con prisa, mantener limpieza, respetar procedimientos, capacitarse.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.7 · Rescate en Electrocución</h2>
+        <p><strong>Si está "pegado" a conductor energizado:</strong></p>
+        <p>1. CORTA ENERGÍA INMEDIATAMENTE desde tablero</p>
+        <p>2. Si no puedes: Genera cortocircuito</p>
+        <p>3. Si no hay acceso: Aleja con material aislante (madera seca, plástico, goma) — NUNCA metal</p>
+        <p><strong>Después:</strong> RCP si es necesario, vigilar víctima, llamar ambulancia.</p>
       </div>
     </div>
   </div>
 </div>
+
+<!-- U1 LEY 16.744 -->
+<div class="page" id="page-u1l">
+  <div class="hero" style="padding:26px 46px 22px">
+    <div class="hero-tag">// Unidad 1</div>
+    <h1 style="font-size:22px">Ley 16.744 sobre <em>Accidentes</em> Laborales</h1>
+  </div>
+  <div class="content">
+    <div class="unit-section">
+      <div class="sec-hdr">
+        <span class="sec-tag">U-01</span>
+        <span class="sec-title">Marco Legal Chileno</span>
+        <span class="sec-status s-done">✓ COMPLETADO</span>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.8 · Ley 16.744 Accidentes de Trabajo</h2>
+        <p><strong>Definición:</strong> "Toda lesión que una persona sufra a causa o con ocasión del trabajo y que le produzca incapacidad o muerte".</p>
+        <p>Ley chilena que regula derechos y obligaciones en accidentes y enfermedades del trabajo.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.9 · Accidente de Trayecto</h2>
+        <p>Accidente en traslado DIRECTO entre: casa ↔ trabajo o trabajo1 ↔ trabajo2.</p>
+        <p><strong>NO es accidente de trayecto:</strong> Desviarse del camino, accidentes en domicilio, actividades personales.</p>
+        <p><strong>Requiere:</strong> Aviso a empleador, atención médica, DIAT, prueba/evidencia (parte policial, testigos, constancia médica).</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.10 · Procedimiento en Accidente de Trabajo</h2>
+        <p><strong>Paso 1:</strong> Aviso INMEDIATO al empleador</p>
+        <p><strong>Paso 2:</strong> Atención médica en mutual/hospital</p>
+        <p><strong>Paso 3:</strong> DIAT (Declaración Individual de Accidente de Trabajo) — SIN DIAT NO HAY RECONOCIMIENTO</p>
+        <p><strong>Paso 4:</strong> Presentar cédula + DIAT en mutual para atención</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.11 · Accidente Grave o Fatal</h2>
+        <p><strong>Características:</strong> Caída > 1.8m, atrapamiento, electrocución, pérdida de miembro, múltiples trabajadores, muerte.</p>
+        <p><strong>Procedimiento inmediato:</strong> Rescate/RCP, suspender faena, informar a Inspección del Trabajo + Seremi + Carabineros.</p>
+        <p><strong>Importante:</strong> NO informar es DELITO con multa y sanciones penales.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.12 · Enfermedad Profesional</h2>
+        <p><strong>Definición:</strong> Daño lento causado directamente por el trabajo que produce incapacidad o muerte.</p>
+        <p><strong>Características:</strong> Inicio lento, no violenta, efecto retardado, previsible, progresiva, lesión oculta.</p>
+        <p><strong>Ejemplos:</strong> Sordera (ruido), problemas vista (radiación), problemas columna, intoxicación química, alergias ocupacionales.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>1.13 · DIEP y Atención de Enfermedad Profesional</h2>
+        <p><strong>Procedimiento:</strong> Informar al empleador → Empleador completa DIEP en 24h → Mutual evalúa origen laboral.</p>
+        <p><strong>Si se reconoce:</strong> Atención médica, medicinas, prótesis, rehabilitación, reeducación profesional — TODO GRATUITO por mutual.</p>
+        <p><strong>Agentes contaminantes:</strong> Por vía respiratoria, cutánea, ingestión. Pueden ser químicos, físicos (ruido, radiación), biológicos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- U1 CONCEPTOS ELÉCTRICOS -->
+<div class="page" id="page-u1r">
+  <div class="hero" style="padding:26px 46px 22px">
+    <div class="hero-tag">// Unidad 1</div>
+    <h1 style="font-size:22px">Conceptos <em>Eléctricos</em> Básicos</h1>
+  </div>
+  <div class="content">
+    <div class="unit-section">
+      <div class="sec-hdr">
+        <span class="sec-tag">U-01</span>
+        <span class="sec-title">Fundamentos de Prevención de Riesgos Eléctricos</span>
+        <span class="sec-status s-done">✓ COMPLETADO</span>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.1 · ¿Qué es la Electricidad?</h2>
+        <p><strong>Definición:</strong> Flujo de electrones que pasan de átomo en átomo a lo largo de un circuito eléctrico.</p>
+        <p><strong>Circuito:</strong> Sistema que controla la corriente eléctrica. Camino desde polo positivo (fase) a polo negativo (neutro).</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.2 · Riesgo vs Peligro</h2>
+        <p><strong>Peligro:</strong> Probabilidad cierta de evento no deseado. Existe en el lugar (la electricidad siempre es peligrosa).</p>
+        <p><strong>Riesgo:</strong> Probabilidad de que el peligro cause daño. Depende de nuestras acciones (contacto, aislación, protección).</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.3 · Magnitudes Eléctricas Fundamentales</h2>
+        <p><strong>Voltaje (V):</strong> Diferencia de potencial. "La presión del circuito". Unidad: Volt.</p>
+        <p><strong>Corriente (I):</strong> Flujo de carga por segundo. "El caudal del circuito". Unidad: Ampere.</p>
+        <p><strong>Resistencia (R):</strong> Oposición al paso de corriente. Unidad: Ohm (Ω). Ej: piel seca ~1000Ω, mojada ~100Ω.</p>
+        <p><strong>Potencia (P):</strong> Energía por unidad de tiempo. P = V × I. Unidad: Watt.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.4 · Ley de Ohm</h2>
+        <p><strong>Fórmula:</strong> I = V / R</p>
+        <p><strong>Aplicación:</strong> Si voltaje = 220V y resistencia = 1000Ω, entonces corriente = 220/1000 = 0.22A = 220mA (LETAL).</p>
+        <p><strong>Implicación:</strong> Piel mojada reduce resistencia → aumenta corriente → PELIGROSO.</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.5 · Corriente Peligrosa en Cuerpo Humano</h2>
+        <p><strong>1 mA:</strong> Sensación</p>
+        <p><strong>5 mA:</strong> Dolor</p>
+        <p><strong>10 mA:</strong> Contracciones musculares (no puedes soltar)</p>
+        <p><strong>100 mA:</strong> Posiblemente fatal (para cardíaco)</p>
+        <p><strong>220 mA (0.22A):</strong> MUERTE SEGURA</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.6 · Dispositivos de Protección</h2>
+        <p><strong>Diferencial:</strong> Protege PERSONAS. Detecta diferencia entre corriente de fase y neutro (fuga a tierra). Si contacto: actúa en milisegundos.</p>
+        <p><strong>Disyuntor (Magnetotérmico):</strong> Protege INSTALACIÓN. Protección térmica (sobrecarga) + magnética (cortocircuito).</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.7 · Medidas de Prevención en Trabajos Eléctricos</h2>
+        <p><strong>Desenergilizar:</strong> Cortar energía SIEMPRE antes de trabajar</p>
+        <p><strong>Aislar:</strong> Cubrir conductores expuestos, usar material aislante</p>
+        <p><strong>Proteger:</strong> Puesta a tierra adecuada, diferencial en circuitos</p>
+        <p><strong>EPP:</strong> Guantes aislantes, casco, gafas protectoras, botas aislantes</p>
+        <p><strong>Capacitación:</strong> Conocer riesgos específicos de la tarea</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.8 · Rescate en Electrocución: Paso a Paso</h2>
+        <p><strong>PASO 1:</strong> Corta energía desde tablero INMEDIATAMENTE</p>
+        <p><strong>PASO 2:</strong> Si no puedes acceder: Genera cortocircuito en el circuito</p>
+        <p><strong>PASO 3:</strong> Si no hay opción: Aleja víctima con material AISLANTE (madera seca, plástico rígido, goma gruesa)</p>
+        <p><strong>NUNCA:</strong> Metal, materiales mojados, telas conductoras, contacto directo con piel</p>
+        <p><strong>DESPUÉS:</strong> RCP si es necesario, llamar ambulancia, vigilar víctima</p>
+      </div>
+
+      <div class="ts searchable">
+        <h2>2.9 · Jerarquía de Controles en Riesgos Eléctricos</h2>
+        <p><strong>1. Eliminar:</strong> Remover fuente de peligro (mejor opción)</p>
+        <p><strong>2. Sustituir:</strong> Usar voltaje bajo, equipos más seguros</p>
+        <p><strong>3. Ingeniería:</strong> Blindaje, puesta a tierra, aislación</p>
+        <p><strong>4. Administrativo:</strong> Procedimientos, capacitación, inspecciones</p>
+        <p><strong>5. EPP:</strong> Última línea de defensa (guantes, gafas, casco)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- U2 RESÚMENES -->
+<div class="page" id="page-u2r">
+  <div class="hero" style="padding:26px 46px 22px">
+    <div class="hero-tag">// Unidad 2</div>
+    <h1 style="font-size:22px">Unidad 2 — <em>Por agregar</em></h1>
+  </div>
+  <div class="content">
+    <div class="unit-section">
+      <div class="sec-hdr">
+        <span class="sec-tag">U-02</span>
+        <span class="sec-title">Contenido pendiente</span>
+        <span class="sec-status s-lock">🔒 BLOQUEADO</span>
+      </div>
+      <div class="cs"><div class="ci2">📂</div><p>Esta unidad se completará cuando traigas los apuntes de clase.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- U3 / U4 -->
+<div class="page" id="page-u3r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-03</span><span class="sec-title">Unidad 3 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
+<div class="page" id="page-u4r"><div class="content" style="padding-top:36px"><div class="sec-hdr"><span class="sec-tag">U-04</span><span class="sec-title">Unidad 4 — Por agregar</span><span class="sec-status s-lock">🔒 PENDIENTE</span></div><div class="cs"><div class="ci2">📂</div><p>Se completará cuando traigas los apuntes de clase.</p></div></div></div>
 
 <!-- EJERCICIOS -->
 <div class="page" id="page-ej">
@@ -692,6 +789,58 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
         <p style="margin-top:5px"><strong>c)</strong> <span style="color:var(--red)">ACCIÓN INSEGURA</span> — Actitud indebida.</p>
         <p style="margin-top:5px"><strong>d)</strong> <span style="color:var(--amber)">CONDICIÓN INSEGURA</span> — Falla física del entorno.</p>
       </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-08</span><span class="et">¿Se reconoce como Accidente de Trayecto?</span><span class="etag">LEY 16.744</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">¿Cuál de estos se reconoce como Accidente de Trayecto?<br><br>a) Accidente dentro de su casa (entrada/patio)<br>b) Accidente en camino DIRECTO casa-trabajo<br>c) Se desvía hacia casa de un amigo y se accidenta<br>d) Accidente en estacionamiento de empresa<br>e) Accidente en traslado entre dos lugares de trabajo</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--red)">NO</span> — Domicilio NO cuenta</p>
+        <p style="margin-top:4px"><strong>b)</strong> <span style="color:var(--green)">SÍ</span> — Trayecto DIRECTO</p>
+        <p style="margin-top:4px"><strong>c)</strong> <span style="color:var(--red)">NO</span> — Desvío anula protección</p>
+        <p style="margin-top:4px"><strong>d)</strong> <span style="color:var(--green)">SÍ</span> — Parte del trayecto laboral</p>
+        <p style="margin-top:4px"><strong>e)</strong> <span style="color:var(--green)">SÍ</span> — Entre lugares de trabajo</p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-09</span><span class="et">¿Accidente o Enfermedad Profesional?</span><span class="etag">ENFERMEDAD</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Clasifica:<br><br>a) Trabajador toca cable y recibe descarga inmediata<br>b) Operario pierde audición tras 5 años en planta<br>c) Técnico cae de escalera durante inspección<br>d) Operador desarrolla alergias respiratorias tras manipular químicos 3 años</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a)</strong> <span style="color:var(--red)">ACCIDENTE</span> — Evento brusco e inmediato</p>
+        <p style="margin-top:4px"><strong>b)</strong> <span style="color:var(--amber)">ENFERMEDAD PROFESIONAL</span> — Progresiva, lenta</p>
+        <p style="margin-top:4px"><strong>c)</strong> <span style="color:var(--red)">ACCIDENTE</span> — Suceso violento repentino</p>
+        <p style="margin-top:4px"><strong>d)</strong> <span style="color:var(--amber)">ENFERMEDAD PROFESIONAL</span> — Efecto retardado</p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-10</span><span class="et">Rescate en Electrocución: ¿PRIMER paso?</span><span class="etag">RESCATE</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Un compañero está "pegado" a un conductor energizado. ¿Qué debes hacer PRIMERO?<br><br>a) Tocar al trabajador<br>b) Cortar energía desde tablero<br>c) Usar guantes<br>d) Gritar pidiendo ayuda<br>e) Buscar objeto de madera</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTA CORRECTA</div>
+        <p><span style="color:var(--green)"><strong>b) Cortar energía desde tablero</strong></span></p>
+        <p style="margin-top:8px"><strong>ORDEN CORRECTO:</strong></p>
+        <p>1. Cortar energía (PRIMERO)</p>
+        <p>2. Si NO PUEDES: Genera cortocircuito</p>
+        <p>3. Si NO HAY ACCESO: Aleja con material aislante</p>
+        <p style="margin-top:4px;color:var(--red)"><strong>⚠ NUNCA toques = segundo accidente</strong></p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-11</span><span class="et">Material Aislante: ¿Cuál usar en rescate?</span><span class="etag">RESCATE</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">Para alejar a un electrocutado cuando no puedes cortar energía, ¿cuál material es SEGURO?<br><br>a) Cable eléctrico de cobre<br>b) Piel mojada del operador<br>c) Madera seca o plástico<br>d) Metal conductor (varilla de hierro)<br>e) Tela mojada</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTA CORRECTA</div>
+        <p><span style="color:var(--green)"><strong>c) Madera seca o plástico rígido</strong></span></p>
+        <p style="margin-top:8px"><strong>Seguros:</strong> Madera seca, plástico, goma</p>
+        <p style="margin-top:4px"><strong>Peligrosos:</strong> Metal, mojado, tela conductora</p>
+      </div></div></div>
+
+      <div class="ec"><div class="ech" onclick="toggleEx(this.parentElement)"><span class="en">EJ-12</span><span class="et">Agentes Contaminantes: Vías de Entrada</span><span class="etag">ENFERMEDAD</span><span class="earr">›</span></div>
+      <div class="eb"><div class="eq">¿Por cuál vía entra cada agente?<br><br>a) Gas tóxico en aire → ____<br>b) Químico en piel → ____<br>c) Polvo industrial inhalado → ____<br>d) Sustancia peligrosa consumida → ____</div>
+      <button class="rb" onclick="revealAns(this)">[ MOSTRAR SOLUCIÓN ]</button>
+      <div class="ab"><div class="al">// RESPUESTAS</div>
+        <p><strong>a) VÍA RESPIRATORIA</strong> — Inhalación de gases</p>
+        <p style="margin-top:4px"><strong>b) VÍA CUTÁNEA</strong> — Contacto en piel</p>
+        <p style="margin-top:4px"><strong>c) VÍA RESPIRATORIA</strong> — Inhalación de polvo</p>
+        <p style="margin-top:4px"><strong>d) POR INGESTIÓN</strong> — Consumo accidental</p>
+      </div></div></div>
     </div>
 
     <div style="margin-top:38px">
@@ -711,6 +860,7 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
   <div class="content">
     <div class="fcf">
       <button class="fcft active" onclick="filterCards('all',this)">TODAS</button>
+      <button class="fcft" onclick="filterCards('seg',this)">⚠ SEGURIDAD</button>
       <button class="fcft" onclick="filterCards('elec',this)">⚡ ELÉCTRICO</button>
       <button class="fcft" style="margin-left:auto;border-color:var(--amber);color:var(--amber)" onclick="shuffleCards()">⇄ BARAJAR</button>
     </div>
@@ -751,6 +901,23 @@ mark{background:rgba(0,255,157,.2);color:var(--green);padding:0 2px}
 
 <script>
 const GLOS=[
+  {t:'Accidente',d:'Evento no deseado que causa daño físico, lesión o muerte. Brusco e inmediato.',u:'U1'},
+  {t:'Incidente',d:'"Casi-accidente" que pudo haber causado daño pero NO causa lesión.',u:'U1'},
+  {t:'Acción Insegura',d:'Conducta del trabajador que lo expone al riesgo. Decisión consciente.',u:'U1'},
+  {t:'Condición Insegura',d:'Situación peligrosa del ambiente. Responsabilidad del empleador reparar.',u:'U1'},
+  {t:'Peligro',d:'Probabilidad cierta de evento no deseado. Existe en el lugar de trabajo.',u:'U1'},
+  {t:'Riesgo',d:'Probabilidad de que el peligro cause daño. Depende de nuestras acciones.',u:'U1'},
+  {t:'DIAT',d:'Declaración Individual de Accidente del Trabajo. Documento legal obligatorio.',u:'U1'},
+  {t:'DIEP',d:'Denuncia Individual de Enfermedad Profesional. Formulario para enfermedades.',u:'U1'},
+  {t:'Accidente de Trayecto',d:'En camino DIRECTO casa-trabajo. Requiere prueba/evidencia. NO domicilio.',u:'U1'},
+  {t:'Enfermedad Profesional',d:'Lenta, progresiva. Por exposición laboral. Efecto retardado años.',u:'U1'},
+  {t:'Costo Directo',d:'Al trabajador: atención médica, medicinas, subsidios, indemnización.',u:'U1'},
+  {t:'Costo Indirecto',d:'A empresa: equipo dañado, producción parada (4-6x mayores que directos).',u:'U1'},
+  {t:'Costo Invisible',d:'Costo psicosocial: trauma, baja moral, problemas familiares/laborales.',u:'U1'},
+  {t:'Ley 16.744',d:'Ley chilena que regula accidentes y enfermedades del trabajo en Chile.',u:'U1'},
+  {t:'Agente Contaminante',d:'Sustancia dañina. Entra por: vía respiratoria, cutánea, ingestión.',u:'U1'},
+  {t:'Electrocución',d:'Contacto con corriente eléctrica. Causa lesión o muerte.',u:'U1'},
+  {t:'Material Aislante',d:'NO deja pasar corriente. Madera seca, plástico, goma. NUNCA metal.',u:'U1'},
   {t:'Electricidad',d:'Flujo de electrones átomo a átomo a lo largo de un circuito eléctrico.',u:'U1'},
   {t:'Voltaje (V)',d:'Diferencia de potencial entre dos puntos del circuito. Unidad: Volt.',u:'U1'},
   {t:'Corriente (I)',d:'Cantidad de carga eléctrica que fluye por segundo. Unidad: Ampere.',u:'U1'},
@@ -762,14 +929,31 @@ const GLOS=[
 ];
 
 const FC=[
-  {cat:'elec',term:'Electricidad',def:'Flujo de electrones de átomo en átomo a lo largo de un circuito.'},
-  {cat:'elec',term:'Voltaje',def:'Diferencia de potencial. Unidad: Volt (V). "La presión" del circuito.'},
-  {cat:'elec',term:'Corriente',def:'Flujo de carga por segundo. Unidad: Ampere (A). "El caudal" del circuito.'},
+  {cat:'seg',term:'Accidente',def:'Evento no deseado que causa daño físico, lesión o muerte. Brusco.'},
+  {cat:'seg',term:'Incidente',def:'"Casi-accidente" que pudo causar daño pero NO lo hizo. SIN lesión.'},
+  {cat:'seg',term:'Acción Insegura',def:'Conducta del trabajador que lo expone. Decisión consciente riesgosa.'},
+  {cat:'seg',term:'Condición Insegura',def:'Situación peligrosa del ambiente. Responsabilidad del empleador.'},
+  {cat:'seg',term:'Peligro',def:'Existe en el lugar. Probabilidad cierta de evento no deseado.'},
+  {cat:'seg',term:'Riesgo',def:'Probabilidad de que peligro cause daño. Depende de tus acciones.'},
+  {cat:'seg',term:'DIAT',def:'Declaración Accidente Trabajo. SIN esto NO hay reconocimiento legal.'},
+  {cat:'seg',term:'Accidente de Trayecto',def:'En camino DIRECTO casa-trabajo. Requiere prueba. NO domicilio.'},
+  {cat:'seg',term:'Enfermedad Profesional',def:'Lenta y progresiva. Por exposición laboral. Efecto retardado.'},
+  {cat:'seg',term:'DIEP',def:'Denuncia Individual Enfermedad Profesional. Empleador lo completa.'},
+  {cat:'seg',term:'Costo Directo',def:'Al trabajador: médico, medicinas, compensación, subsidios.'},
+  {cat:'seg',term:'Costo Indirecto',def:'A empresa: equipo dañado, producción parada (4-6x mayores).'},
+  {cat:'seg',term:'Costo Invisible',def:'Psicosocial: trauma, baja moral, problemas familiares/laborales.'},
+  {cat:'seg',term:'Ley 16.744',def:'Ley chilena que regula accidentes y enfermedades del trabajo.'},
+  {cat:'seg',term:'Agente Contaminante',def:'Sustancia dañina. Vías: respiratoria, cutánea, ingestión.'},
+  {cat:'elec',term:'Electricidad',def:'Flujo de electrones de átomo a átomo a lo largo de un circuito.'},
+  {cat:'elec',term:'Voltaje',def:'Diferencia de potencial. Unidad: Volt (V). "Presión" del circuito.'},
+  {cat:'elec',term:'Corriente',def:'Flujo de carga por segundo. Unidad: Ampere (A). "Caudal".'},
   {cat:'elec',term:'Resistencia',def:'Oposición al paso de corriente. Unidad: Ohm (Ω).'},
   {cat:'elec',term:'Potencia',def:'Energía por unidad de tiempo. P = V × I. Unidad: Watt (W).'},
-  {cat:'elec',term:'Ley de Ohm',def:'I = V / R. La corriente es proporcional al voltaje e inversamente proporcional a la resistencia.'},
-  {cat:'elec',term:'Diferencial',def:'Protege PERSONAS. Detecta diferencia entre corriente de fase y neutro.'},
-  {cat:'elec',term:'Disyuntor',def:'Protege la INSTALACIÓN. Actúa ante sobrecargas (térmico) y cortocircuitos (magnético).'},
+  {cat:'elec',term:'Ley de Ohm',def:'I = V / R. Corriente proporcional a V, inverso a R.'},
+  {cat:'elec',term:'Diferencial',def:'PROTEGE PERSONAS. Detecta fuga a tierra/contacto indirecto.'},
+  {cat:'elec',term:'Disyuntor',def:'PROTEGE INSTALACIÓN. Ante sobrecarga (térmico) y cortocircuito.'},
+  {cat:'elec',term:'Electrocución',def:'Contacto con corriente → lesión/muerte. Rescate: corta energía PRIMERO.'},
+  {cat:'elec',term:'Material Aislante',def:'NO deja pasar corriente. Madera seca, plástico, goma. NUNCA metal.'},
 ];
 
 const QS=[
@@ -783,6 +967,17 @@ const QS=[
   {u:'u1',q:'¿Cuál es la unidad de la potencia eléctrica?',opts:['Volt','Ampere','Ohm','Watt'],ans:3,exp:'La potencia se mide en Watts (W). P = V × I.'},
   {u:'u1',q:'El diferencial detecta una diferencia entre la corriente de fase y neutro. ¿Qué indica eso?',opts:['Sobrecarga en el circuito','Cortocircuito entre conductores','Fuga de corriente (posible contacto con persona)','Voltaje demasiado alto'],ans:2,exp:'Una diferencia entre fase y neutro indica que la corriente está tomando otro camino, posiblemente a través de una persona.'},
   {u:'u1',q:'¿Por qué es peligroso trabajar con piel húmeda cerca de instalaciones eléctricas?',opts:['Aumenta el voltaje','Reduce la resistencia corporal, aumentando la corriente','Aumenta la resistencia, disminuyendo el peligro','No tiene ningún efecto'],ans:1,exp:'La piel húmeda reduce la resistencia (~100Ω vs ~1000Ω seca), lo que aumenta la corriente que atraviesa el cuerpo.'},
+  {u:'u1',q:'¿Cuál es la diferencia FUNDAMENTAL entre ACCIDENTE e INCIDENTE?',opts:['El incidente es más grave','El accidente causa daño, el incidente NO','El accidente es más lento','Ambos son lo mismo'],ans:1,exp:'ACCIDENTE = daño físico/lesión. INCIDENTE = "casi-accidente" SIN daño.'},
+  {u:'u1',q:'¿Quién es RESPONSABLE de las CONDICIONES INSEGURAS?',opts:['El trabajador','El empleador','Ambos por igual','Nadie, son casualidades'],ans:1,exp:'El empleador debe garantizar un ambiente seguro. Es su responsabilidad legal.'},
+  {u:'u1',q:'Un técnico trabaja SIN desenergilizar un panel. ¿Qué es esto?',opts:['Condición insegura','Acción insegura','Accidente inevitable','Costo directo'],ans:1,exp:'Es ACCIÓN INSEGURA: decisión consciente y riesgosa del trabajador.'},
+  {u:'u1',q:'¿Qué documento OBLIGATORIO reconoce legalmente un accidente de trabajo?',opts:['Foto del accidente','DIAT (Declaración Individual de Accidente)','Parte policial','Certificado médico'],ans:1,exp:'SIN DIAT NO HAY RECONOCIMIENTO LEGAL. El empleador lo debe completar en 24 horas.'},
+  {u:'u1',q:'¿Cuándo se reconoce un ACCIDENTE DE TRAYECTO?',opts:['En cualquier recorrido del trabajador','En traslado DIRECTO casa-trabajo con prueba','En el estacionamiento de la casa','En viajes personales durante el día'],ans:1,exp:'DIRECTO: casa↔trabajo. Requiere evidencia. NO domicilio.'},
+  {u:'u1',q:'¿Cuál es la diferencia entre ACCIDENTE y ENFERMEDAD PROFESIONAL?',opts:['La enfermedad es menos grave','Accidente: brusco. Enfermedad: lenta y progresiva','Son lo mismo','El accidente afecta más personas'],ans:1,exp:'ACCIDENTE = evento brusco. ENFERMEDAD PROFESIONAL = exposición prolongada.'},
+  {u:'u1',q:'Un soldador pierde audición tras 5 años de trabajo. ¿Qué es?',opts:['Accidente eléctrico','Enfermedad profesional','Incidente ocupacional','Costo invisible'],ans:1,exp:'ENFERMEDAD PROFESIONAL: inicio lento, progresiva, por exposición a ruido.'},
+  {u:'u1',q:'¿Cuál es el PRIMER paso en rescate de electrocutado?',opts:['Tocar al trabajador','Cortar energía desde tablero','Llamar ambulancia','Usar guantes'],ans:1,exp:'PRIMERO: Cortar energía. Si no: cortocircuito. Si no: alejar con material aislante.'},
+  {u:'u1',q:'¿Qué material es SEGURO para rescatar electrocutado sin cortar energía?',opts:['Metal conductor','Piel mojada','Madera seca o plástico','Cable eléctrico'],ans:2,exp:'Solo material AISLANTE: madera seca, plástico, goma. NUNCA metal o mojado.'},
+  {u:'u1',q:'¿Cuál es el costo del accidente GENERALMENTE más ALTO?',opts:['Directo (médico)','Indirecto (producción, equipo)','Invisible (psicosocial)','Son iguales'],ans:1,exp:'Costos indirectos superan 4-6 veces los costos directos.'},
+  {u:'u1',q:'Ejemplo de ACCIÓN INSEGURA en electricidad:',opts:['Reportar un peligro','Trabajar CON desconexión','Retirar guarda de máquina para agilizar','Usar EPP correctamente'],ans:2,exp:'Retirar protecciones = ACCIÓN INSEGURA que expone al trabajador a riesgos.'},
 ];
 
 // NAV
@@ -791,17 +986,13 @@ function showPage(id,el){
   const pg=document.getElementById('page-'+id);
   if(pg)pg.classList.add('active');
   window.scrollTo(0,0);
-  
-  // Quitar active de todos los items del sidebar
   document.querySelectorAll('.sb-item,.sb-si').forEach(i=>i.classList.remove('active'));
-  
-  // Agregar active al elemento clickeado
   if(el)el.classList.add('active');
-  
   if(id==='fc')buildFC();
   if(id==='gl')buildGlos();
   if(id==='no')loadNotes();
   if(id==='ej'){
+    // init quiz only if not yet started
     if(!qState.qs.length) startQuiz('all');
   }
 }
