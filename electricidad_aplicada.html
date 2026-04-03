@@ -119,7 +119,21 @@ body::after {
 .score-value { font-family:'Orbitron',monospace; font-size:20px; font-weight:700; color:var(--teal); animation:glowPulse 3s ease-in-out infinite; }
 .score-value span { font-size:10px; color:var(--muted); }
 .sidebar-nav { padding:8px 0; flex:1; }
-.nav-divider { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; padding:14px 16px 6px; }
+.nav-divider { 
+  font-size:10px; 
+  color:var(--teal); 
+  font-weight:700;
+  text-transform:uppercase; 
+  letter-spacing:2.5px; 
+  padding:18px 16px 8px;
+  text-shadow:0 0 6px rgba(0,255,157,0.3);
+  border-top:1px solid var(--border);
+  margin-top:8px;
+}
+.nav-divider:first-of-type {
+  border-top:none;
+  margin-top:0;
+}
 
 /* Subject group (collapsible) */
 .nav-subject {
@@ -127,15 +141,19 @@ body::after {
 }
 .nav-subject-header {
   display:flex; align-items:center; gap:8px;
-  padding:8px 14px 8px 12px;
-  cursor:pointer; font-size:11px; color:var(--muted);
-  transition:color 0.2s; letter-spacing:1px;
+  padding:10px 14px 10px 12px;
+  cursor:pointer; font-size:11px; color:var(--text);
+  transition:all 0.2s; letter-spacing:1px;
   position:relative;
+  font-weight:500;
 }
-.nav-subject-header:hover { color:var(--text); }
+.nav-subject-header:hover { 
+  color:var(--teal); 
+  background:rgba(0,255,157,0.05);
+}
 .nav-subject-header .subj-icon {
-  font-size:12px; width:16px; flex-shrink:0;
-  color:var(--muted); transition:color 0.2s;
+  font-size:13px; width:18px; flex-shrink:0;
+  color:var(--teal); transition:color 0.2s;
 }
 .nav-subject-header .subj-name { flex:1; }
 .nav-subject-header .subj-arrow {
@@ -143,8 +161,14 @@ body::after {
   flex-shrink:0;
 }
 /* open state */
-.nav-subject.open > .nav-subject-header { color:var(--text); }
-.nav-subject.open > .nav-subject-header .subj-icon { color:var(--teal); }
+.nav-subject.open > .nav-subject-header { 
+  color:var(--teal); 
+  background:rgba(0,255,157,0.08);
+}
+.nav-subject.open > .nav-subject-header .subj-icon { 
+  color:var(--teal); 
+  text-shadow:0 0 6px rgba(0,255,157,0.5);
+}
 .nav-subject.open > .nav-subject-header .subj-arrow { transform:rotate(180deg); }
 
 .nav-subitems { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
@@ -152,8 +176,9 @@ body::after {
 
 .nav-item {
   display:flex; align-items:center; gap:7px;
-  padding:7px 14px 7px 36px; cursor:pointer; font-size:11px; color:var(--muted);
+  padding:8px 14px 8px 36px; cursor:pointer; font-size:11px; color:var(--text);
   transition:all 0.2s; letter-spacing:0.5px; position:relative;
+  opacity:0.85;
 }
 .nav-item::before {
   content:''; width:0; height:100%; position:absolute; left:0; top:0;
@@ -161,8 +186,13 @@ body::after {
   transition:width 0.2s;
 }
 .nav-item:hover::before { width:100%; }
-.nav-item:hover { color:var(--text); }
-.nav-item.active { color:var(--teal); font-weight:500; }
+.nav-item:hover { color:var(--teal); opacity:1; }
+.nav-item.active { 
+  color:var(--teal); 
+  font-weight:500; 
+  opacity:1;
+  background:rgba(0,255,157,0.05);
+}
 .nav-item.active::after {
   content:'▸'; position:absolute; left:12px; color:var(--teal); font-size:10px;
 }
@@ -328,6 +358,13 @@ button[onclick^="calc"]:hover {
 .calc-input:focus {
   outline:none; border-color:var(--teal);
   box-shadow:0 0 0 2px rgba(0,255,157,0.1);
+}
+select.calc-input {
+  cursor:pointer;
+}
+select.calc-input option {
+  background:var(--panel2);
+  color:var(--text);
 }
 .calc-result {
   margin-top:16px; padding:14px 18px; background:var(--panel2);
@@ -498,6 +535,22 @@ button[onclick^="calc"]:hover {
       <span>⌂</span> INICIO
     </div>
 
+    <div class="nav-divider">PRÁCTICA</div>
+    <div class="nav-item" onclick="navigateTo('ejercicios')">
+      <span>◉</span> EJERCICIOS NUMÉRICOS
+    </div>
+    <div class="nav-item" onclick="navigateTo('ejercicios-mixtos')">
+      <span>◈</span> EJERCICIOS CONCEPTUALES
+    </div>
+    <div class="nav-item" onclick="navigateTo('flashcards')">
+      <span>◈</span> FLASHCARDS
+    </div>
+
+    <div class="nav-divider">HERRAMIENTAS</div>
+    <div class="nav-item" onclick="navigateTo('calculadoras')">
+      <span>⊕</span> CALCULADORAS
+    </div>
+
     <div class="nav-divider">TEORÍA</div>
     
     <div class="nav-subject">
@@ -527,6 +580,18 @@ button[onclick^="calc"]:hover {
 
     <div class="nav-subject">
       <div class="nav-subject-header">
+        <span class="subj-icon">○</span>
+        <span class="subj-name">CIRCUITOS</span>
+        <span class="subj-arrow">▾</span>
+      </div>
+      <div class="nav-subitems">
+        <div class="nav-item" onclick="navigateTo('teoria-circuitos')">Serie/Paralelo/Mixto</div>
+        <div class="nav-item" onclick="navigateTo('teoria-kirchhoff')">Leyes de Kirchhoff</div>
+      </div>
+    </div>
+
+    <div class="nav-subject">
+      <div class="nav-subject-header">
         <span class="subj-icon">∿</span>
         <span class="subj-name">ELECTROMAGNETISMO</span>
         <span class="subj-arrow">▾</span>
@@ -535,22 +600,6 @@ button[onclick^="calc"]:hover {
         <div class="nav-item" onclick="navigateTo('teoria-electromagnetismo')">Principios</div>
         <div class="nav-item" onclick="navigateTo('teoria-motores')">Motores AC/DC</div>
       </div>
-    </div>
-
-    <div class="nav-divider">PRÁCTICA</div>
-    <div class="nav-item" onclick="navigateTo('ejercicios')">
-      <span>◉</span> EJERCICIOS
-    </div>
-    <div class="nav-item" onclick="navigateTo('ejercicios-mixtos')">
-      <span>◉</span> EJERCICIOS MIXTOS
-    </div>
-    <div class="nav-item" onclick="navigateTo('flashcards')">
-      <span>◈</span> FLASHCARDS
-    </div>
-
-    <div class="nav-divider">HERRAMIENTAS</div>
-    <div class="nav-item" onclick="navigateTo('calculadoras')">
-      <span>⊕</span> CALCULADORAS
     </div>
   </nav>
 </div>
@@ -584,7 +633,8 @@ button[onclick^="calc"]:hover {
     <div class="card">
       <div class="card-header">▸ ACCESO RÁPIDO</div>
       <div class="card-content" style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="navigateTo('ejercicios')">⚡ EJERCICIOS</button>
+        <button class="btn btn-primary" onclick="navigateTo('ejercicios')">⚡ EJERCICIOS NUMÉRICOS</button>
+        <button class="btn btn-primary" onclick="navigateTo('ejercicios-mixtos')">◈ EJERCICIOS CONCEPTUALES</button>
         <button class="btn btn-primary" onclick="navigateTo('flashcards')">◈ FLASHCARDS</button>
         <button class="btn" onclick="navigateTo('calculadoras')">⊕ CALCULADORAS</button>
       </div>
@@ -631,6 +681,14 @@ button[onclick^="calc"]:hover {
         <p style="margin:10px 0; padding:8px 12px; background:rgba(0,255,157,0.1); border-left:2px solid var(--teal); font-size:12px;">
           💡 <strong>Ejemplo:</strong> Un celular carga con ~1A, una lavadora usa ~10A
         </p>
+        <p style="margin-top:12px;"><strong>Fórmula de corriente eléctrica:</strong></p>
+        <p style="margin:10px 0; padding:12px; background:var(--panel2); border-left:2px solid var(--teal); font-family:'JetBrains Mono',monospace; text-align:center;">
+          I = Q / t
+        </p>
+        <p style="font-size:12px;">Donde: <strong>I</strong> = Intensidad de corriente (A) · <strong>Q</strong> = Carga eléctrica (Culombios, C) · <strong>t</strong> = Tiempo (s)</p>
+        <p style="margin:10px 0; padding:8px 12px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal); font-size:12px;">
+          <strong>Ejemplo:</strong> Si 600 Culombios pasan por un punto en 3 segundos: I = 600C / 3s = 200 A
+        </p>
 
         <p style="margin-top:16px;"><strong style="color:var(--red)">3. RESISTENCIA (R) - La "Obstrucción"</strong></p>
         <p>Es lo que dificulta el paso de electrones. Como poner el dedo en la manguera: reduces el flujo de agua. Se mide en Ohmios [Ω].</p>
@@ -661,6 +719,39 @@ button[onclick^="calc"]:hover {
         <p style="margin-top:12px; padding:10px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal);">
           <strong>Ejemplo práctico:</strong> Si tienes una pila de 9V y conectas una resistencia de 3Ω:<br>
           I = V/R = 9/3 = 3A de corriente
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Resistividad de Materiales</div>
+      <div class="card-content">
+        <p>La <strong style="color:var(--yellow)">resistividad (ρ)</strong> es una propiedad intrínseca del material que indica su oposición al flujo de corriente.</p>
+        
+        <p style="margin-top:12px;"><strong>Fórmula de resistencia en función de geometría:</strong></p>
+        <p style="margin:10px 0; padding:12px; background:var(--panel2); border-left:2px solid var(--yellow); font-family:'JetBrains Mono',monospace; text-align:center;">
+          R = ρ × L / A
+        </p>
+        <p style="font-size:12px;">Donde: <strong>R</strong> = Resistencia (Ω) · <strong>ρ</strong> = Resistividad (Ω·mm²/m) · <strong>L</strong> = Longitud del cable (m) · <strong>A</strong> = Sección transversal (mm²)</p>
+
+        <p style="margin-top:14px;"><strong>Valores típicos de resistividad (a 20°C):</strong></p>
+        <div style="margin-top:10px; display:grid; gap:8px;">
+          <div style="padding:10px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal);">
+            <strong>Cobre (Cu):</strong> ρ = 0.0178 Ω·mm²/m<br>
+            <span style="font-size:11px; color:var(--muted);">El mejor conductor económico, usado en cables eléctricos</span>
+          </div>
+          <div style="padding:10px; background:rgba(0,200,255,0.08); border-left:2px solid var(--blue);">
+            <strong>Aluminio (Al):</strong> ρ = 0.028 Ω·mm²/m<br>
+            <span style="font-size:11px; color:var(--muted);">Más ligero que el cobre, usado en líneas de alta tensión</span>
+          </div>
+          <div style="padding:10px; background:rgba(255,183,0,0.08); border-left:2px solid var(--yellow);">
+            <strong>Constantán (Cu-Ni):</strong> ρ = 0.5 Ω·mm²/m<br>
+            <span style="font-size:11px; color:var(--muted);">Aleación usada en resistencias de precisión</span>
+          </div>
+        </div>
+
+        <p style="margin-top:14px; padding:10px; background:rgba(255,64,96,0.08); border-left:2px solid var(--red);">
+          <strong>⚠️ Efecto de la temperatura:</strong> En conductores metálicos, la resistividad <strong>aumenta</strong> con la temperatura. A mayor temperatura → más vibración de átomos → más colisiones con electrones → mayor resistencia.
         </p>
       </div>
     </div>
@@ -1208,19 +1299,229 @@ button[onclick^="calc"]:hover {
     </div>
   </div>
 
+  <div id="teoria-circuitos" class="page">
+    <div class="page-header">
+      <div class="page-title">CIRCUITOS ELÉCTRICOS</div>
+      <div class="page-subtitle">SERIE · PARALELO · MIXTO</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ ¿Qué es un Circuito Eléctrico?</div>
+      <div class="card-content">
+        <p>Un circuito eléctrico es un <strong>camino cerrado</strong> por donde fluyen los electrones. Tiene 3 componentes básicos:</p>
+        <ul style="margin-top:10px;">
+          <li><strong style="color:var(--teal)">Fuente</strong> → Proporciona la energía (batería, enchufe)</li>
+          <li><strong style="color:var(--yellow)">Carga</strong> → Consume la energía (ampolleta, motor, resistencia)</li>
+          <li><strong style="color:var(--blue)">Conductores</strong> → Transportan la corriente (cables)</li>
+        </ul>
+        <p style="margin-top:14px; padding:12px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal);">
+          <strong>💡 Regla de oro:</strong> Para que circule corriente, el circuito DEBE estar CERRADO. Si hay un corte en el cable, no fluye corriente.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Circuito Serie - Todo en Fila</div>
+      <div class="card-content">
+        <p>Los componentes están conectados <strong>uno después del otro</strong>, como vagones de un tren.</p>
+        
+        <div style="margin:16px 0; padding:14px; background:var(--panel2); border-left:2px solid var(--teal);">
+          <strong style="color:var(--teal)">Características clave:</strong><br><br>
+          <strong>1. La CORRIENTE es la MISMA en todos los componentes</strong><br>
+          <span style="font-size:12px; color:var(--muted)">I<sub>total</sub> = I<sub>1</sub> = I<sub>2</sub> = I<sub>3</sub></span><br>
+          <span style="font-size:12px;">Como el agua en una manguera: pasa la misma cantidad por cada punto.</span><br><br>
+          
+          <strong>2. Los VOLTAJES se SUMAN</strong><br>
+          <span style="font-size:12px; color:var(--muted)">V<sub>total</sub> = V<sub>1</sub> + V<sub>2</sub> + V<sub>3</sub></span><br>
+          <span style="font-size:12px;">Cada resistencia "se queda" con una parte del voltaje total.</span><br><br>
+          
+          <strong>3. Las RESISTENCIAS se SUMAN</strong><br>
+          <span style="font-size:12px; color:var(--muted)">R<sub>total</sub> = R<sub>1</sub> + R<sub>2</sub> + R<sub>3</sub></span>
+        </div>
+
+        <p style="margin-top:12px; padding:10px; background:rgba(255,64,96,0.08); border-left:2px solid var(--red);">
+          <strong>⚠️ PROBLEMA:</strong> Si UNA ampolleta se quema en un circuito serie (como las luces navideñas antiguas), TODAS se apagan porque el circuito se abre.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Circuito Paralelo - Caminos Múltiples</div>
+      <div class="card-content">
+        <p>Los componentes están conectados a los <strong>mismos dos puntos</strong>, creando varios caminos para la corriente.</p>
+        
+        <div style="margin:16px 0; padding:14px; background:var(--panel2); border-left:2px solid var(--blue);">
+          <strong style="color:var(--blue)">Características clave:</strong><br><br>
+          <strong>1. El VOLTAJE es el MISMO en todos los componentes</strong><br>
+          <span style="font-size:12px; color:var(--muted)">V<sub>total</sub> = V<sub>1</sub> = V<sub>2</sub> = V<sub>3</sub></span><br>
+          <span style="font-size:12px;">Todos reciben el voltaje completo de la fuente.</span><br><br>
+          
+          <strong>2. Las CORRIENTES se SUMAN</strong><br>
+          <span style="font-size:12px; color:var(--muted)">I<sub>total</sub> = I<sub>1</sub> + I<sub>2</sub> + I<sub>3</sub></span><br>
+          <span style="font-size:12px;">La corriente se divide entre los caminos disponibles.</span><br><br>
+          
+          <strong>3. Resistencias se calculan con:</strong><br>
+          <span style="font-size:12px; color:var(--muted)">1/R<sub>total</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + 1/R<sub>3</sub></span><br>
+          <span style="font-size:11px;">La resistencia total es MENOR que la resistencia más pequeña del circuito.</span>
+        </div>
+
+        <p style="margin-top:12px; padding:10px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal);">
+          <strong>✓ VENTAJA:</strong> Si una ampolleta se quema, las demás siguen funcionando. Por eso las casas usan circuitos paralelos.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Circuito Mixto - Combinación</div>
+      <div class="card-content">
+        <p>Es una <strong>combinación de circuitos serie y paralelo</strong>. La mayoría de circuitos reales son mixtos.</p>
+        
+        <p style="margin-top:12px;"><strong style="color:var(--purple)">¿Cómo resolverlos?</strong></p>
+        <ol style="margin:10px 0 10px 20px; line-height:1.8;">
+          <li>Identificar qué partes están en serie y cuáles en paralelo</li>
+          <li>Resolver primero los grupos paralelos (calcular R<sub>equivalente</sub>)</li>
+          <li>Luego resolver como si fuera un circuito serie simple</li>
+        </ol>
+
+        <p style="margin-top:14px; padding:10px; background:rgba(168,85,247,0.08); border-left:2px solid var(--purple);">
+          <strong>💡 Tip:</strong> Siempre empieza desde las resistencias más "internas" y ve simplificando hacia afuera.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Tabla Resumen</div>
+      <div class="card-content">
+        <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+          <tr style="background:var(--panel2); border-bottom:1px solid var(--border);">
+            <th style="padding:10px; text-align:left; color:var(--teal);">Magnitud</th>
+            <th style="padding:10px; text-align:center; color:var(--teal);">Serie</th>
+            <th style="padding:10px; text-align:center; color:var(--blue);">Paralelo</th>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px;"><strong>Corriente (I)</strong></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">I<sub>total</sub> = I<sub>1</sub> = I<sub>2</sub></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">I<sub>total</sub> = I<sub>1</sub> + I<sub>2</sub></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px;"><strong>Voltaje (V)</strong></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">V<sub>total</sub> = V<sub>1</sub> + V<sub>2</sub></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">V<sub>total</sub> = V<sub>1</sub> = V<sub>2</sub></td>
+          </tr>
+          <tr>
+            <td style="padding:10px;"><strong>Resistencia (R)</strong></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">R<sub>total</sub> = R<sub>1</sub> + R<sub>2</sub></td>
+            <td style="padding:10px; text-align:center; font-family:monospace;">1/R<sub>total</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="teoria-kirchhoff" class="page">
+    <div class="page-header">
+      <div class="page-title">LEYES DE KIRCHHOFF</div>
+      <div class="page-subtitle">ANÁLISIS DE CIRCUITOS COMPLEJOS</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ ¿Para Qué Sirven las Leyes de Kirchhoff?</div>
+      <div class="card-content">
+        <p>Cuando un circuito es muy complejo (tiene múltiples mallas y nodos), la Ley de Ohm sola no es suficiente. Las <strong>Leyes de Kirchhoff</strong> nos dan herramientas para analizar circuitos complicados.</p>
+        <p style="margin-top:10px;">Son DOS leyes fundamentales descubiertas por Gustav Kirchhoff en 1845:</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Primera Ley: Ley de Corrientes (LCK)</div>
+      <div class="card-content">
+        <p><strong style="color:var(--teal)">También llamada "Ley de Nodos"</strong></p>
+        
+        <div style="margin:16px 0; padding:16px; background:var(--panel2); border-left:3px solid var(--teal); text-align:center;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--teal);">
+            La suma de corrientes que ENTRAN a un nodo = La suma de corrientes que SALEN
+          </span><br>
+          <span style="font-size:13px; color:var(--muted); margin-top:8px; display:block;">∑ I<sub>entrada</sub> = ∑ I<sub>salida</sub></span>
+        </div>
+
+        <p style="margin-top:14px;"><strong>¿Qué es un NODO?</strong></p>
+        <p>Es un punto donde se conectan 3 o más cables. Como una intersección de caminos.</p>
+
+        <p style="margin-top:12px; padding:10px; background:rgba(0,255,157,0.08); border-left:2px solid var(--teal);">
+          <strong>💡 Analogía del agua:</strong> Imagina una tubería que se divide en 3. El agua que entra por un lado es igual a la suma del agua que sale por los 3 caminos. ¡No aparece ni desaparece agua!
+        </p>
+
+        <p style="margin-top:12px;"><strong style="color:var(--yellow)">Ejemplo:</strong></p>
+        <p style="font-size:12px; margin-top:6px;">
+          Si a un nodo llegan 5A y 3A, entonces deben salir 8A en total (puede ser 8A por un cable, o 5A + 3A por dos cables, etc.)
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Segunda Ley: Ley de Voltajes (LVK)</div>
+      <div class="card-content">
+        <p><strong style="color:var(--blue)">También llamada "Ley de Mallas"</strong></p>
+        
+        <div style="margin:16px 0; padding:16px; background:var(--panel2); border-left:3px solid var(--blue); text-align:center;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--blue);">
+            La suma de todos los voltajes en una malla cerrada es CERO
+          </span><br>
+          <span style="font-size:13px; color:var(--muted); margin-top:8px; display:block;">∑ V = 0</span>
+        </div>
+
+        <p style="margin-top:14px;"><strong>¿Qué es una MALLA?</strong></p>
+        <p>Es un camino cerrado dentro del circuito. Como dar una vuelta completa sin levantar el lápiz.</p>
+
+        <p style="margin-top:12px; padding:10px; background:rgba(0,200,255,0.08); border-left:2px solid var(--blue);">
+          <strong>💡 Analogía de la montaña:</strong> Si subes y bajas una montaña hasta volver al punto de partida, la altura final es la misma que la inicial (diferencia = 0). Igual pasa con el voltaje en una malla.
+        </p>
+
+        <p style="margin-top:12px;"><strong style="color:var(--yellow)">Ejemplo:</strong></p>
+        <p style="font-size:12px; margin-top:6px;">
+          Si una batería entrega +12V y hay dos resistencias que "consumen" -5V y -7V, la suma es: +12V - 5V - 7V = 0V ✓
+        </p>
+
+        <p style="margin-top:12px; padding:8px; background:rgba(255,183,0,0.08); border-left:2px solid var(--yellow);">
+          <strong>⚠️ Importante:</strong> Los voltajes de las fuentes se suman con signo positivo (+) y las caídas de voltaje en resistencias con signo negativo (−).
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ ¿Cuándo Usar Cada Ley?</div>
+      <div class="card-content">
+        <div style="display:grid; gap:12px; margin-top:10px;">
+          <div style="padding:12px; background:rgba(0,255,157,0.08); border-left:3px solid var(--teal);">
+            <strong>Usa LCK (Corrientes) cuando:</strong><br>
+            <span style="font-size:12px;">• Necesitas saber cuánta corriente pasa por un cable<br>
+            • Tienes un punto donde se dividen varios caminos<br>
+            • Quieres verificar que la corriente se conserva</span>
+          </div>
+          <div style="padding:12px; background:rgba(0,200,255,0.08); border-left:3px solid var(--blue);">
+            <strong>Usa LVK (Voltajes) cuando:</strong><br>
+            <span style="font-size:12px;">• Necesitas encontrar un voltaje desconocido<br>
+            • Tienes un circuito con varias mallas<br>
+            • Quieres verificar que la energía se conserva</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ══════════════════════════════════════════════════════════════
        EJERCICIOS
   ══════════════════════════════════════════════════════════════ -->
   <div id="ejercicios" class="page">
     <div class="page-header">
-      <div class="page-title">EJERCICIOS PRÁCTICOS</div>
-      <div class="page-subtitle">LEY DE OHM · POTENCIA · RESISTIVIDAD</div>
+      <div class="page-title">EJERCICIOS NUMÉRICOS</div>
+      <div class="page-subtitle">CÁLCULOS · LEY DE OHM · POTENCIA · CIRCUITOS · KIRCHHOFF</div>
     </div>
 
     <div class="card">
       <div class="card-header">▸ Instrucciones</div>
       <div class="card-content">
-        <p>Resuelve cada ejercicio e ingresa tu respuesta. El sistema validará automáticamente.</p>
+        <p>Resuelve cada problema <strong style="color:var(--teal)">calculando el valor numérico</strong> correcto. Todos estos ejercicios requieren usar fórmulas y realizar operaciones matemáticas.</p>
         <p style="margin-top:8px;"><button class="btn btn-primary" onclick="regenExercises()">↻ GENERAR NUEVOS EJERCICIOS</button></p>
       </div>
     </div>
@@ -1233,14 +1534,14 @@ button[onclick^="calc"]:hover {
   ══════════════════════════════════════════════════════════════ -->
   <div id="ejercicios-mixtos" class="page">
     <div class="page-header">
-      <div class="page-title">EJERCICIOS MIXTOS</div>
-      <div class="page-subtitle">LEY DE OHM · RESISTENCIA · SEMICONDUCTORES</div>
+      <div class="page-title">EJERCICIOS CONCEPTUALES</div>
+      <div class="page-subtitle">TEORÍA · COMPRENSIÓN · IDENTIFICACIÓN DE CONCEPTOS</div>
     </div>
 
     <div class="card">
       <div class="card-header">▸ Instrucciones</div>
       <div class="card-content">
-        <p>Ejercicios de aplicación combinada de conceptos.</p>
+        <p>Estos ejercicios evalúan tu <strong style="color:var(--blue)">comprensión de conceptos</strong> teóricos. Las respuestas pueden ser valores numéricos simples, palabras clave o identificación de elementos.</p>
         <p style="margin-top:8px;"><button class="btn btn-primary" onclick="regenMixed()">↻ GENERAR NUEVOS EJERCICIOS</button></p>
       </div>
     </div>
@@ -1339,6 +1640,60 @@ button[onclick^="calc"]:hover {
         <div id="calc-res-result" class="calc-result" style="display:none;"></div>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">▸ Resistencias en Serie y Paralelo</div>
+      <div class="card-content">
+        <p style="margin-bottom:14px; font-size:13px; color:var(--muted);">
+          <strong>Serie:</strong> R_total = R₁ + R₂<br>
+          <strong>Paralelo:</strong> 1/R_total = 1/R₁ + 1/R₂
+        </p>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label class="calc-label">Resistencia 1 (Ω)</label>
+            <input type="number" class="calc-input" id="calc-circ-r1" placeholder="0">
+          </div>
+          <div class="calc-input-group">
+            <label class="calc-label">Resistencia 2 (Ω)</label>
+            <input type="number" class="calc-input" id="calc-circ-r2" placeholder="0">
+          </div>
+          <div class="calc-input-group">
+            <label class="calc-label">Tipo</label>
+            <select class="calc-input" id="calc-circ-type" style="width:140px;">
+              <option value="serie">Serie</option>
+              <option value="paralelo">Paralelo</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="calcCircuit()">CALCULAR</button>
+        </div>
+        <div id="calc-circ-result" class="calc-result" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">▸ Ley de Kirchhoff - Corrientes (LCK)</div>
+      <div class="card-content">
+        <p style="margin-bottom:14px; font-size:13px; color:var(--muted);">
+          Suma de corrientes que ENTRAN = Suma que SALEN
+        </p>
+        <div class="calc-row">
+          <div class="calc-input-group">
+            <label class="calc-label">I entrada 1 (A)</label>
+            <input type="number" class="calc-input" id="calc-lck-i1" placeholder="0">
+          </div>
+          <div class="calc-input-group">
+            <label class="calc-label">I entrada 2 (A)</label>
+            <input type="number" class="calc-input" id="calc-lck-i2" placeholder="0">
+          </div>
+          <div class="calc-input-group">
+            <label class="calc-label">I salida 1 (A)</label>
+            <input type="number" class="calc-input" id="calc-lck-out1" placeholder="0">
+          </div>
+          <button class="btn btn-primary" onclick="calcLCK()">CALCULAR</button>
+        </div>
+        <div id="calc-lck-result" class="calc-result" style="display:none;"></div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -1376,10 +1731,12 @@ function navigateTo(pageId) {
       'teoria-corriente': 'TIPOS DE CORRIENTE',
       'teoria-bandas': 'TEORÍA DE BANDAS',
       'teoria-semiconductores': 'SEMICONDUCTORES',
+      'teoria-circuitos': 'CIRCUITOS',
+      'teoria-kirchhoff': 'LEYES DE KIRCHHOFF',
       'teoria-electromagnetismo': 'ELECTROMAGNETISMO',
       'teoria-motores': 'MOTORES AC/DC',
-      'ejercicios': 'EJERCICIOS',
-      'ejercicios-mixtos': 'EJERCICIOS MIXTOS',
+      'ejercicios': 'EJERCICIOS NUMÉRICOS',
+      'ejercicios-mixtos': 'EJERCICIOS CONCEPTUALES',
       'flashcards': 'FLASHCARDS',
       'calculadoras': 'CALCULADORAS'
     };
@@ -1495,6 +1852,50 @@ function calcResistivity() {
   } else {
     const box = document.getElementById('calc-res-result');
     box.innerHTML = 'Ingresa los 3 valores (ρ, L, A) para calcular R.';
+    box.style.display = 'block';
+  }
+}
+
+function calcCircuit() {
+  const r1 = parseFloat(document.getElementById('calc-circ-r1').value) || 0;
+  const r2 = parseFloat(document.getElementById('calc-circ-r2').value) || 0;
+  const type = document.getElementById('calc-circ-type').value;
+  
+  if (r1 && r2) {
+    let rtotal;
+    let formula;
+    if (type === 'serie') {
+      rtotal = r1 + r2;
+      formula = `R_total = R₁ + R₂ = ${r1} + ${r2}`;
+    } else {
+      rtotal = (r1 * r2) / (r1 + r2);
+      formula = `1/R_total = 1/R₁ + 1/R₂`;
+    }
+    const box = document.getElementById('calc-circ-result');
+    box.innerHTML = `<strong>${formula}</strong><br><strong style="color:var(--teal); font-size:16px;">R_total = ${rtotal.toFixed(3)} Ω</strong>`;
+    box.style.display = 'block';
+  } else {
+    const box = document.getElementById('calc-circ-result');
+    box.innerHTML = 'Ingresa los valores de R₁ y R₂.';
+    box.style.display = 'block';
+  }
+}
+
+function calcLCK() {
+  const i1 = parseFloat(document.getElementById('calc-lck-i1').value) || 0;
+  const i2 = parseFloat(document.getElementById('calc-lck-i2').value) || 0;
+  const out1 = parseFloat(document.getElementById('calc-lck-out1').value) || 0;
+  
+  const totalIn = i1 + i2;
+  const out2 = totalIn - out1;
+  
+  const box = document.getElementById('calc-lck-result');
+  if (totalIn > 0) {
+    box.innerHTML = `<strong>Corriente total que entra:</strong> ${totalIn.toFixed(3)} A<br>
+                     <strong>Si sale ${out1} A por una rama, entonces sale:</strong> <strong style="color:var(--teal); font-size:16px;">${out2.toFixed(3)} A</strong> por la otra rama`;
+    box.style.display = 'block';
+  } else {
+    box.innerHTML = 'Ingresa al menos las corrientes de entrada.';
     box.style.display = 'block';
   }
 }
@@ -1699,6 +2100,110 @@ const EXERCISE_TEMPLATES = [
         unit: 'A'
       };
     }
+  },
+  // NUEVOS EJERCICIOS - CIRCUITO SERIE
+  {
+    gen: () => {
+      const r1 = rand(10, 50);
+      const r2 = rand(10, 50);
+      const rtotal = r1 + r2;
+      return {
+        q: `En un circuito SERIE hay dos resistencias: R₁ = ${r1}Ω y R₂ = ${r2}Ω. ¿Cuál es la resistencia total?`,
+        a: rtotal,
+        unit: 'Ω'
+      };
+    }
+  },
+  {
+    gen: () => {
+      const v = rand(12, 24);
+      const r1 = rand(10, 30);
+      const r2 = rand(10, 30);
+      const rtotal = r1 + r2;
+      const i = (v / rtotal).toFixed(3);
+      return {
+        q: `Un circuito SERIE tiene una batería de ${v}V, R₁ = ${r1}Ω y R₂ = ${r2}Ω. ¿Cuál es la corriente total?`,
+        a: parseFloat(i),
+        unit: 'A'
+      };
+    }
+  },
+  // NUEVOS EJERCICIOS - CIRCUITO PARALELO
+  {
+    gen: () => {
+      const r1 = rand(20, 60);
+      const r2 = rand(20, 60);
+      const rtotal = ((r1 * r2) / (r1 + r2)).toFixed(2);
+      return {
+        q: `En un circuito PARALELO hay dos resistencias: R₁ = ${r1}Ω y R₂ = ${r2}Ω. ¿Cuál es la resistencia total? (Usa: 1/Rt = 1/R₁ + 1/R₂)`,
+        a: parseFloat(rtotal),
+        unit: 'Ω'
+      };
+    }
+  },
+  {
+    gen: () => {
+      const v = 12;
+      const r = rand(20, 60);
+      const i = (v / r).toFixed(3);
+      return {
+        q: `En un circuito PARALELO con ${v}V, una rama tiene R = ${r}Ω. ¿Cuál es la corriente en ESA rama?`,
+        a: parseFloat(i),
+        unit: 'A'
+      };
+    }
+  },
+  // NUEVOS EJERCICIOS - LEY DE KIRCHHOFF (CORRIENTES)
+  {
+    gen: () => {
+      const i1 = (rand(2, 8) / 10).toFixed(1);
+      const i2 = (rand(2, 8) / 10).toFixed(1);
+      const itotal = (parseFloat(i1) + parseFloat(i2)).toFixed(1);
+      return {
+        q: `A un NODO llegan dos corrientes: I₁ = ${i1}A e I₂ = ${i2}A. Por LCK, ¿cuánta corriente debe salir en total?`,
+        a: parseFloat(itotal),
+        unit: 'A'
+      };
+    }
+  },
+  {
+    gen: () => {
+      const ientrada = rand(5, 12);
+      const isalida1 = rand(2, 5);
+      const isalida2 = ientrada - isalida1;
+      return {
+        q: `A un NODO entra ${ientrada}A. Sale I₁ = ${isalida1}A por una rama. Por LCK, ¿cuánto sale por la otra rama?`,
+        a: isalida2,
+        unit: 'A'
+      };
+    }
+  },
+  // NUEVOS EJERCICIOS - LEY DE KIRCHHOFF (VOLTAJES)
+  {
+    gen: () => {
+      const vbat = rand(12, 24);
+      const v1 = rand(3, 8);
+      const v2 = vbat - v1;
+      return {
+        q: `Una batería de ${vbat}V alimenta un circuito serie. R₁ consume ${v1}V. Por LVK, ¿cuánto consume R₂?`,
+        a: v2,
+        unit: 'V'
+      };
+    }
+  },
+  // EJERCICIO DE RESISTIVIDAD
+  {
+    gen: () => {
+      const rho = 0.0178; // cobre
+      const l = rand(10, 50);
+      const a = rand(1, 4);
+      const r = ((rho * l) / a).toFixed(4);
+      return {
+        q: `Un cable de COBRE (ρ = 0.0178 Ω·mm²/m) tiene ${l}m de largo y ${a}mm² de sección. ¿Cuál es su resistencia? (R = ρ×L/A)`,
+        a: parseFloat(r),
+        unit: 'Ω'
+      };
+    }
   }
 ];
 
@@ -1750,18 +2255,20 @@ function checkAnswer(id, correct, unit) {
 // EJERCICIOS MIXTOS
 // ══════════════════════════════════════════════════════════════
 const MIXED_TEMPLATES = [
+  // SEMICONDUCTORES - Conceptual
   {
     gen: () => {
       const types = ['N', 'P'];
       const type = types[rand(0, 1)];
       const dopant = type === 'N' ? 'fósforo' : 'boro';
       return {
-        q: `Un semiconductor de silicio es dopado con ${dopant}. ¿Qué tipo de semiconductor resulta?`,
+        q: `Un semiconductor de silicio es dopado con ${dopant}. ¿Qué tipo de semiconductor resulta? (responde: N o P)`,
         a: type,
         unit: ''
       };
     }
   },
+  // BANDA PROHIBIDA - Conceptual con valor
   {
     gen: () => {
       const gaps = {
@@ -1779,14 +2286,155 @@ const MIXED_TEMPLATES = [
       };
     }
   },
+  // TIPOS DE CIRCUITO - Conceptual
   {
     gen: () => {
-      const freq = 50;
-      const period = (1 / freq).toFixed(2);
       return {
-        q: `La frecuencia de la red eléctrica en Chile es ${freq} Hz. ¿Cuál es el período de la onda?`,
-        a: parseFloat(period),
-        unit: 's'
+        q: `Si UNA ampolleta se quema y TODAS las demás se apagan, ¿qué tipo de circuito es? (responde: serie o paralelo)`,
+        a: 'serie',
+        unit: ''
+      };
+    }
+  },
+  {
+    gen: () => {
+      return {
+        q: `Si una ampolleta se quema pero las demás siguen funcionando, ¿qué tipo de circuito es? (responde: serie o paralelo)`,
+        a: 'paralelo',
+        unit: ''
+      };
+    }
+  },
+  // MATERIALES - Conceptual con valor
+  {
+    gen: () => {
+      const materials = ['Cobre', 'Aluminio', 'Constantán'];
+      const rhos = { 'Cobre': 0.0178, 'Aluminio': 0.028, 'Constantán': 0.5 };
+      const mat = materials[rand(0, materials.length - 1)];
+      const rho = rhos[mat];
+      return {
+        q: `¿Cuál es la resistividad del ${mat}? (en Ω·mm²/m)`,
+        a: rho,
+        unit: 'Ω·mm²/m'
+      };
+    }
+  },
+  // RESISTENCIA EN PARALELO - Conceptual
+  {
+    gen: () => {
+      return {
+        q: `En un circuito paralelo, ¿la resistencia total es mayor o menor que la resistencia más pequeña? (responde: mayor o menor)`,
+        a: 'menor',
+        unit: ''
+      };
+    }
+  },
+  {
+    gen: () => {
+      return {
+        q: `En un circuito serie, ¿la resistencia total es mayor o menor que cualquier resistencia individual? (responde: mayor o menor)`,
+        a: 'mayor',
+        unit: ''
+      };
+    }
+  },
+  // LEYES DE KIRCHHOFF - Conceptual
+  {
+    gen: () => {
+      return {
+        q: `¿Cuál ley dice que la suma de corrientes que ENTRAN a un nodo es igual a la suma que SALE? (responde: LCK o LVK)`,
+        a: 'LCK',
+        unit: ''
+      };
+    }
+  },
+  {
+    gen: () => {
+      return {
+        q: `¿Cuál ley dice que la suma de voltajes en una malla cerrada es CERO? (responde: LCK o LVK)`,
+        a: 'LVK',
+        unit: ''
+      };
+    }
+  },
+  // CORRIENTE - Conceptual
+  {
+    gen: () => {
+      const tipos = ['CC', 'CA'];
+      const tipo = tipos[rand(0, 1)];
+      const desc = tipo === 'CC' ? 'siempre en la misma dirección' : 'cambia de dirección constantemente';
+      return {
+        q: `¿Qué tipo de corriente fluye ${desc}? (responde: CC o CA)`,
+        a: tipo,
+        unit: ''
+      };
+    }
+  },
+  // CONDUCTIVIDAD - Conceptual
+  {
+    gen: () => {
+      return {
+        q: `¿Qué material es MEJOR conductor: Cobre o Aluminio? (responde: Cobre o Aluminio)`,
+        a: 'Cobre',
+        unit: ''
+      };
+    }
+  },
+  // VOLTAJE/CORRIENTE EN CIRCUITOS - Conceptual
+  {
+    gen: () => {
+      return {
+        q: `En un circuito SERIE, ¿qué magnitud es la MISMA en todos los componentes? (responde: Voltaje o Corriente)`,
+        a: 'Corriente',
+        unit: ''
+      };
+    }
+  },
+  {
+    gen: () => {
+      return {
+        q: `En un circuito PARALELO, ¿qué magnitud es la MISMA en todos los componentes? (responde: Voltaje o Corriente)`,
+        a: 'Voltaje',
+        unit: ''
+      };
+    }
+  },
+  // NODO VS MALLA - Conceptual
+  {
+    gen: () => {
+      return {
+        q: `Un punto donde se conectan 3 o más cables se llama... (responde: nodo o malla)`,
+        a: 'nodo',
+        unit: ''
+      };
+    }
+  },
+  {
+    gen: () => {
+      return {
+        q: `Un camino cerrado dentro de un circuito se llama... (responde: nodo o malla)`,
+        a: 'malla',
+        unit: ''
+      };
+    }
+  },
+  // FRECUENCIA - Valor conceptual
+  {
+    gen: () => {
+      return {
+        q: `¿Cuál es la frecuencia de la red eléctrica en Chile? (en Hz)`,
+        a: 50,
+        unit: 'Hz'
+      };
+    }
+  },
+  // VOLTAJE CHILE - Valor conceptual
+  {
+    gen: () => {
+      return {
+        q: `¿Cuál es el voltaje estándar en los enchufes domésticos de Chile? (en V)`,
+        a: 220,
+        unit: 'V'
       };
     }
   }
@@ -1925,6 +2573,32 @@ const FLASHCARDS = [
     a:'Fase (rojo/negro): lleva energía · 220V.\nNeutro (azul/blanco): retorna energía · 0V.\nTierra (verde/amarillo): protección ante fallas · 0V.' },
   { tema:'Instalación', q:'¿Cuándo circula corriente por el cable de tierra?',
     a:'Solo ante una falla eléctrica (ej: cortocircuito en carcasa metálica). En operación normal no circula corriente por ella.' },
+  
+  // ── Circuitos ──
+  { tema:'Circuitos', q:'¿Qué pasa con la corriente en un circuito serie?',
+    a:'La corriente es LA MISMA en todos los componentes.\nI_total = I₁ = I₂ = I₃\n\nComo el agua en una manguera: la misma cantidad pasa por cada punto.' },
+  { tema:'Circuitos', q:'¿Cómo se comportan las resistencias en serie?',
+    a:'Se SUMAN directamente:\nR_total = R₁ + R₂ + R₃\n\nLa resistencia total siempre es MAYOR que cualquier resistencia individual.' },
+  { tema:'Circuitos', q:'¿Qué pasa con el voltaje en un circuito paralelo?',
+    a:'El voltaje es EL MISMO en todos los componentes.\nV_total = V₁ = V₂ = V₃\n\nTodos reciben el voltaje completo de la fuente.' },
+  { tema:'Circuitos', q:'Fórmula de resistencias en paralelo',
+    a:'1/R_total = 1/R₁ + 1/R₂ + 1/R₃\n\nLa resistencia total es MENOR que la resistencia más pequeña del circuito.', formula:true },
+  { tema:'Circuitos', q:'Ventaja de circuitos paralelos vs serie',
+    a:'En PARALELO: si un componente falla, los demás siguen funcionando.\nEn SERIE: si uno falla, TODO el circuito se apaga.\n\nPor eso las casas usan circuitos paralelos.' },
+  { tema:'Circuitos', q:'¿Cómo resolver un circuito mixto?',
+    a:'1. Identificar partes en serie y paralelo\n2. Resolver grupos paralelos primero (calcular R_equivalente)\n3. Luego resolver como circuito serie simple\n4. Empezar desde las resistencias más internas hacia afuera' },
+  
+  // ── Kirchhoff ──
+  { tema:'Kirchhoff', q:'Primera Ley de Kirchhoff (LCK)',
+    a:'Ley de CORRIENTES o de NODOS:\n\n∑I_entrada = ∑I_salida\n\nLa suma de corrientes que ENTRAN a un nodo = suma de corrientes que SALEN.\n\nAnalogía: El agua que entra por una tubería que se divide es igual a la suma del agua que sale.', formula:true },
+  { tema:'Kirchhoff', q:'Segunda Ley de Kirchhoff (LVK)',
+    a:'Ley de VOLTAJES o de MALLAS:\n\n∑V = 0\n\nLa suma de todos los voltajes en una malla cerrada es CERO.\n\nAnalogía: Si subes y bajas una montaña completa, la altura final es la misma que la inicial.', formula:true },
+  { tema:'Kirchhoff', q:'¿Qué es un NODO en un circuito?',
+    a:'Punto donde se conectan 3 o más cables.\n\nEs como una intersección de caminos donde la corriente puede dividirse o juntarse.\n\nUsado en la Ley de Corrientes (LCK).' },
+  { tema:'Kirchhoff', q:'¿Qué es una MALLA en un circuito?',
+    a:'Un camino cerrado dentro del circuito.\n\nComo dar una vuelta completa sin levantar el lápiz.\n\nUsado en la Ley de Voltajes (LVK).' },
+  { tema:'Kirchhoff', q:'Signos en LVK: ¿positivo o negativo?',
+    a:'FUENTES (baterías): signo POSITIVO (+)\nRESISTENCIAS (caídas de voltaje): signo NEGATIVO (−)\n\nEjemplo: Batería de 12V con dos resistencias de 5V y 7V:\n+12V - 5V - 7V = 0 ✓' },
 ];
 
 let _fcFilter = 'Todos';
@@ -1949,7 +2623,8 @@ function renderFlashcards(filter, cards_override) {
   const colors = {
     'Electricidad':'var(--teal)', 'Bandas':'var(--blue)', 'Resistividad':'var(--yellow)',
     'Corriente':'var(--teal)', 'Fuentes CA':'var(--purple)', 'Átomo':'var(--blue)',
-    'Semiconductores':'var(--yellow)', 'Instalación':'var(--red)'
+    'Semiconductores':'var(--yellow)', 'Instalación':'var(--red)',
+    'Circuitos':'var(--teal)', 'Kirchhoff':'var(--blue)'
   };
 
   cards.forEach((card, i) => {
